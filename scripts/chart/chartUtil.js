@@ -2,7 +2,7 @@ define(["d3", "common"],
 
     function (d3, common) {
 
-        var dataPath = "/hci_prototype/data/",
+        var dataPath = "/hci_prototype_1/data/",
 
             colorDefault = "#f5f5f5",
             typeColorScale = d3.scale.category20(),

@@ -7327,8 +7327,8 @@ button.close {
  * -------------------------- */
 @font-face {
   font-family: 'FontAwesome';
-  src: url("/hci_prototype/fonts/fontawesome-webfont.eot?v=4.3.0");
-  src: url("/hci_prototype/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0") format("embedded-opentype"), url("/hci_prototype/fonts/fontawesome-webfont.woff2?v=4.3.0") format("woff2"), url("/hci_prototype/fonts/fontawesome-webfont.woff?v=4.3.0") format("woff"), url("/hci_prototype/fonts/fontawesome-webfont.ttf?v=4.3.0") format("truetype"), url("/hci_prototype/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular") format("svg");
+  src: url("/hci_prototype_1/fonts/fontawesome-webfont.eot?v=4.3.0");
+  src: url("/hci_prototype_1/fonts/fontawesome-webfont.eot?#iefix&v=4.3.0") format("embedded-opentype"), url("/hci_prototype_1/fonts/fontawesome-webfont.woff2?v=4.3.0") format("woff2"), url("/hci_prototype_1/fonts/fontawesome-webfont.woff?v=4.3.0") format("woff"), url("/hci_prototype_1/fonts/fontawesome-webfont.ttf?v=4.3.0") format("truetype"), url("/hci_prototype_1/fonts/fontawesome-webfont.svg?v=4.3.0#fontawesomeregular") format("svg");
   font-weight: normal;
   font-style: normal;
 }

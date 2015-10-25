@@ -1,6 +1,6 @@
 requirejs.config({
     paths: {
-        d3: '/hci_prototype/bower_components/d3/d3.min'
+        d3: '/hci_prototype_1/bower_components/d3/d3.min'
     }
 });
 
@@ -75,19 +75,19 @@ require(
 
                             task.isEnabled = true;
                             task.id = 1;
-                            task.href = '/hci_prototype/task_success_1.html';
+                            task.href = '/hci_prototype_1/task_success_1.html';
                         }
                         else if(parameterMap[p] === '2'){
 
                             task.isEnabled = true;
                             task.id = 2;
-                            task.href = '/hci_prototype/task_success_2.html';
+                            task.href = '/hci_prototype_1/task_success_2.html';
                         }
                         else if(parameterMap[p] === '3'){
 
                             task.isEnabled = true;
                             task.id = 3;
-                            task.href = '/hci_prototype/task_success_3.html';
+                            task.href = '/hci_prototype_1/task_success_3.html';
                         }
                         else {
                             task.isEnabled = false;
