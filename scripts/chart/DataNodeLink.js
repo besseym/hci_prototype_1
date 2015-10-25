@@ -212,6 +212,8 @@ define(["common"],
                     }
                 }
 
+                link.target.class = link.target.class.replace('g-' + link.source.id,'').replace(/\s{2,}/g, ' ');
+
                 linkMap[lId] = undefined;
 
                 return link;

@@ -25,51 +25,15 @@ define(["common"], function (common) {
 
         set(config);
 
-        function hightLight(hArray, colorScale){
+        this.highlight = function(typeColorArray){
 
-            var k, h,
-                typeColorArray = [];
+            var i = 0, h;
 
-            for(k in hArray){
+            for(i = 0; i < typeColorArray.length; i++){
 
-                h = hArray[k];
-                c = colorScale(h.id);
+                h = typeColorArray[i];
 
-                d3.selectAll("circle." + h.id).style({fill: c});
-
-                typeColorArray.push({
-                    name: h.name,
-                    color: c
-                });
-            }
-
-            return typeColorArray;
-        }
-
-        this.highlight = function(type){
-
-            var typeColorArray = null;
-
-            switch(type){
-
-                case 'type':
-                    typeColorArray = hightLight(data.get('typeAttrMap'), typeColorScale);
-                    break;
-                case 'status':
-                    typeColorArray = hightLight(data.get('statusAttrMap'), otherColorScale);
-                    break;
-                case 'rating':
-                    typeColorArray = hightLight(data.get('ratingAttrMap'), ratingColorScale);
-                    break;
-                case 'match':
-                    typeColorArray = hightLight(data.get('matchAttrMap'), otherColorScale);
-                    break;
-                case 'restriction':
-                    typeColorArray = hightLight(data.get('ageGateAttrMap'), otherColorScale);
-                    break;
-                case 'title-type':
-                    typeColorArray = hightLight(data.get('titleTypeAttrMap'), otherColorScale);
-                    break;
+                d3.selectAll("circle." + h.id).style({fill: h.color});
             }
 
             return typeColorArray;
@@ -77,13 +41,24 @@ define(["common"], function (common) {
 
         this.clear = function(){
 
-            svg.selectAll("g.links").remove();
-            svg.selectAll("g.nodes").remove();
+            if(exists) {
+                svg.selectAll("g.links").remove();
+                svg.selectAll("g.nodes").remove();
+            }
+        };
+
+        this.reset = function() {
+
+            if (exists) {
+                resetVisuals();
+            }
         };
 
         function focusOnNode(nId){
 
-            resetVisuals();
+            //resetVisuals();
+            svg.selectAll('line').style({'opacity': 1.0, 'pointer-events': 'auto'});
+            svg.selectAll('circle').style({'opacity': 1.0});
 
             svg.selectAll('line:not(.s-' + nId + ')').transition().style({'opacity': 0.1, 'pointer-events': 'none'});
             svg.selectAll('circle:not(.g-' + nId + ')').transition().style({'opacity': 0.1});
@@ -98,7 +73,11 @@ define(["common"], function (common) {
 
         this.makeLink = function(sourceId, targetId){
 
-            var l = data.makeLink(sourceId, targetId);
+            var l;
+
+            config.app.makeLink(sourceId, targetId);
+
+            l = data.makeLink(sourceId, targetId);
 
             svg.select('#' + l.target.id).classed('g-' + l.source.id, true);
 
@@ -109,11 +88,11 @@ define(["common"], function (common) {
 
         this.breakLink = function(lId){
 
-            var links, l;
+            var l;
+
+            config.app.breakLink(lId);
 
             l = data.removeLink(lId);
-
-            svg.select('#' + l.target.id).classed('g-' + l.source.id, false);
 
             display();
 
@@ -121,29 +100,10 @@ define(["common"], function (common) {
 
         };
 
-        function updateDisplay(){
-
-            node = svg.selectAll(".node")
-                .data(force.nodes(), function(d) { return d.id; });
-
-            link = svg.selectAll(".link")
-                .data(force.links(), function(d) { return d.id; });
-
-            force.on("tick", function() {
-
-                link.attr("x1", function(d) { return d.source.x; })
-                    .attr("y1", function(d) { return d.source.y; })
-                    .attr("x2", function(d) { return d.target.x; })
-                    .attr("y2", function(d) { return d.target.y; });
-
-                node.attr("cx", function(d) { return d.x; })
-                    .attr("cy", function(d) { return d.y; });
-            });
-        }
-
         function display(){
 
-            var linksGroup = svg.select("g.links"),
+            var nodes, links,
+                linksGroup = svg.select("g.links"),
                 nodesGroup = svg.select("g.nodes");
 
             if(linksGroup.empty()){
@@ -169,16 +129,13 @@ define(["common"], function (common) {
                     },
                     "marker-end": "url(#arrow)"
                 })
-                .style("stroke-width", function (d) {
-                    return d.weight;
-                })
                 .on('mouseover', function(d, i){
 
                     var mouse;
 
-                    if(!d3.event.shiftKey){
-                        return;
-                    }
+                    //if(!d3.event.shiftKey){
+                    //    return;
+                    //}
 
                     config.app.hideNodeDialog();
 
@@ -196,7 +153,8 @@ define(["common"], function (common) {
                 .selectAll("line")
                 .data(force.links(), function(d) { return d.id; })
                 .style("stroke-width", function (d) {
-                    return d.weight;
+                    return Math.sqrt((1 / d.weight) * 20);
+                    //return (1 / d.weight) * 10;
                 });
 
             linksGroup
@@ -209,10 +167,10 @@ define(["common"], function (common) {
                 .selectAll("circle")
                 .data(force.nodes(), function(d) { return d.id; })
                 .enter().append("circle")
-                .attr("id", function(d, i){
-                    return d.id;
-                })
                 .attr({
+                    "id": function(d, i){
+                        return d.id;
+                    },
                     "class": function (d, i) {
                         return d.class;
                     },
@@ -236,9 +194,9 @@ define(["common"], function (common) {
 
                     var circle;
 
-                    if(!d3.event.shiftKey){
-                        return;
-                    }
+                    //if(!d3.event.shiftKey){
+                    //    return;
+                    //}
 
                     config.app.hideLinkDialog();
 
@@ -256,13 +214,33 @@ define(["common"], function (common) {
                     return d.title;
                 });
 
-            updateDisplay();
+            nodes = nodesGroup.selectAll(".node")
+                .data(force.nodes(), function(d) { return d.id; })
+                .attr({
+                    "class": function (d, i) {
+                        return d.class;
+                    }
+                });
+
+            links = linksGroup.selectAll(".link")
+                .data(force.links(), function(d) { return d.id; });
+
+            force.on("tick", function() {
+
+                links.attr("x1", function(d) { return d.source.x; })
+                    .attr("y1", function(d) { return d.source.y; })
+                    .attr("x2", function(d) { return d.target.x; })
+                    .attr("y2", function(d) { return d.target.y; });
+
+                nodes.attr("cx", function(d) { return d.x; })
+                    .attr("cy", function(d) { return d.y; });
+            });
         }
 
         function resetVisuals(){
 
             svg.selectAll('line').style({'opacity': 1.0, 'pointer-events': 'auto'});
-            svg.selectAll('circle').style({'opacity': 1.0});
+            svg.selectAll('circle').style({'opacity': 1.0, fill: '#555'});
         }
 
         function updateSvg(){

@@ -13,8 +13,8 @@ define(["common", "chart/Chart"], function (common, Chart) {
             typeColorScale = d3.scale.category20(),
             ratingColorScale = d3.scale.category20(),
             otherColorScale = d3.scale.category10(),
-            cScale = d3.scale.ordinal().domain([1, 2, 3, 4, 5, 6, 7]).range(["#eff3ff","#c6dbef","#9ecae1","#6baed6","#4292c6","#2171b5","#084594"]),
-            hScale = d3.scale.ordinal().domain([1, 2, 3, 4, 5, 6, 7]).range(["#feedde","#fdd0a2","#fdae6b","#fd8d3c","#f16913","#d94801","#8c2d04"]),
+            cScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(["#eff3ff","#c6dbef","#9ecae1","#6baed6","#4292c6","#2171b5","#084594"]),
+            hScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(["#feedde","#fdd0a2","#fdae6b","#fd8d3c","#f16913","#d94801","#8c2d04"]),
             dScale = d3.scale.ordinal().domain([1, 2, 3, 4, 5, 6, 7]).range(["#feedde","#fdd0a2","#fdae6b","#fd8d3c","#f16913","#d94801","#8c2d04"]);
 
         //config the object
@@ -36,6 +36,8 @@ define(["common", "chart/Chart"], function (common, Chart) {
 
         function updateSvg(){
 
+            var data = parent.get('data'), width, height, padding;
+
             if(parent.exists()) {
 
                 svg = frame.select("svg");
@@ -44,6 +46,9 @@ define(["common", "chart/Chart"], function (common, Chart) {
                 height = width;
 
                 parent.set({width: width, height: height});
+
+                padding = Math.sqrt((width / data.get('nodes').length)) * 38;
+                parent.set({pTop: padding, pLeft: padding});
             }
         }
 
@@ -120,20 +125,24 @@ define(["common", "chart/Chart"], function (common, Chart) {
                         return d.class;
                     },
                     "x": function(d, i) {
-                        return 0;
+                        return parent.get('padding').left;
                     },
                     "y": function (d, i) {
                         return yScale(d.id) + (yScale.rangeBand() /2);
                     },
+                    "text-anchor": "end",
                     "data-title": function (d, i) {
                         return d.titleFilter;
                     },
-                    "textLength":  function (d, i) {
-                        return parent.get('padding').left;
-                    },
-                    "lengthAdjust": "spacing",
+                    //"textLength":  function (d, i) {
+                    //    return parent.get('padding').left;
+                    //},
+                    //"lengthAdjust": "spacing",
                     "font-size": function (d, i) {
-                        return Math.log(yScale.rangeBand() * 50);
+                        return Math.sqrt(yScale.rangeBand() * 2);
+                    },
+                    "dy": function (d, i) {
+                        return (Math.sqrt(yScale.rangeBand() * 2) * 0.5);
                     }
                 })
                 .on('mouseover', function(d, i){
@@ -172,12 +181,15 @@ define(["common", "chart/Chart"], function (common, Chart) {
                     "data-title": function (d, i) {
                         return d.titleFilter;
                     },
-                    "textLength":  function (d, i) {
-                        return parent.get('padding').top;
-                    },
-                    "lengthAdjust": "spacing",
+                    //"textLength":  function (d, i) {
+                    //    return parent.get('padding').top;
+                    //},
+                    //"lengthAdjust": "spacing",
                     "font-size": function (d, i) {
-                        return Math.log(xScale.rangeBand() * 50);
+                        return Math.sqrt(xScale.rangeBand() * 2);
+                    },
+                    "dx": function (d, i) {
+                        return (Math.sqrt(xScale.rangeBand() * 2) * 0.5);
                     }
                 })
                 .text(function(d) {
@@ -237,19 +249,27 @@ define(["common", "chart/Chart"], function (common, Chart) {
 
                     selectNode(d.source.id);
 
-                    if(d.source.id !== d.target.id && !data.isConnected(d.source.id, d.target.id)){
+                    if(d.source.id !== d.target.id){
 
-                        if(!data.hasMaxLinks(d.source.id)) {
+                        if(!data.isConnected(d.source.id, d.target.id)){
 
-                            link = data.makeLink(d.source.id, d.target.id);
-                            //d3.select(this).attr({fill: cScale(link.weight)});
-                            config.app.selectNode(d.source.id);
-                            display();
+                            if(!data.hasMaxLinks(d.source.id)) {
 
+                                config.app.makeLink(d.source.id, d.target.id);
+
+                                link = data.makeLink(d.source.id, d.target.id);
+                                config.app.selectNode(d.source.id);
+                                display();
+
+                            }
+                            else {
+
+                                config.app.showDangerMsg("You have reached the maximum number of connections for this video.");
+                            }
                         }
                         else {
 
-                            config.app.showDangerMsg("You have reached the maximum number of connections for this video.");
+                            breakLink(d.id);
                         }
                     }
                 })
@@ -283,23 +303,27 @@ define(["common", "chart/Chart"], function (common, Chart) {
 
         function selectNode(nId){
 
-            svg.selectAll("text.node").style({'font-weight': 'normal'});
-            updateNodeLabel(nId, true, true);
             config.app.selectNode(nId);
+            svg.selectAll("text.node").style({'text-decoration': 'none', 'font-style': 'normal'});
+            svg.select('#s-' + nId).style({'text-decoration': 'underline', 'font-style': 'italic'});
         }
+
+        this.selectNode = function(nId){
+
+            selectNode(nId);
+        };
 
         function updateNodeLabel(nId, isSource, doHighlight){
 
             var id = '#' + ((isSource)? 's-' : 't-') + nId;
 
             if(doHighlight){
+
                 svg.select(id).style({'font-weight': '900'});
             }
             else {
 
-                if(config.app.getSelectedNodeId() !== nId){
-                    svg.select(id).style({'font-weight': 'normal'});
-                }
+                svg.select(id).style({'font-weight': 'normal'});
             }
         }
 
@@ -310,65 +334,35 @@ define(["common", "chart/Chart"], function (common, Chart) {
             display();
         };
 
-        function hightLight(hArray, colorScale){
+        this.highlight = function(typeColorArray){
 
-            var k, h,
-                typeColorArray = [];
+            var i = 0, h;
 
-            for(k in hArray){
+            for(i = 0; i < typeColorArray.length; i++){
 
-                h = hArray[k];
-                c = colorScale(h.id);
+                h = typeColorArray[i];
 
-                d3.selectAll("text." + h.id).style({fill: c});
-
-                typeColorArray.push({
-                    name: h.name,
-                    color: c
-                });
-            }
-
-            return typeColorArray;
-        }
-
-        this.highlight = function(type){
-
-            var typeColorArray = null,
-                data = parent.get('data');
-
-            switch(type){
-
-                case 'type':
-                    typeColorArray = hightLight(data.get('typeAttrMap'), typeColorScale);
-                    break;
-                case 'status':
-                    typeColorArray = hightLight(data.get('statusAttrMap'), otherColorScale);
-                    break;
-                case 'rating':
-                    typeColorArray = hightLight(data.get('ratingAttrMap'), ratingColorScale);
-                    break;
-                case 'match':
-                    typeColorArray = hightLight(data.get('matchAttrMap'), otherColorScale);
-                    break;
-                case 'restriction':
-                    typeColorArray = hightLight(data.get('ageGateAttrMap'), otherColorScale);
-                    break;
-                case 'title-type':
-                    typeColorArray = hightLight(data.get('titleTypeAttrMap'), otherColorScale);
-                    break;
+                d3.selectAll("text." + h.id).style({fill: h.color});
             }
 
             return typeColorArray;
         };
 
-        this.breakLink = function(lId){
+        function breakLink (lId){
 
             var link,
                 data = parent.get('data');
 
             link = data.removeLink(lId);
 
+            config.app.breakLink(lId);
+
             display();
+        }
+
+        this.breakLink = function(lId){
+
+            breakLink(lId);
         };
 
         this.adjustLinkWeight = function(sNodeId, startIndex, endIndex){
@@ -412,9 +406,31 @@ define(["common", "chart/Chart"], function (common, Chart) {
             }
         };
 
+        this.reset = function(){
+
+            var nodes;
+
+            if(parent.exists()) {
+
+                nodes = svg.selectAll("text.node");
+
+                if(!nodes.empty()) {
+
+                    nodes.style({
+                        'opacity': 1.0,
+                        'fill': 'black',
+                        'text-decoration': 'none',
+                        'font-style': 'normal'
+                    });
+                }
+            }
+        };
+
         this.clear = function(){
 
-            svg.selectAll("*").remove();
+            if(parent.exists()) {
+                svg.selectAll("*").remove();
+            }
         };
 
         function set(config) {

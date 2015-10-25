@@ -11,11 +11,11 @@
 
     <div class="container page-header">
 
-        <h1>Video Connection Visualization</h1>
+        <h1><i class="fa fa-connectdevelop"></i> Video Connection Visualization</h1>
 
     </div>
 
-    <div class="container">
+    <div id="main-container" class="container">
 
         <div id="flash-success" class="alert alert-success" style="display: none;">
             <button id="btn-close-success" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -29,12 +29,16 @@
 
         <div id="flash-warning" class="alert alert-warning" style="display: none;">
             <button id="btn-close-warning" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <p id="flash-warning-msg">Warning Message</p>
+            <p>
+                <i class="fa fa-bell"></i> <span id="flash-warning-msg">Warning Message</span>
+            </p>
         </div>
 
         <div id="flash-danger" class="alert alert-danger" style="display: none;">
             <button id="btn-close-danger" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <p id="flash-danger-msg">Danger Message</p>
+            <p>
+                <i class="fa fa-exclamation"></i> <span id="flash-danger-msg">Danger Message</span>
+            </p>
         </div>
 
         <div class="row">
@@ -43,13 +47,13 @@
 
                 <ul id="tabs-dialog" class="nav nav-tabs nav-justified" role="tablist">
                     <li id="nav-tab-search" role="presentation" class="active">
-                        <a href="#tab-pane-search" data-toggle="tab">Search</a>
+                        <a href="#tab-pane-search" data-toggle="tab"><i class="fa fa-search"></i> Search</a>
                     </li>
                     <li id="nav-tab-hightlight" role="presentation" style="visibility: hidden;" >
-                        <a href="#tab-pane-highlight" data-toggle="tab">Highlight</a>
+                        <a href="#tab-pane-highlight" data-toggle="tab"><i class="fa fa-filter"></i> Highlight</a>
                     </li>
                     <li id="nav-tab-select" role="presentation" style="visibility: hidden;">
-                        <a href="#tab-pane-select" data-toggle="tab">Select</a>
+                        <a href="#tab-pane-select" data-toggle="tab"><i class="fa fa-check"></i> Select</a>
                     </li>
                 </ul>
 
@@ -58,6 +62,16 @@
                     <div id="tab-pane-search" role="tabpanel" class="tab-pane active">
 
                         <form id="form-search">
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+
+                                    <h3>Video Criteria</h3>
+
+                                </div>
+
+                            </div>
 
                             <div class="row">
 
@@ -106,7 +120,7 @@
 
                                     <div class="form-group">
                                         <label for="keywords">Keywords <small>(common separated)</small></label>
-                                        <input type="text" class="form-control" id="keywords" name="keywords" value="bionic" placeholder="Keywords">
+                                        <input type="text" class="form-control" id="keywords" name="keywords" value="" placeholder="Keywords">
                                     </div>
 
                                 </div>
@@ -214,7 +228,7 @@
                             <div class="row">
 
                                 <div class="col-md-12">
-                                    <button id="btn-search" type="submit" class="pull-right btn btn-primary">Search</button>
+                                    <button id="btn-search" type="submit" class="btn btn-primary btn-block">Search</button>
                                 </div>
 
                             </div>
@@ -224,7 +238,7 @@
                     </div>
                     <div id="tab-pane-highlight" role="tabpanel" class="tab-pane">
 
-                        <h3>Video Count - <span id="result-count">0</span></h3>
+                        <h3>Video Results - <span id="result-count">0</span></h3>
 
                         <form id="form-hightlight">
 
@@ -301,8 +315,14 @@
 
                             <div class="row">
                                 <div class="col-md-12 form-group">
-                                    <label for="input-filter-name">Filter by Name</label>
-                                    <input type="text" id="input-filter-name" name="input-filter-name" class="form-control" placeholder="">
+                                    <label for="input-filter-title">Filter by Title</label>
+                                    <input type="text" id="input-filter-title" name="input-filter-title" class="form-control" placeholder="">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <button id="btn-hightlight-reset" class="btn btn-default btn-block">Reset</button>
                                 </div>
                             </div>
 
@@ -335,18 +355,9 @@
 
                         <div class="row">
 
-                            <div class="col-md-8">
+                            <div class="col-md-12">
 
                                 <h3 id="s-n-title">Title</h3>
-
-                            </div>
-                            <div class="col-md-4">
-
-                                <h2 id="s-n-url">
-                                    <a class="btn btn-default" href="http://www.smithsonianchannel.com/videos/an-intense-blackhawk-rescue-mission-in-peril/38259" target="_blank">
-                                        <i class="fa fa-play-circle-o"></i>
-                                    </a>
-                                </h2>
 
                             </div>
 
@@ -359,9 +370,19 @@
                                 <p id="s-n-id">123456</p>
                             </div>
 
-                            <div class="col-md-8">
+                            <div class="col-md-4">
                                 <label>Type</label>
                                 <p id="s-n-type">Trailer</p>
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <h2 id="s-n-url">
+                                    <a class="btn btn-default" href="http://www.smithsonianchannel.com/videos/an-intense-blackhawk-rescue-mission-in-peril/38259" target="_blank">
+                                        <i class="fa fa-play-circle-o"></i>
+                                    </a>
+                                </h2>
+
                             </div>
 
                         </div>
@@ -439,7 +460,11 @@
 
                     <div class="jumbotron">
                         <h1>Welcome</h1>
+                        <p>
+                            The Video Connection Visualization (VCV) visualizes the connections between related videos as well as facilitates the management of these connections.
+                        </p>
                         <p>Begin the video connection process by performing a search.</p>
+                        <p><i class="fa fa-arrow-left"></i></p>
                     </div>
 
                     <h2>Distributed Videos per Outlet</h2>
@@ -453,10 +478,10 @@
 
                     <ul id="tabs-viz" class="nav nav-tabs nav-justified" role="tablist">
                         <li id="nav-tab-matrix" role="presentation" class="active">
-                            <a href="#tab-pane-matrix" data-toggle="tab">Matrix</a>
+                            <a href="#tab-pane-matrix" data-toggle="tab"><i class="fa fa-table"></i><br/> Matrix</a>
                         </li>
                         <li id="nav-node-link" role="presentation">
-                            <a href="#tab-pane-node-link" data-toggle="tab">Node Link</a>
+                            <a href="#tab-pane-node-link" data-toggle="tab"><i class="fa fa-code-fork"></i><br/> Node Link</a>
                         </li>
                     </ul>
 
@@ -466,6 +491,17 @@
 
                             <div id="chart-matrix-video" class="chart chart-matrix">
                                 <svg></svg>
+                            </div>
+
+                            <div class="panel panel-default">
+                                <div class="panel-heading"><i class="fa fa-info-circle"></i> Information</div>
+                                <div class="panel-body">
+                                    <ul>
+                                        <li>A colored square represents a connection between a video in the y-axis to a video in the x-axis. Connections are directional, y-axis <i class="fa fa-arrow-right"></i> x-axis.</li>
+                                        <li>The intensity of a connection's color represents the rank or strength of the connection. The more intense the color the higher the connection ranks.</li>
+                                        <li>For a large matrix you can zoom in with your browser by using the keyboard shortcut [Ctrl] + [+], or [Cmd] + [+] on a Mac.</li>
+                                    </ul>
+                                </div>
                             </div>
 
                         </div>
@@ -562,5 +598,7 @@
     <script src="/hci_prototype/bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="/hci_prototype/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
     <script data-main="/hci_prototype/scripts/app" src="/hci_prototype/bower_components/requirejs/require.js"></script>
+
+    <script type="text/javascript" charset="utf-8" src="https://cdn3.userzoom.com/uz.js?cuid=2D9AFEE0F5D9E311BEDA0022196C4538"></script>
 </body>
 </html>
