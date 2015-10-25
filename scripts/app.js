@@ -669,9 +669,9 @@ require(
                 else if("matrix" === activeChart){
                     adjMatrixChart.changeLinkColor(lId, true);
                 }
-                else if("list" === activeChart){
-                    listWidget.updateTargetView(targetId, true);
-                }
+                //else if("list" === activeChart){
+                //    listWidget.updateTargetView(targetId, true);
+                //}
 
             });
 
@@ -689,9 +689,9 @@ require(
                 else if("matrix" === activeChart){
                     adjMatrixChart.changeLinkColor(lId, false);
                 }
-                else if("list" === activeChart){
-                    listWidget.updateTargetView(targetId, false);
-                }
+                //else if("list" === activeChart){
+                //    listWidget.updateTargetView(targetId, false);
+                //}
             });
 
             connectionBtnArray = connectionTableBody.find('.s-l-btn');

@@ -311,8 +311,8 @@ define(["common", "chart/Chart"], function (common, Chart) {
             }
 
             config.app.selectNode(nId);
-            svg.selectAll("text.node").style({'text-decoration': 'none', 'font-style': 'normal'});
-            svg.select('#s-' + nId).style({'text-decoration': 'underline', 'font-style': 'italic'});
+            svg.selectAll("text.node").style({'stroke': 'none', 'stroke-width': 0.5});
+            svg.select('#s-' + nId).style({'stroke': 'black', 'stroke-width': 0.5});
         }
 
         this.selectNode = function(nId){
