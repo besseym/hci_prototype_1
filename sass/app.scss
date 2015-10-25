@@ -4,7 +4,25 @@
 $fa-font-path: '/hci_prototype_1/fonts';
 @import '../bower_components/fontawesome/scss/font-awesome';
 
+$clr-link-7: #eff3ff;
+$clr-link-6: #c6dbef;
+$clr-link-5: #9ecae1;
+$clr-link-4: #6baed6;
+$clr-link-3: #4292c6;
+$clr-link-2: #2171b5;
+$clr-link-1: #084594;
+
 #tab-content-dialog {
+
+  #tab-pane-highlight {
+
+    #key-color {
+
+      .type-highlight-count {
+        font-style: italic;
+      }
+    }
+  }
 
   #tab-pane-select {
 
@@ -97,6 +115,60 @@ $fa-font-path: '/hci_prototype_1/fonts';
     position: absolute;
   }
 
+}
+
+#tab-content-viz {
+
+  #color-key-connection {
+
+    ul {
+      list-style: none;
+
+      li {
+        float: left;  width: 14.28%; height: auto;
+
+        span {
+          float: left;
+        }
+
+        .clr-link-label {
+          width: 50%;
+        }
+
+        .clr-link {
+          margin: 0 auto; border: 1px solid black; width: 1.25em; height: 1.25em;
+        }
+
+        #clr-link-1 {
+          background-color: $clr-link-1;
+        }
+
+        #clr-link-2 {
+          background-color: $clr-link-2;
+        }
+
+        #clr-link-3 {
+          background-color: $clr-link-3;
+        }
+
+        #clr-link-4 {
+          background-color: $clr-link-4;
+        }
+
+        #clr-link-5 {
+          background-color: $clr-link-5;
+        }
+
+        #clr-link-6 {
+          background-color: $clr-link-6;
+        }
+
+        #clr-link-7 {
+          background-color: $clr-link-7;
+        }
+      }
+    }
+  }
 }
 
 .page-footer {

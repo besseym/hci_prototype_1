@@ -336,13 +336,16 @@ define(["common", "chart/Chart"], function (common, Chart) {
 
         this.highlight = function(typeColorArray){
 
-            var i = 0, h;
+            var i = 0, h, selectResult;
 
             for(i = 0; i < typeColorArray.length; i++){
 
                 h = typeColorArray[i];
 
-                d3.selectAll("text." + h.id).style({fill: h.color});
+                selectResult = d3.selectAll("text." + h.id);
+                h.count = selectResult[0].length;
+
+                selectResult.style({fill: h.color});
             }
 
             return typeColorArray;

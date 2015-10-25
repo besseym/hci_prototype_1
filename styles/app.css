@@ -9720,6 +9720,48 @@ button.close {
   position: absolute;
 }
 
+#tab-content-viz #color-key-connection ul {
+  list-style: none;
+}
+#tab-content-viz #color-key-connection ul li {
+  float: left;
+  width: 14.28%;
+  height: auto;
+}
+#tab-content-viz #color-key-connection ul li span {
+  float: left;
+}
+#tab-content-viz #color-key-connection ul li .clr-link-label {
+  width: 50%;
+}
+#tab-content-viz #color-key-connection ul li .clr-link {
+  margin: 0 auto;
+  border: 1px solid black;
+  width: 1.25em;
+  height: 1.25em;
+}
+#tab-content-viz #color-key-connection ul li #clr-link-1 {
+  background-color: #084594;
+}
+#tab-content-viz #color-key-connection ul li #clr-link-2 {
+  background-color: #2171b5;
+}
+#tab-content-viz #color-key-connection ul li #clr-link-3 {
+  background-color: #4292c6;
+}
+#tab-content-viz #color-key-connection ul li #clr-link-4 {
+  background-color: #6baed6;
+}
+#tab-content-viz #color-key-connection ul li #clr-link-5 {
+  background-color: #9ecae1;
+}
+#tab-content-viz #color-key-connection ul li #clr-link-6 {
+  background-color: #c6dbef;
+}
+#tab-content-viz #color-key-connection ul li #clr-link-7 {
+  background-color: #eff3ff;
+}
+
 .page-footer {
   border-top: 1px solid #e5e5e5;
   margin: 50px 0 0 0;

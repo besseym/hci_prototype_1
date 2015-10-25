@@ -67,7 +67,21 @@
 
                                 <div class="col-md-12">
 
-                                    <h3>Video Criteria</h3>
+                                    <br/>
+
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="keywords" name="keywords" value="robots" placeholder="Keywords (common separated)">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+
+                                    <h3>Video Filters</h3>
 
                                 </div>
 
@@ -114,20 +128,7 @@
 
                             </div>
 
-                            <div class="row">
-
-                                <div class="col-md-12">
-
-                                    <div class="form-group">
-                                        <label for="keywords">Keywords <small>(common separated)</small></label>
-                                        <input type="text" class="form-control" id="keywords" name="keywords" value="" placeholder="Keywords">
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <h4>Video Type</h4>
+                            <label>Video Type</label>
 
                             <div class="row">
 
@@ -238,9 +239,18 @@
                     </div>
                     <div id="tab-pane-highlight" role="tabpanel" class="tab-pane">
 
-                        <h3>Video Results - <span id="result-count">0</span></h3>
+                        <h3>Search Results - <span id="result-count">0</span></h3>
 
                         <form id="form-hightlight">
+
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label for="input-filter-title">Highlight by Title</label>
+                                    <input type="text" id="input-filter-title" name="input-filter-title" class="form-control" placeholder="">
+                                </div>
+                            </div>
+
+                            <label for="highlight">Highlight by Type</label>
 
                             <div class="row">
 
@@ -313,19 +323,6 @@
 
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <label for="input-filter-title">Filter by Title</label>
-                                    <input type="text" id="input-filter-title" name="input-filter-title" class="form-control" placeholder="">
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <button id="btn-hightlight-reset" class="btn btn-default btn-block">Reset</button>
-                                </div>
-                            </div>
-
                         </form>
 
                         <div id="key-color" class="panel panel-default">
@@ -335,6 +332,22 @@
                             <ul class="list-group">
                             </ul>
 
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12 form-group">
+                                <button id="btn-hightlight-reset" class="btn btn-default btn-block">Clear Highlighting</button>
+                            </div>
+                        </div>
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading"><i class="fa fa-info-circle"></i> Information</div>
+                            <div class="panel-body">
+                                <ul>
+                                    <li>A colored square represents a connection between a video in the y-axis to a video in the x-axis. Connections are directional, y-axis <i class="fa fa-arrow-right"></i> x-axis.</li>
+                                    <li>For a large matrix you can zoom in with your browser by using the keyboard shortcut [Ctrl] + [+], or [Cmd] + [+] on a Mac.</li>
+                                </ul>
+                            </div>
                         </div>
 
                         <!--
@@ -493,15 +506,19 @@
                                 <svg></svg>
                             </div>
 
-                            <div class="panel panel-default">
-                                <div class="panel-heading"><i class="fa fa-info-circle"></i> Information</div>
-                                <div class="panel-body">
-                                    <ul>
-                                        <li>A colored square represents a connection between a video in the y-axis to a video in the x-axis. Connections are directional, y-axis <i class="fa fa-arrow-right"></i> x-axis.</li>
-                                        <li>The intensity of a connection's color represents the rank or strength of the connection. The more intense the color the higher the connection ranks.</li>
-                                        <li>For a large matrix you can zoom in with your browser by using the keyboard shortcut [Ctrl] + [+], or [Cmd] + [+] on a Mac.</li>
-                                    </ul>
-                                </div>
+                            <div id="color-key-connection">
+                                <h4>Connection Color Key</h4>
+                                <p>The intensity of a connection's color represents the rank or strength of the connection.</p>
+                                <ul>
+                                    <li><span class="clr-link-label">Rank 1</span> <span id="clr-link-1" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 2</span> <span id="clr-link-2" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 3</span> <span id="clr-link-3" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 4</span> <span id="clr-link-4" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 5</span> <span id="clr-link-5" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 6</span> <span id="clr-link-6" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 7</span> <span id="clr-link-7" class="clr-link">&nbsp;</span></li>
+                                </ul>
+
                             </div>
 
                         </div>
@@ -516,7 +533,6 @@
                                             <path d="M 0,-5 L 10,0 L0,5" class="arrow" />
                                         </marker>
                                     </defs>
-
 
                                 </svg>
 

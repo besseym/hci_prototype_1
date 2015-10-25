@@ -740,6 +740,11 @@ require(
                         "' />",
                         "</svg> ",
                         typeColor.name,
+                        " - ",
+                        "<span class='type-highlight-count'>",
+                        typeColor.count,
+                        " videos",
+                        "</span>",
                         "</li>"];
 
                     keyColorList.append(outArray.join(""));

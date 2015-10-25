@@ -27,13 +27,16 @@ define(["common"], function (common) {
 
         this.highlight = function(typeColorArray){
 
-            var i = 0, h;
+            var i = 0, h, selectResult;
 
             for(i = 0; i < typeColorArray.length; i++){
 
                 h = typeColorArray[i];
 
-                d3.selectAll("circle." + h.id).style({fill: h.color});
+                selectResult = d3.selectAll("circle." + h.id);
+                h.count = selectResult[0].length;
+
+                selectResult.style({fill: h.color});
             }
 
             return typeColorArray;
