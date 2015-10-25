@@ -1,0 +1,112 @@
+
+@import '../bower_components/bootstrap-sass-official/assets/stylesheets/_bootstrap';
+
+$fa-font-path: '/hci_prototype/fonts';
+@import '../bower_components/fontawesome/scss/font-awesome';
+
+#tab-content-dialog {
+
+  #tab-pane-select {
+
+    #s-n-c-tbl {
+
+      tbody {
+
+        tr {
+
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+#content-viz {
+
+  #wait-feedback{
+    font-size: 30px;
+  }
+
+  #tab-content-viz {
+    padding: 2em 0 0 0;
+  }
+}
+
+
+.chart {
+
+  width: 100%;
+  margin: 0; padding: 0;
+  position: relative;
+
+  svg {
+
+    display: inline-block;
+    width: 100%;
+    margin: 0; padding: 0;
+  }
+
+  &.chart-graph {
+    height: 1000px;
+
+    line.link {
+      stroke: #aaa;
+
+      &.highlight {
+        stroke: #337ab7;
+      }
+    }
+
+    .arrow {
+      fill: #aaa;
+    }
+
+    circle.node {
+
+      stroke:#fff;
+      stroke-width:3px;
+      fill:#555;
+
+      &.text {
+        stroke:#333;
+        cursos:pointer;
+      }
+    }
+  }
+
+  &.chart-matrix {
+
+    g.s-labels {
+
+      text.node {
+
+        cursor: pointer;
+      }
+    }
+
+    rect.link {
+
+      cursor: pointer;
+    }
+  }
+
+  .chart-dialog {
+
+    width: 500px;
+    visibility: hidden;
+    position: absolute;
+  }
+
+}
+
+.page-footer {
+
+  border-top: 1px solid #e5e5e5;
+  margin: 50px 0 0 0;
+  padding: 20px 0px;
+
+  p {
+    margin: 0 auto;
+    width: 60%;
+  }
+}

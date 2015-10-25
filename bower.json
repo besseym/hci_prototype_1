@@ -1,0 +1,26 @@
+{
+  "name": "msbjs",
+  "version": "0.0.1",
+  "authors": [
+    "Michael Bessey"
+  ],
+  "description": "MSB Javascript Library",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "almond": "~0.3.0",
+    "requirejs": "~2.1.15"
+  },
+  "dependencies": {
+    "fontawesome": "~4.3.0",
+    "bootstrap-sass-official": "~3.3.4",
+    "d3": "~3.5.5",
+    "jquery-ui": "~1.11.4"
+  }
+}
