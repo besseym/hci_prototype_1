@@ -50,6 +50,21 @@ $clr-link-1: #084594;
   }
 }
 
+#list-widget {
+
+  table#table-list-widget {
+
+    tbody {
+
+      tr.selectedNode {
+
+        font-weight: bold;
+      }
+    }
+  }
+
+}
+
 
 .chart {
 
@@ -82,7 +97,7 @@ $clr-link-1: #084594;
     circle.node {
 
       stroke:#fff;
-      stroke-width:3px;
+      stroke-width:5px;
       fill:#555;
 
       &.text {

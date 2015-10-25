@@ -30,6 +30,10 @@ define(["common", "chart/Chart"], function (common, Chart) {
 
             parent.set({exists: exists});
 
+            if(exists){
+                svg = frame.select("svg");
+            }
+
             //updateSvg();
 
         }());
@@ -40,7 +44,6 @@ define(["common", "chart/Chart"], function (common, Chart) {
 
             if(parent.exists()) {
 
-                svg = frame.select("svg");
                 width = parseInt(svg.style("width"), 10);
                 svg.attr('height', width);
                 height = width;
@@ -303,6 +306,10 @@ define(["common", "chart/Chart"], function (common, Chart) {
 
         function selectNode(nId){
 
+            if(common.isUndefined(nId)) {
+                return;
+            }
+
             config.app.selectNode(nId);
             svg.selectAll("text.node").style({'text-decoration': 'none', 'font-style': 'normal'});
             svg.select('#s-' + nId).style({'text-decoration': 'underline', 'font-style': 'italic'});
@@ -334,21 +341,59 @@ define(["common", "chart/Chart"], function (common, Chart) {
             display();
         };
 
-        this.highlight = function(typeColorArray){
+        this.highlight = function(highlights){
 
-            var i = 0, h, selectResult;
+            var i, k, highlight, selectResult,
+                data = parent.get('data');
 
-            for(i = 0; i < typeColorArray.length; i++){
+            selectResult = svg.selectAll("text");
+            selectResult.style({'opacity': 1.0});
 
-                h = typeColorArray[i];
+            for(k in highlights) {
 
-                selectResult = d3.selectAll("text." + h.id);
-                h.count = selectResult[0].length;
+                switch (k) {
 
-                selectResult.style({fill: h.color});
+                    case 'title':
+
+                        highlight = highlights.title;
+
+                        if(highlight.value !== ""){
+                            selectResult = svg.selectAll("text:not([data-title*='" + highlight.value + "'])");
+                            selectResult.transition().style({'opacity': 0.2});
+                            highlight.count = data.getNodeCount() - (selectResult[0].length * 0.5);
+                        }
+                        else {
+                            highlight.count = 0;
+                        }
+
+                        break;
+
+                    case 'property':
+
+                        highlight = highlights.property;
+
+                        for(i = 0; i < highlight.typeColorArray.length; i++){
+
+                            h = highlight.typeColorArray[i];
+                            selectResult = d3.selectAll("text." + h.id);
+                            h.count = selectResult[0].length * 0.5;
+                            selectResult.style({fill: h.color});
+                        }
+
+                        break;
+                }
             }
 
-            return typeColorArray;
+
+            //for(i = 0; i < typeColorArray.length; i++){
+            //
+            //    h = typeColorArray[i];
+            //
+            //    selectResult = d3.selectAll("text." + h.id);
+            //    h.count = selectResult[0].length;
+            //
+            //    selectResult.style({fill: h.color});
+            //}
         };
 
         function breakLink (lId){
@@ -398,15 +443,6 @@ define(["common", "chart/Chart"], function (common, Chart) {
 
         this.changeLinkColor = function(lId, doHighlight){
             changeLinkColor(lId, doHighlight);
-        };
-
-        this.filterNode = function(value){
-
-            svg.selectAll("text").style({'opacity': 1.0});
-
-            if(value !== ""){
-                svg.selectAll("text:not([data-title*='" + value + "'])").transition().style({'opacity': 0.2});
-            }
         };
 
         this.reset = function(){

@@ -107,13 +107,14 @@ define(["common"],
                 node = {
                     id: id,
                     title: n.title,
-                    titleFilter: n.title.toLowerCase(),
+                    titleFilter: n.title.toLowerCase().replace(/'/g, ''),
                     type: n.type,
                     rating: n.rating,
                     duration: n.duration,
                     seriesId: n.seriesId,
                     seasonNumber: n.seasonNumber,
                     showId: n.showId,
+                    threePartKey: n.seriesId + '_' + n.seasonNumber + '_' + n.showId,
                     url: urlBase + '/' + n.id,
                     class: classOutArray.join(' ')
                 };

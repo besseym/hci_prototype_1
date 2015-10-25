@@ -6,9 +6,9 @@ requirejs.config({
 
 require(
     [
-        "common", "chart/chartUtil", "chart/DataNodeLink", "chart/ChartNodeLink", "chart/ChartAdjMatrixD3Impl"
+        "common", "chart/chartUtil", "chart/DataNodeLink", "chart/WidgetItemList", "chart/ChartNodeLink", "chart/ChartAdjMatrixD3Impl"
     ],
-    function(common, chartUtil, DataNodeLink, ChartNodeLink, ChartAdjMatrix) {
+    function(common, chartUtil, DataNodeLink, WidgetItemList, ChartNodeLink, ChartAdjMatrix) {
 
         var selectedNodeId,
 
@@ -19,18 +19,26 @@ require(
                 id: 0
             },
 
-            activeChart = "matrix",
+            activeChart = "list",
             titleFilter = "",
             typeColorArray,
 
             dataNodeLink,
+            listWidget,
             nodeLinkChart,
             adjMatrixChart,
 
+            highlights = {},
+
+            infoMatrix = $('#info-matrix'),
+
+            titleFilterCount = $('#filter-title-count'),
             inputTitleFilter = $('#input-filter-title'),
             inputHighlightSelect = $('#form-hightlight input[name=highlight]:radio'),
 
             waitFeedback = $("#wait-feedback"),
+
+            propertyColorKey = $("#key-color"),
 
             flashSuccess = $("#flash-success"),
             flashSuccessCloseBtn = flashSuccess.find("#btn-close-success"),
@@ -204,10 +212,14 @@ require(
                     resultCount.text(dataNodeLink.getNodeCount());
                     focusHighlightTab();
 
+                    loadListWidget();
                     loadNodeLinkChart();
                     loadAdjMatrixChart();
 
-                    if("nodeLink" === activeChart) {
+                    if("list" === activeChart) {
+                        listWidget.display();
+                    }
+                    else if("nodeLink" === activeChart) {
                         nodeLinkChart.display();
                     }
                     else if("matrix" === activeChart){
@@ -215,8 +227,6 @@ require(
                     }
 
                     waitFeedback.hide();
-
-                    resetHightlight();
                 });
             }
             else {
@@ -233,45 +243,24 @@ require(
             event.preventDefault();
         });
 
-        $("#btn-hightlight-reset").on('click', function( event ) {
+        $("a[href='#tab-pane-list']").on("shown.bs.tab", function( event ) {
 
-            resetHightlight();
+            listWidget.display();
+            listWidget.highlight(highlights);
 
-            event.preventDefault();
+            infoMatrix.hide();
+
+            activeChart = "list";
         });
-
-        function resetHightlight(){
-
-            titleFilter = "";
-            typeColorArray = [];
-            selectedNodeId = undefined;
-
-            buildColorKey(typeColorArray);
-
-            adjMatrixChart.reset();
-            nodeLinkChart.reset();
-
-            inputTitleFilter.val("");
-            inputHighlightSelect.attr("checked", false);
-
-            hideSelectTab();
-        }
 
         $("a[href='#tab-pane-node-link']").on("shown.bs.tab", function( event ) {
 
             nodeLinkChart.display();
+            nodeLinkChart.highlight(highlights);
 
-            if(!common.isUndefined(titleFilter)) {
-                nodeLinkChart.filterNode(titleFilter);
-            }
+            nodeLinkChart.focusOnNode(selectedNodeId);
 
-            if(!common.isUndefined(typeColorArray) && typeColorArray.length > 0) {
-                nodeLinkChart.highlight(typeColorArray);
-            }
-
-            if(!common.isUndefined(selectedNodeId) && titleFilter === "") {
-                nodeLinkChart.focusOnNode(selectedNodeId);
-            }
+            infoMatrix.hide();
 
             activeChart = "nodeLink";
         });
@@ -279,21 +268,32 @@ require(
         $("a[href='#tab-pane-matrix']").on("shown.bs.tab", function( event ) {
 
             adjMatrixChart.display();
+            adjMatrixChart.highlight(highlights);
+            adjMatrixChart.selectNode(selectedNodeId);
 
-            if(!common.isUndefined(titleFilter)) {
-                adjMatrixChart.filterNode(titleFilter);
-            }
-
-            if(!common.isUndefined(typeColorArray) && typeColorArray.length > 0) {
-                adjMatrixChart.highlight(typeColorArray);
-            }
-
-            if(!common.isUndefined(selectedNodeId) && titleFilter === "") {
-                adjMatrixChart.selectNode(selectedNodeId);
-            }
+            infoMatrix.show();
 
             activeChart = "matrix";
         });
+
+        function loadListWidget(){
+
+            listWidget = WidgetItemList.getInstance({
+                selector: "#list-widget",
+                data: dataNodeLink,
+
+                app: {
+
+                    getSelectedNodeId: function(){
+                        return selectedNodeId;
+                    },
+                    selectNode: selectNode,
+                    makeLink: makeLink,
+                    breakLink: breakLink,
+                    showDangerMsg: showDangerMsg
+                }
+            });
+        }
 
         function loadNodeLinkChart(){
 
@@ -351,13 +351,21 @@ require(
 
             typeColorArray = chartUtil.getTypeColorArray(value, dataNodeLink);
 
-            if("nodeLink" === activeChart) {
-                nodeLinkChart.highlight(typeColorArray);
+            highlights.property = {
+                typeColorArray: typeColorArray
+            };
+
+            if("list" === activeChart) {
+                listWidget.highlight(highlights);
             }
             else if("matrix" === activeChart){
-                adjMatrixChart.highlight(typeColorArray);
+                adjMatrixChart.highlight(highlights);
+            }
+            else if("nodeLink" === activeChart) {
+                nodeLinkChart.highlight(highlights);
             }
 
+            propertyColorKey.show();
             buildColorKey(typeColorArray);
         });
 
@@ -365,20 +373,28 @@ require(
 
             titleFilter = $(this).val().toLowerCase();
 
-            if("nodeLink" === activeChart) {
-                nodeLinkChart.filterNode(titleFilter);
+            highlights.title = {
+                value: titleFilter
+            };
+
+            if("list" === activeChart) {
+                listWidget.highlight(highlights);
+            }
+            else if("nodeLink" === activeChart) {
+                nodeLinkChart.highlight(highlights);
             }
             else if("matrix" === activeChart){
-                adjMatrixChart.filterNode(titleFilter);
+                adjMatrixChart.highlight(highlights);
             }
+
+            titleFilterCount.text(highlights.title.count);
+            titleFilterCount.show();
 
         });
 
         function selectNode(sNodeId){
 
             if(dataNodeLink.hasNode(sNodeId)) {
-
-                //resetHightlight();
 
                 buildSelectPanel(dataNodeLink.getNode(sNodeId), dataNodeLink.getNodeConnect(sNodeId));
                 focusSelectTab();
@@ -547,10 +563,10 @@ require(
             if (lRow.length > 0 ){
 
                 if(doHighlight){
-                    lRow.addClass("bg-primary");
+                    lRow.addClass("bg-info");
                 }
                 else {
-                    lRow.removeClass("bg-primary");
+                    lRow.removeClass("bg-info");
                 }
             }
         }
@@ -641,7 +657,9 @@ require(
             connectionLinkArray = connectionTableBody.find('.s-l');
             connectionLinkArray.on("mouseover", function() {
 
-                var lId = $(this).data('link-id');
+                var link = $(this),
+                    lId = link.data('link-id'),
+                    targetId = link.data('target-id');
 
                 changeSelectedLinkColor(lId, true);
 
@@ -651,12 +669,17 @@ require(
                 else if("matrix" === activeChart){
                     adjMatrixChart.changeLinkColor(lId, true);
                 }
+                else if("list" === activeChart){
+                    listWidget.updateTargetView(targetId, true);
+                }
 
             });
 
             connectionLinkArray.on("mouseout", function() {
 
-                var lId = $(this).data('link-id');
+                var link = $(this),
+                    lId = link.data('link-id'),
+                    targetId = link.data('target-id');
 
                 changeSelectedLinkColor(lId, false);
 
@@ -665,6 +688,9 @@ require(
                 }
                 else if("matrix" === activeChart){
                     adjMatrixChart.changeLinkColor(lId, false);
+                }
+                else if("list" === activeChart){
+                    listWidget.updateTargetView(targetId, false);
                 }
             });
 
@@ -688,6 +714,9 @@ require(
                 }
                 else if("matrix" === activeChart){
                     adjMatrixChart.breakLink(id);
+                }
+                else if("list" === activeChart){
+                    listWidget.breakLink(id);
                 }
 
                 event.preventDefault();
@@ -720,7 +749,7 @@ require(
 
         function buildColorKey(typeColorArray){
 
-            var i, typeColor, keyColorList, outArray;
+            var i, typeColor, keyColorList, outArray, c;
 
             if(typeColorArray !== null){
 
@@ -732,6 +761,11 @@ require(
                     typeColor = typeColorArray[i];
                     //typeColor.color;
 
+                    c = 0;
+                    if(!common.isUndefined(typeColor.count)){
+                        c = typeColor.count;
+                    }
+
                     outArray = [
                         "<li class='list-group-item'>",
                         "<svg height='15' width='15'>",
@@ -742,7 +776,7 @@ require(
                         typeColor.name,
                         " - ",
                         "<span class='type-highlight-count'>",
-                        typeColor.count,
+                        c,
                         " videos",
                         "</span>",
                         "</li>"];

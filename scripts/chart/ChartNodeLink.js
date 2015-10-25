@@ -25,21 +25,61 @@ define(["common"], function (common) {
 
         set(config);
 
-        this.highlight = function(typeColorArray){
+        this.highlight = function(highlights){
 
-            var i = 0, h, selectResult;
+            var i, k, highlight, selectResult;
 
-            for(i = 0; i < typeColorArray.length; i++){
+            //svg.selectAll('line').transition().style({'opacity': 0.1, 'pointer-events': 'none'});
+            svg.selectAll("circle").style({'stroke': '#fff'});
 
-                h = typeColorArray[i];
+            for(k in highlights) {
 
-                selectResult = d3.selectAll("circle." + h.id);
-                h.count = selectResult[0].length;
+                switch (k) {
 
-                selectResult.style({fill: h.color});
+                    case 'title':
+
+                        highlight = highlights.title;
+
+                        if(highlight.value !== ""){
+                            selectResult = svg.selectAll("circle[data-title*='" + highlight.value + "']");
+                            selectResult.style({'stroke': 'gold'});
+                            //selectResult = svg.selectAll("circle:not([data-title*='" + highlight.value + "'])");
+                            //selectResult.transition().style({'opacity': 0.1});
+                            highlight.count = selectResult[0].length;
+                        }
+                        else {
+                            highlight.count = 0;
+                        }
+
+                        break;
+
+                    case 'property':
+
+                        highlight = highlights.property;
+
+                        for(i = 0; i < highlight.typeColorArray.length; i++){
+
+                            h = highlight.typeColorArray[i];
+                            selectResult = d3.selectAll("circle." + h.id);
+                            h.count = selectResult[0].length;
+                            selectResult.style({fill: h.color});
+                        }
+
+                        break;
+                }
             }
 
-            return typeColorArray;
+            //for(i = 0; i < typeColorArray.length; i++){
+            //
+            //    h = typeColorArray[i];
+            //
+            //    selectResult = d3.selectAll("circle." + h.id);
+            //    h.count = selectResult[0].length;
+            //
+            //    selectResult.style({fill: h.color});
+            //}
+            //
+            //return typeColorArray;
         };
 
         this.clear = function(){
@@ -59,12 +99,15 @@ define(["common"], function (common) {
 
         function focusOnNode(nId){
 
-            //resetVisuals();
+            if(common.isUndefined(nId)) {
+                return;
+            }
+
             svg.selectAll('line').style({'opacity': 1.0, 'pointer-events': 'auto'});
             svg.selectAll('circle').style({'opacity': 1.0});
 
             svg.selectAll('line:not(.s-' + nId + ')').transition().style({'opacity': 0.1, 'pointer-events': 'none'});
-            svg.selectAll('circle:not(.g-' + nId + ')').transition().style({'opacity': 0.1});
+            svg.selectAll('circle:not(.g-' + nId + ')').transition().style({'opacity': 0.3});
 
             config.app.selectNode(nId);
         }
@@ -119,53 +162,6 @@ define(["common"], function (common) {
 
             force.nodes(data.get('nodes')).links(data.get('links')).start();
 
-            linksGroup
-                .selectAll("line")
-                .data(force.links(), function(d) { return d.id; })
-                .enter().append("line")
-                .attr("id", function(d, i){
-                    return d.id;
-                })
-                .attr({
-                    "class": function(d, i){
-                        return d.class;
-                    },
-                    "marker-end": "url(#arrow)"
-                })
-                .on('mouseover', function(d, i){
-
-                    var mouse;
-
-                    //if(!d3.event.shiftKey){
-                    //    return;
-                    //}
-
-                    config.app.hideNodeDialog();
-
-                    mouse = d3.mouse(this);
-
-                    config.app.populateLinkDialog(d);
-
-                    config.app.setLinkDialogLocation({
-                        left: mouse[0] + "px",
-                        top: mouse[1] + "px"
-                    });
-                });
-
-            linksGroup
-                .selectAll("line")
-                .data(force.links(), function(d) { return d.id; })
-                .style("stroke-width", function (d) {
-                    return Math.sqrt((1 / d.weight) * 20);
-                    //return (1 / d.weight) * 10;
-                });
-
-            linksGroup
-                .selectAll("line")
-                .data(force.links(), function(d) { return d.id; })
-                .exit()
-                .remove();
-
             nodesGroup
                 .selectAll("circle")
                 .data(force.nodes(), function(d) { return d.id; })
@@ -216,6 +212,53 @@ define(["common"], function (common) {
                 .text(function (d) {
                     return d.title;
                 });
+
+            linksGroup
+                .selectAll("line")
+                .data(force.links(), function(d) { return d.id; })
+                .enter().append("line")
+                .attr("id", function(d, i){
+                    return d.id;
+                })
+                .attr({
+                    "class": function(d, i){
+                        return d.class;
+                    },
+                    "marker-end": "url(#arrow)"
+                })
+                .on('mouseover', function(d, i){
+
+                    var mouse;
+
+                    //if(!d3.event.shiftKey){
+                    //    return;
+                    //}
+
+                    config.app.hideNodeDialog();
+
+                    mouse = d3.mouse(this);
+
+                    config.app.populateLinkDialog(d);
+
+                    config.app.setLinkDialogLocation({
+                        left: mouse[0] + "px",
+                        top: mouse[1] + "px"
+                    });
+                });
+
+            linksGroup
+                .selectAll("line")
+                .data(force.links(), function(d) { return d.id; })
+                .style("stroke-width", function (d) {
+                    return Math.sqrt((1 / d.weight) * 20);
+                    //return (1 / d.weight) * 10;
+                });
+
+            linksGroup
+                .selectAll("line")
+                .data(force.links(), function(d) { return d.id; })
+                .exit()
+                .remove();
 
             nodes = nodesGroup.selectAll(".node")
                 .data(force.nodes(), function(d) { return d.id; })
@@ -284,16 +327,6 @@ define(["common"], function (common) {
 
         this.changeLinkColor = function(lId, doHighlight){
             changeLinkColor(lId, doHighlight);
-        };
-
-        this.filterNode = function(value){
-
-            resetVisuals();
-
-            if(value !== ""){
-                svg.selectAll('line').transition().style({'opacity': 0.1, 'pointer-events': 'none'});
-                svg.selectAll("circle:not([data-title*='" + value + "'])").transition().style({'opacity': 0.1});
-            }
         };
 
         function set(config) {
