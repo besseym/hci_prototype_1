@@ -8,6 +8,8 @@ define(["common"],
             var LINK_MAX = 7,
 
                 nodes = [],
+                nodeArray = [],
+                nodeDescArray = [],
                 nodeMap = [],
                 nodeConnectMap = [],
                 links = [],
@@ -30,7 +32,7 @@ define(["common"],
 
             function getSortedNodeArray(iStart, iEnd, sDesc){
 
-                var nArray = nodes.slice(), nArray1;
+                var nArray;
 
                 if(common.isUndefined(iStart) || iStart < 0){
                     iStart = 0;
@@ -44,36 +46,24 @@ define(["common"],
                     sDesc = false;
                 }
 
-                nArray.sort(function(a, b) {
+                if(iStart === 0 && iEnd === nodes.length){
 
-                    if (a.title > b.title) {
-                        return 1;
+                    if(sDesc){
+                        return nodeDescArray;
                     }
-                    if (a.title < b.title) {
-                        return -1;
+                    else {
+                        return nodeArray;
                     }
-                    // a must be equal to b
-                    return 0;
-                });
-
-                nArray1 = nArray.slice(iStart, iEnd);
-
-                if(sDesc) {
-
-                    nArray1.sort(function(a, b) {
-
-                        if (a.title < b.title) {
-                            return 1;
-                        }
-                        if (a.title > b.title) {
-                            return -1;
-                        }
-                        // a must be equal to b
-                        return 0;
-                    });
                 }
 
-                return nArray1;
+                if(sDesc){
+                    nArray = nodeDescArray.slice(nodeDescArray.length - iEnd, nodeDescArray.length - iStart);
+                }
+                else {
+                    nArray = nodeArray.slice(iStart, iEnd);
+                }
+
+                return nArray;
             }
 
             this.getSortedNodeArray = function(iStart, iEnd, sDesc){
@@ -391,6 +381,34 @@ define(["common"],
                         n = config.nodes[i];
                         addNode(n);
                     }
+
+                    nodeArray = nodes.slice();
+
+                    nodeArray.sort(function(a, b) {
+
+                        if (a.title > b.title) {
+                            return 1;
+                        }
+                        if (a.title < b.title) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
+
+                    nodeDescArray = nodeArray.slice();
+
+                    nodeDescArray.sort(function(a, b) {
+
+                        if (a.title < b.title) {
+                            return 1;
+                        }
+                        if (a.title > b.title) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
                 }
 
                 if (!common.isUndefined(config.links)) {
