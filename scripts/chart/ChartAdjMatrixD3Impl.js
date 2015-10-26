@@ -603,8 +603,6 @@ define(["common", "chart/Chart"], function (common, Chart) {
                     zRate = parseInt(Math.sqrt(sEnd));
                     xRate = zRate;
                     mRate = zRate;
-
-                    console.log(zRate);
                 }
             }
         }
