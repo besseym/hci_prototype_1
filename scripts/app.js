@@ -330,7 +330,7 @@ require(
                 selector: "#chart-matrix-video",
                 data: dataNodeLink,
                 padding: {
-                    top: 200, right: 50, bottom: 0, left: 200
+                    top: 100, right: 50, bottom: 0, left: 200
                 },
 
                 app: {
