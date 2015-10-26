@@ -187,7 +187,7 @@ define(["common", "chart/Chart"], function (common, Chart) {
                         var x = xScale(d.id) + (xScale.rangeBand() /2),
                             y = parent.get('padding').top;
 
-                        return "translate(" + x + ", " + y + ") rotate(-90)";
+                        return "translate(" + x + ", " + y + ") rotate(-45)";
                     },
                     //"textLength":  function (d, i) {
                     //    return parent.get('padding').top;
