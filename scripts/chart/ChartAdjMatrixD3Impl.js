@@ -9,6 +9,12 @@ define(["common", "chart/Chart"], function (common, Chart) {
             yScale,
             sep = 0.05,
             data,
+            arrowKeys = {left: 65, up: 87, right: 68, down: 83, zoom: 90, expand: 88},
+            //arrowKeys = {left: 37, up: 38, right: 39, down: 40, zoom: 187, expand: 189},
+            zRate = 3,
+            xRate = 3,
+            mRate = 3,
+            sStart = 0, sEnd, tStart = 0, tEnd,
             colorDefault = "#f5f5f5",
             typeColorScale = d3.scale.category20(),
             ratingColorScale = d3.scale.category20(),
@@ -55,49 +61,25 @@ define(["common", "chart/Chart"], function (common, Chart) {
             }
         }
 
-        function updateScale(dSet){
+        function updateScale(){
 
             var data = parent.get('data'),
-                nodeArray0 = data.get('nodes'),
-                nodeArray1 = [],
-                domainMap = function(d) { return d.id;};
+                sNodeArray = data.getSortedNodeArray(sStart, sEnd, true),
+                tNodeArray = data.getSortedNodeArray(tStart, tEnd),
+                domainMap = function(d) { return d.id; };
 
-            nodeArray0.sort(function(a, b) {
-
-                if (a.title < b.title) {
-                    return 1;
-                }
-                if (a.title > b.title) {
-                    return -1;
-                }
-                // a must be equal to b
-                return 0;
-            });
-
-            nodeArray1 = nodeArray0.slice();
-
-            nodeArray1.sort(function(a, b) {
-
-                if (a.title > b.title) {
-                    return 1;
-                }
-                if (a.title < b.title) {
-                    return -1;
-                }
-                // a must be equal to b
-                return 0;
-            });
-
-            xScale = d3.scale.ordinal().domain(nodeArray1.map(domainMap)).rangeBands(parent.get("rangeX"), sep);
-            yScale = d3.scale.ordinal().domain(nodeArray0.map(domainMap)).rangeBands(parent.get("rangeY"), sep);
+            xScale = d3.scale.ordinal().domain(tNodeArray.map(domainMap)).rangeBands(parent.get("rangeX"), sep);
+            yScale = d3.scale.ordinal().domain(sNodeArray.map(domainMap)).rangeBands(parent.get("rangeY"), sep);
         }
 
         function display(){
 
             var data = parent.get('data'),
-                nodeArray = data.get('nodes'),
-                linkGridArray = data.getLinkGridArray(),
-                sLabelsGroup, tLabelsGroup, linksGroup;
+                sNodeArray = data.getSortedNodeArray(sStart, sEnd),
+                tNodeArray = data.getSortedNodeArray(tStart, tEnd),
+                linkGridArray = data.getLinkGridArray(sStart, sEnd, tStart, tEnd),
+                sLabelsGroup, tLabelsGroup, linksGroup,
+                tranistionTime = 1000;
 
             sLabelsGroup = svg.select("g.s-labels");
             tLabelsGroup = svg.select("g.t-labels");
@@ -117,7 +99,7 @@ define(["common", "chart/Chart"], function (common, Chart) {
 
             sLabelsGroup
                 .selectAll("text")
-                .data(nodeArray, function(d) { return d.id; })
+                .data(sNodeArray, function(d) { return d.id; })
                 .enter()
                 .append("text")
                 .attr({
@@ -127,25 +109,9 @@ define(["common", "chart/Chart"], function (common, Chart) {
                     "class": function(d, i) {
                         return d.class;
                     },
-                    "x": function(d, i) {
-                        return parent.get('padding').left;
-                    },
-                    "y": function (d, i) {
-                        return yScale(d.id) + (yScale.rangeBand() /2);
-                    },
                     "text-anchor": "end",
                     "data-title": function (d, i) {
                         return d.titleFilter;
-                    },
-                    //"textLength":  function (d, i) {
-                    //    return parent.get('padding').left;
-                    //},
-                    //"lengthAdjust": "spacing",
-                    "font-size": function (d, i) {
-                        return Math.sqrt(yScale.rangeBand() * 2);
-                    },
-                    "dy": function (d, i) {
-                        return (Math.sqrt(yScale.rangeBand() * 2) * 0.5);
                     }
                 })
                 .on('mouseover', function(d, i){
@@ -162,9 +128,38 @@ define(["common", "chart/Chart"], function (common, Chart) {
                     return d.title;
                 });
 
+            sLabelsGroup
+                .selectAll("text")
+                .data(sNodeArray, function(d) { return d.id; })
+                .transition().duration(tranistionTime)
+                .attr({
+                    "x": function(d, i) {
+                        return parent.get('padding').left;
+                    },
+                    "y": function (d, i) {
+                        return yScale(d.id) + (yScale.rangeBand() /2);
+                    },
+                    //"textLength":  function (d, i) {
+                    //    return parent.get('padding').left;
+                    //},
+                    //"lengthAdjust": "spacing",
+                    "font-size": function (d, i) {
+                        return Math.sqrt(yScale.rangeBand() * 2);
+                    },
+                    "dy": function (d, i) {
+                        return (Math.sqrt(yScale.rangeBand() * 2) * 0.5);
+                    }
+                });
+
+            sLabelsGroup
+                .selectAll("text")
+                .data(sNodeArray, function(d) { return d.id; })
+                .exit()
+                .remove();
+
             tLabelsGroup
                 .selectAll("text")
-                .data(nodeArray, function(d) { return d.id; })
+                .data(tNodeArray, function(d) { return d.id; })
                 .enter()
                 .append("text")
                 .attr({
@@ -174,15 +169,25 @@ define(["common", "chart/Chart"], function (common, Chart) {
                     "class": function(d, i) {
                         return d.class;
                     },
+                    "data-title": function (d, i) {
+                        return d.titleFilter;
+                    }
+                })
+                .text(function(d) {
+                    return d.title;
+                });
+
+            tLabelsGroup
+                .selectAll("text")
+                .data(tNodeArray, function(d) { return d.id; })
+                .transition().duration(tranistionTime)
+                .attr({
                     "transform": function(d, i) {
 
                         var x = xScale(d.id) + (xScale.rangeBand() /2),
                             y = parent.get('padding').top;
 
                         return "translate(" + x + ", " + y + ") rotate(-90)";
-                    },
-                    "data-title": function (d, i) {
-                        return d.titleFilter;
                     },
                     //"textLength":  function (d, i) {
                     //    return parent.get('padding').top;
@@ -194,10 +199,13 @@ define(["common", "chart/Chart"], function (common, Chart) {
                     "dx": function (d, i) {
                         return (Math.sqrt(xScale.rangeBand() * 2) * 0.5);
                     }
-                })
-                .text(function(d) {
-                    return d.title;
                 });
+
+            tLabelsGroup
+                .selectAll("text")
+                .data(tNodeArray, function(d) { return d.id; })
+                .exit()
+                .remove();
 
             linksGroup
                 .selectAll("rect")
@@ -208,17 +216,9 @@ define(["common", "chart/Chart"], function (common, Chart) {
                     "id": function(d, i) {
                         return d.id;
                     },
-                    "x": function(d, i) {
-                        return xScale(d.target.id);
-                    },
-                    "y": function (d, i) {
-                        return yScale(d.source.id);
-                    },
                     "class": function(d, i) {
                         return d.class;
-                    },
-                    "width": xScale.rangeBand(),
-                    "height": yScale.rangeBand()
+                    }
                 })
                 .on('mouseover', function(d, i){
 
@@ -284,7 +284,16 @@ define(["common", "chart/Chart"], function (common, Chart) {
             linksGroup
                 .selectAll("rect")
                 .data(linkGridArray, function(d) { return d.id; })
+                .transition().duration(tranistionTime)
                 .attr({
+                    "x": function(d, i) {
+                        return xScale(d.target.id);
+                    },
+                    "y": function (d, i) {
+                        return yScale(d.source.id);
+                    },
+                    "width": xScale.rangeBand(),
+                    "height": yScale.rangeBand(),
                     fill: function(d) {
 
                         var f = colorDefault;
@@ -300,9 +309,127 @@ define(["common", "chart/Chart"], function (common, Chart) {
                 })
                 .select("title")
                 .text(function(d) {
-                    return d.source.title + " :: " + d.target.title + " :: " + d.weight;
+                    return d.source.title + " -- " + d.target.title + " -- " + d.weight;
                 });
+
+            linksGroup
+                .selectAll("rect")
+                .data(linkGridArray, function(d) { return d.id; })
+                .exit()
+                .remove();
         }
+
+        function zoom(){
+
+            if((sStart + zRate) < (sEnd - zRate)){
+
+                sStart = sStart + zRate;
+                sEnd = sEnd - zRate;
+            }
+
+            if((tStart + zRate) < (tEnd - zRate)){
+
+                tStart = tStart + zRate;
+                tEnd = tEnd - zRate;
+            }
+        }
+
+        function expand(max){
+
+            if((sStart - xRate) >= 0){
+                sStart = sStart - xRate;
+            }
+
+            if((sEnd + xRate) <= max){
+                sEnd = sEnd + xRate;
+            }
+
+            if((tStart - xRate) >= 0){
+                tStart = tStart - xRate;
+            }
+
+            if((tEnd + xRate) <= max){
+                tEnd = tEnd + xRate;
+            }
+        }
+
+        this.onKeyInput = function(keyCode){
+
+            var match = false, max;
+
+            max = parent.get('data').getNodeCount();
+
+            switch (keyCode) {
+
+                case arrowKeys.left:
+
+                    if((tStart - mRate) >= 0){
+                        tStart = tStart - mRate;
+                        tEnd = tEnd - mRate;
+                    }
+
+                    match = true;
+                    break;
+
+                case arrowKeys.up:
+
+                    if((sStart - mRate) >= 0){
+                        sStart = sStart - mRate;
+                        sEnd = sEnd - mRate;
+                    }
+
+                    match = true;
+                    break;
+
+                case arrowKeys.right:
+
+                    if((tEnd + mRate) <= max){
+                        tStart = tStart + mRate;
+                        tEnd = tEnd + mRate;
+                    }
+
+                    match = true;
+                    break;
+
+                case arrowKeys.down:
+
+                    if((sEnd + mRate) <= max){
+                        sStart = sStart + mRate;
+                        sEnd = sEnd + mRate;
+                    }
+
+                    match = true;
+                    break;
+
+                case arrowKeys.zoom:
+
+                    zoom();
+                    match = true;
+
+                    break;
+
+                case arrowKeys.expand:
+
+                    expand(max);
+                    match = true;
+
+                    break;
+            }
+
+            if(match){
+                updateScale();
+                display();
+            }
+
+            return match;
+        };
+
+        this.display = function(){
+
+            updateSvg();
+            updateScale();
+            display();
+        };
 
         function selectNode(nId){
 
@@ -333,13 +460,6 @@ define(["common", "chart/Chart"], function (common, Chart) {
                 svg.select(id).style({'font-weight': 'normal'});
             }
         }
-
-        this.display = function(){
-
-            updateSvg();
-            updateScale();
-            display();
-        };
 
         this.highlight = function(highlights){
 
@@ -475,6 +595,17 @@ define(["common", "chart/Chart"], function (common, Chart) {
         function set(config) {
 
             if (!common.isUndefined(config)) {
+
+                if (!common.isUndefined(config.data)) {
+
+                    sEnd = tEnd = config.data.get('nodes').length;
+
+                    zRate = parseInt(Math.sqrt(sEnd));
+                    xRate = zRate;
+                    mRate = zRate;
+
+                    console.log(zRate);
+                }
             }
         }
 

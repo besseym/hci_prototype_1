@@ -28,20 +28,74 @@ define(["common"],
                 return nodes.length;
             };
 
-            this.getLinkGridArray = function(){
+            function getSortedNodeArray(iStart, iEnd, sDesc){
+
+                var nArray = nodes.slice(), nArray1;
+
+                if(common.isUndefined(iStart) || iStart < 0){
+                    iStart = 0;
+                }
+
+                if(common.isUndefined(iEnd) || iEnd > nodes.length){
+                    iEnd = nodes.length;
+                }
+
+                if(common.isUndefined(sDesc)){
+                    sDesc = false;
+                }
+
+                nArray.sort(function(a, b) {
+
+                    if (a.title > b.title) {
+                        return 1;
+                    }
+                    if (a.title < b.title) {
+                        return -1;
+                    }
+                    // a must be equal to b
+                    return 0;
+                });
+
+                nArray1 = nArray.slice(iStart, iEnd);
+
+                if(sDesc) {
+
+                    nArray1.sort(function(a, b) {
+
+                        if (a.title < b.title) {
+                            return 1;
+                        }
+                        if (a.title > b.title) {
+                            return -1;
+                        }
+                        // a must be equal to b
+                        return 0;
+                    });
+                }
+
+                return nArray1;
+            }
+
+            this.getSortedNodeArray = function(iStart, iEnd, sDesc){
+                return getSortedNodeArray(iStart, iEnd, sDesc);
+            };
+
+            this.getLinkGridArray = function(sStart, sEnd, tStart, tEnd){
 
                 var i, j,
                     sNode, tNode,
+                    sNodeArray = getSortedNodeArray(sStart, sEnd),
+                    tNodeArray = getSortedNodeArray(tStart, tEnd),
                     lId, link, classOutArray,
                     linkGridArray = [];
 
-                for(i = 0; i < nodes.length; i++){
+                for(i = 0; i < sNodeArray.length; i++){
 
-                    sNode = nodes[i];
+                    sNode = sNodeArray[i];
 
-                    for(j = 0; j < nodes.length; j++){
+                    for(j = 0; j < tNodeArray.length; j++){
 
-                        tNode = nodes[j];
+                        tNode = tNodeArray[j];
 
                         lId = 'l-' + sNode.id + "-" + tNode.id;
                         link = linkMap[lId];

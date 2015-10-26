@@ -842,5 +842,19 @@ require(
             flashDanger.css("display", "block");
         }
 
+        $(document).on('keyup', 'body', function(e) {
+
+            var keyCode = e.keyCode || e.which;
+
+            if("matrix" === activeChart && e.altKey){
+
+                if(adjMatrixChart.onKeyInput(keyCode)){
+                    adjMatrixChart.highlight(highlights);
+                    adjMatrixChart.selectNode(selectedNodeId);
+                    e.preventDefault();
+                }
+            }
+        });
+
     }
 );
