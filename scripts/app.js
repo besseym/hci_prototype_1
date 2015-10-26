@@ -106,6 +106,7 @@ require(
             }
         }
 
+        $('#keywords').focus();
         $( "#form-search" ).submit(function( event ) {
 
             var isMatch = false,
