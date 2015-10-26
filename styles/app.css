@@ -9667,6 +9667,9 @@ button.close {
 #tab-content-dialog #tab-pane-highlight #key-color .type-highlight-count {
   font-style: italic;
 }
+#tab-content-dialog #tab-pane-highlight #info-matrix .key-cmd {
+  font-weight: 700;
+}
 #tab-content-dialog #tab-pane-select #s-n-c-tbl tbody tr {
   cursor: pointer;
 }
