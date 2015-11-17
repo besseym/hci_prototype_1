@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Video Connection Visualization</title>
+
+    <link rel="stylesheet" type="text/css" href="/hci_prototype_1/styles/app.css" />
+</head>
+<body>
+
+    <div class="container page-header">
+
+        <h1><i class="fa fa-connectdevelop"></i> Video Connection Visualization</h1>
+
+    </div>
+
+    <div id="main-container" class="container">
+
+        <div id="flash" class="alert alert-success">
+            <button id="flash-btn-close" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <p id="flash-msg">Success Message</p>
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-3">
+
+                <ul id="tabs-dialog" class="nav nav-tabs nav-justified" role="tablist">
+                    <li id="nav-tab-search" role="presentation" class="active">
+                        <a href="#tab-pane-search" data-toggle="tab"><i class="fa fa-search"></i> Search</a>
+                    </li>
+                    <li id="nav-tab-hightlight" role="presentation" style="visibility: hidden;" >
+                        <a href="#tab-pane-highlight" data-toggle="tab"><i class="fa fa-filter"></i> Highlight</a>
+                    </li>
+                    <li id="nav-tab-select" role="presentation" style="visibility: hidden;">
+                        <a href="#tab-pane-select" data-toggle="tab"><i class="fa fa-check"></i> Select</a>
+                    </li>
+                </ul>
+
+                <div id="tab-content-dialog" class="tab-content">
+
+                    <div id="tab-pane-search" role="tabpanel" class="tab-pane active">
+
+                        <form id="form-search">
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+
+                                    <br/>
+
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="keywords" name="keywords" value="" placeholder="Keywords (common separated)">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div id="content-main" class="col-md-9">
+
+                <div id="content-overview">
+
+                    <div class="jumbotron">
+                        <h1>Welcome</h1>
+                        <p>
+                            The Video Connection Visualization (VCV) visualizes the connections between related videos as well as facilitates the management of these connections.
+                        </p>
+                        <p>Begin the video connection process by performing a search.</p>
+                        <p><i class="fa fa-arrow-left"></i></p>
+                    </div>
+
+                    <h2>Distributed Videos per Outlet</h2>
+                    <img style="display: block; margin: 0 auto;" src="/hci_prototype_1/images/outlet_videos.png" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <footer class="page-footer">
+            <p>&copy; 2010-2015 SNI/SI Networks L.L.C. All rights reserved. Smithsonian Channel is a trademark of Smithsonian Institution. SNI/SI Networks L.L.C. is an authorized user.</p>
+        </footer>
+    </div>
+
+    <script src="/hci_prototype_1/bower_components/jquery/dist/jquery.min.js"></script>
+    <script data-main="/hci_prototype_1/scripts/test" src="/hci_prototype_1/bower_components/requirejs/require.js"></script>
+
+</body>
+</html>

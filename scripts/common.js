@@ -39,6 +39,40 @@ define(function () {
             }
 
             return parameterMap;
+        },
+
+        attr: function(args, attributes){
+
+            var p, arg, rtn;
+
+            if(args.length > 0){
+
+                arg = args[0];
+
+                if(args.length > 1 && (typeof arg === 'string' || arg instanceof String)){
+
+                    if(attributes.hasOwnProperty(arg)){
+                        attributes[arg] = args[1];
+                    }
+                }
+                else if(args.length === 1){
+
+                    if(arg instanceof Object){
+
+                        for(p in arg){
+
+                            if(arg.hasOwnProperty(p) && attributes.hasOwnProperty(p) && !p.startsWith('_')){
+                                attributes[p] = arg[p];
+                            }
+                        }
+                    }
+                    else if(typeof arg === 'string' || arg instanceof String) {
+                        rtn = attributes[arg];
+                    }
+                }
+            }
+
+            return rtn;
         }
 
     };
