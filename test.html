@@ -8,6 +8,113 @@
 </head>
 <body>
 
+    <script id="template-item-list" type="x-tmpl-mustache">
+        <table id="table-list-widget" class="table table-striped">
+            <thead>
+            <tr>
+                <th></th><th>Id</th><th>Three Part Key</th><th>Title</th><th>Connections</th><th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#nodeArray}}
+            <tr id="{{nId}}" class="{{class}}" data-title="{{titleFilter}}">
+                <td>
+                    <a class="btn btn-default list-video-btn" href="{{url}}" target='_blank'> <i class='fa fa-play-circle-o'></i></a>
+                </td>
+                <td>{{id}}</td><td>{{threePartKey}}</td><td>{{title}}</td><td></td><td></td>
+            </tr>
+            {{/nodeArray}}
+            </tbody>
+        </table>
+    </script>
+
+    <script id="template-select" type="x-tmpl-mustache">
+
+        <div>
+            {{#with node}}
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 id="s-n-title">{{title}}</h3>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label>Id</label>
+                    <p id="s-n-id">{{id}}</p>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Type</label>
+                    <p id="s-n-type">{{type}}</p>
+                </div>
+
+                <div class="col-md-4">
+
+                    <h2 id="s-n-url">
+                        <a class="btn btn-default" href="{{url}}" target="_blank">
+                            <i class="fa fa-play-circle-o"></i>
+                        </a>
+                    </h2>
+
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label>Series Id</label>
+                    <p id="s-n-series-id">{{seriesId}}</p>
+                </div>
+                <div class="col-md-4">
+                    <label>Season #</label>
+                    <p id="s-n-season-number">{{seasonNumber}}</p>
+                </div>
+                <div class="col-md-4">
+                    <label>Show Id</label>
+                    <p id="s-n-show-id">{{showId}}</p>
+                </div>
+
+            </div>
+            {{/with}}
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <h3>Connections</h3>
+
+                    <table id="s-n-c-tbl" class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Rating</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each links}}
+                            <tr>
+                                <td>
+                                    <i class="fa fa-bars"></i>
+                                </td>
+                                <td>{{n.title}}</td>
+                                <td>{{n.type}}</td>
+                                <td>{{n.type}}</td>
+                                <td>
+                                    <i class="fa fa-chain-broken"></i>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </script>
+
     <div class="container page-header">
 
         <h1><i class="fa fa-connectdevelop"></i> Video Connection Visualization</h1>
@@ -16,7 +123,7 @@
 
     <div id="main-container" class="container">
 
-        <div id="flash" class="alert alert-success">
+        <div id="flash" class="alert alert-success" style="display: none;">
             <button id="flash-btn-close" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <p id="flash-msg">Success Message</p>
         </div>
@@ -29,7 +136,7 @@
                     <li id="nav-tab-search" role="presentation" class="active">
                         <a href="#tab-pane-search" data-toggle="tab"><i class="fa fa-search"></i> Search</a>
                     </li>
-                    <li id="nav-tab-hightlight" role="presentation" style="visibility: hidden;" >
+                    <li id="nav-tab-highlight" role="presentation" style="visibility: hidden;" >
                         <a href="#tab-pane-highlight" data-toggle="tab"><i class="fa fa-filter"></i> Highlight</a>
                     </li>
                     <li id="nav-tab-select" role="presentation" style="visibility: hidden;">
@@ -50,9 +157,17 @@
                                     <br/>
 
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="keywords" name="keywords" value="" placeholder="Keywords (common separated)">
+                                        <input type="text" class="form-control" id="keywords" name="keywords" value="bionic" placeholder="Keywords (common separated)">
                                     </div>
 
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-12">
+                                    <button id="btn-search" type="submit" class="btn btn-primary btn-block">Search</button>
                                 </div>
 
                             </div>
@@ -61,13 +176,33 @@
 
                     </div>
 
+                    <div id="tab-pane-highlight" role="tabpanel" class="tab-pane">
+
+                        <h3>Search Results - <span id="result-count">0</span></h3>
+
+                        <form id="form-hightlight">
+
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label for="input-filter-title">Highlight by Title</label> -
+                                    <span id="filter-title-count">0</span> videos
+                                    <input type="text" id="input-filter-title" name="input-filter-title" class="form-control" placeholder="">
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                    <div id="tab-pane-select" role="tabpanel" class="tab-pane">
+                    </div>
+
                 </div>
 
             </div>
 
             <div id="content-main" class="col-md-9">
 
-                <div id="content-overview">
+                <div id="content-overview" class="content">
 
                     <div class="jumbotron">
                         <h1>Welcome</h1>
@@ -83,6 +218,132 @@
 
                 </div>
 
+                <div id="content-viz" class="content" style="display: none;">
+
+                    <div id="wait-feedback" style="display: none"><i class="fa fa-spinner fa-pulse"></i></div>
+
+                    <ul id="tabs-viz" class="nav nav-tabs nav-justified" role="tablist">
+                        <li id="nav-tab-list" role="presentation">
+                            <a href="#tab-pane-list" data-toggle="tab"><i class="fa fa-list-alt"></i><br/> List</a>
+                        </li>
+                        <li id="nav-tab-matrix" role="presentation" class="active">
+                            <a href="#tab-pane-matrix" data-toggle="tab"><i class="fa fa-table"></i><br/> Matrix</a>
+                        </li>
+                        <li id="nav-node-link" role="presentation">
+                            <a href="#tab-pane-node-link" data-toggle="tab"><i class="fa fa-code-fork"></i><br/> Node Link</a>
+                        </li>
+                    </ul>
+
+                    <div id="tab-content-viz" class="tab-content">
+
+                        <div id="tab-pane-list" role="tabpanel" class="tab-pane">
+
+                            <div id="list-widget">
+
+                            </div>
+
+                        </div>
+
+                        <div id="tab-pane-matrix" role="tabpanel" class="tab-pane active">
+
+                            <div id="chart-matrix-video" class="chart chart-matrix">
+                                <svg></svg>
+                            </div>
+
+                            <div id="color-key-connection">
+                                <h4>Connection Color Key</h4>
+                                <p>The intensity of a connection's color represents the rank or strength of the connection.</p>
+                                <ul>
+                                    <li><span class="clr-link-label">Rank 1</span> <span id="clr-link-1" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 2</span> <span id="clr-link-2" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 3</span> <span id="clr-link-3" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 4</span> <span id="clr-link-4" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 5</span> <span id="clr-link-5" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 6</span> <span id="clr-link-6" class="clr-link">&nbsp;</span></li>
+                                    <li><span class="clr-link-label">Rank 7</span> <span id="clr-link-7" class="clr-link">&nbsp;</span></li>
+                                </ul>
+
+                            </div>
+
+                        </div>
+
+                        <div id="tab-pane-node-link" role="tabpanel" class="tab-pane">
+
+                            <div id="chart-graph-video" class="chart chart-graph">
+                                <svg >
+
+                                    <defs>
+                                        <marker id="arrow" viewBox="0 -5 10 10" markerWidth="16" markerHeight="16" refx="20" refy="0" orient="auto" markerUnits="userSpaceOnUse">
+                                            <path d="M 0,-5 L 10,0 L0,5" class="arrow" />
+                                        </marker>
+                                    </defs>
+
+                                </svg>
+
+                                <div id="n-dialog" class="chart-dialog well">
+                                    <h4 id="n-d-title">Video Title</h4>
+                                    <div class="row">
+
+                                        <div class="col-md-4">
+                                            <label>Id</label>
+                                            <p id="n-d-id">123456</p>
+                                        </div>
+
+                                        <div class="col-md-8">
+                                            <label>Type</label>
+                                            <p id="n-d-type">Trailer</p>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-md-4">
+                                            <label>Series Id</label>
+                                            <p id="n-d-series-id"></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Season #</label>
+                                            <p id="n-d-season-number"></p>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label>Show Id</label>
+                                            <p id="n-d-show-id"></p>
+                                        </div>
+
+                                    </div>
+
+                                    <p id="d-n-select">
+                                        <a id="d-n-select-btn" class="btn btn-default btn-block btn-primary" href="#" role="button"><i class='fa fa-check'></i> Select</a>
+                                    </p>
+                                    <p id="d-n-this-to-selected">
+                                        <a id="d-n-this-to-selected-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect This Video to Selected</a>
+                                    </p>
+                                    <p id="d-n-selected-to-this">
+                                        <a id="d-n-selected-to-this-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect Selected to This Video</a>
+                                    </p>
+                                </div>
+
+                                <div id="l-dialog" class="chart-dialog well">
+                                    <p>
+                                    <h5 id="source"></h5>
+                                    </p>
+                                    <p>
+                                        <a id="l-btn" href="#" class="btn btn-default btn-lg">
+                                            <i class="fa fa-link"></i>
+                                        </a>
+                                    </p>
+                                    <p>
+                                    <h5 id="target"></h5>
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </div>
@@ -93,6 +354,8 @@
     </div>
 
     <script src="/hci_prototype_1/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/hci_prototype_1/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+    <script src="/hci_prototype_1/bower_components/handlebars/handlebars.min.js"></script>
     <script data-main="/hci_prototype_1/scripts/test" src="/hci_prototype_1/bower_components/requirejs/require.js"></script>
 
 </body>
