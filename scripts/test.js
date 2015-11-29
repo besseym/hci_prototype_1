@@ -93,7 +93,7 @@ require(
 
         courier.subscribe( "view_select_node", function(msg){
 
-            var nId = msg.payload.node.nId;
+            var nId = msg.payload.nId;
 
             console.log( nodeLinkModel.getSelectViewModel(nId) );
 
@@ -101,6 +101,12 @@ require(
 
             formTabbedView.focusTabNav("select");
             formTabbedView.focusTabPane("select");
+        });
+
+        courier.subscribe( "view_update_link", function(msg){
+
+            nodeLinkModel.updateLink(msg.payload.sId, msg.payload.tId);
+            adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
         });
     }
 );

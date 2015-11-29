@@ -26,6 +26,14 @@ define(
                 nodeLinksMap = [];
             }
 
+            function getNodeId(id){
+                return 'n-' + id;
+            }
+
+            function getLinkId(sourceId, targetId){
+                return 'l-' + sourceId + "-" + targetId;
+            }
+
             function getNodeArray(iStart, iEnd, sDesc){
 
                 var nArray;
@@ -73,7 +81,7 @@ define(
 
                         tNode = tNodeArray[j];
 
-                        lId = 'l-' + sNode.id + "-" + tNode.id;
+                        lId = getLinkId(sNode.id, tNode.id);
                         link = linkMap[lId];
 
                         if (link === undefined) {
@@ -117,12 +125,20 @@ define(
 
                 var i, n, l;
 
-                if(data.nodes) {
+                if(data.nodes !== undefined && data.links !== undefined) {
 
+                    //add nodes
                     for(i = 0; i < data.nodes.length; i++){
 
                         n = data.nodes[i];
                         addNode(n);
+                    }
+
+                    //add links
+                    for(i = 0; i < data.links.length; i++){
+
+                        l = data.links[i];
+                        addLink(l);
                     }
 
                     nodeArray.sort(function(a, b) {
@@ -151,17 +167,6 @@ define(
                         return 0;
                     });
                 }
-
-                if(data.links) {
-
-                    for(i = 0; i < data.links.length; i++){
-
-                        l = data.links[i];
-                        addLink(l);
-                    }
-
-                    console.log(nodeLinksMap);
-                }
             }
 
             function addNode(node){
@@ -177,7 +182,7 @@ define(
                     'g-' + node.id
                 ];
 
-                node.nId = 'n-' + node.id;
+                node.nId = getNodeId(node.id);
                 node.titleFilter = node.title.toLowerCase().replace(/'/g, '');
                 node.threePartKey = node.seriesId + '_' + node.seasonNumber + '_' + node.showId;
                 node.url = urlBase + '/' + node.id;
@@ -226,24 +231,24 @@ define(
                 index = -1;
                 for(i = 0; i < linkArray.length; i++){
 
-                    if(linkArray[i].id === lId){
+                    if(linkArray[i].lId === lId){
                         index = i;
                         break;
                     }
                 }
 
                 if(index >= 0){
-                    links.splice(index, 1);
+                    linkArray.splice(index, 1);
                 }
 
                 //remove from nodeLinksMap
-                nodeLinks = nodeConnectMap[link.source.id];
+                nodeLinks = nodeLinksMap[link.source.nId];
                 if(nodeLinks !== undefined) {
 
                     index = -1;
                     for(i = 0; i < nodeLinks.length; i++){
-
-                        if(nodeLinks[i].l.id === lId){
+                        
+                        if(nodeLinks[i].l.lId === lId){
                             index = i;
                             break;
                         }
@@ -281,6 +286,50 @@ define(
                 });
 
                 return nodeLinkArray;
+            }
+
+            function getMaxWeight(nId){
+
+                var i, w = 0, nodeLink,
+                    nodeLinks = nodeLinksMap[nId];
+
+                if(nodeLinks !== undefined){
+
+                    for(i = 0; i < nodeLinks.length; i++){
+
+                        nodeLink = nodeLinks[i];
+                        if(nodeLink.l.weight > w){
+                            w = nodeLink.l.weight;
+                        }
+                    }
+                }
+
+                return w;
+            }
+
+            function isConnected(sourceId, targetId){
+
+                var lId = getLinkId(sourceId, targetId);
+                return linkMap[lId] !== undefined;
+            }
+
+            function updateLink(sourceId, targetId){
+
+                var sNode, tNode, weight,
+                    lId = getLinkId(sourceId, targetId);
+
+                //is connected
+                if(linkMap[lId] !== undefined){
+                    breakLink(lId);
+                }
+                else {
+
+                    sNode = nodeMap[getNodeId(sourceId)];
+                    tNode = nodeMap[getNodeId(targetId)];
+                    weight = getMaxWeight(sNode.nId) + 1;
+
+                    makeLink(sNode, tNode, weight);
+                }
             }
 
             function loadData(inputArray){
@@ -390,6 +439,7 @@ define(
 
             this.makeLink = makeLink;
             this.breakLink = breakLink;
+            this.updateLink = updateLink;
 
             this.loadData = loadData;
 

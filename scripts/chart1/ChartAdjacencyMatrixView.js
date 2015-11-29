@@ -110,7 +110,7 @@ define(
                     .on('click', function(d, i) {
 
                         courier.publish("view_select_node", {
-                            node: d
+                            nId: d.nId
                         });
                     })
                     .text(function(d) {
@@ -208,6 +208,13 @@ define(
                         "class": function(d, i) {
                             return d.class;
                         }
+                    })
+                    .on('click', function(d, i) {
+
+                        courier.publish("view_update_link", {
+                            sId: d.source.id,
+                            tId: d.target.id
+                        });
                     })
                     .append("title")
                     .text(function(d) {
