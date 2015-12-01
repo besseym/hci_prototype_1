@@ -247,7 +247,7 @@ define(
 
                     index = -1;
                     for(i = 0; i < nodeLinks.length; i++){
-                        
+
                         if(nodeLinks[i].l.lId === lId){
                             index = i;
                             break;
@@ -330,6 +330,122 @@ define(
 
                     makeLink(sNode, tNode, weight);
                 }
+            }
+
+            function getStats(property){
+
+                var i, k, node, stats = {}, properties = [];
+
+                for(i = 0; i < nodeArray.length; i++){
+                    node = nodeArray[i];
+
+                    switch(property){
+
+                        case "type":
+
+                            if(stats[node.type] === undefined){
+                                stats[node.type] = 0;
+                            }
+
+                            stats[node.type]++;
+
+                            break;
+
+                        case "rating":
+
+                            if(stats[node.rating] === undefined){
+                                stats[node.rating] = 0;
+                            }
+
+                            stats[node.rating]++;
+
+                            break;
+
+                        case "title-type":
+
+                            if(stats.series === undefined){
+                                stats.series = 0;
+                            }
+
+                            if(stats.show === undefined){
+                                stats.show = 0;
+                            }
+
+                            if(node.seriesId > 0){
+                                stats.series++;
+                            }
+                            else {
+                                stats.show++;
+                            }
+
+                            break;
+
+                        case "restriction":
+
+                            if(stats.restricted === undefined){
+                                stats.restricted = 0;
+                            }
+
+                            if(stats.unrestricted === undefined){
+                                stats.unrestricted = 0;
+                            }
+
+                            if(node.ageGate){
+                                stats.restricted++;
+                            }
+                            else {
+                                stats.unrestricted++;
+                            }
+
+                            break;
+
+                        case "status":
+
+                            if(stats[node.status] === undefined){
+                                stats[node.status] = 0;
+                            }
+
+                            stats[node.status]++;
+
+                            break;
+
+                        case "match":
+
+                            if(stats.match === undefined){
+                                stats.match = 0;
+                            }
+
+                            if(stats.no_match === undefined){
+                                stats.no_match = 0;
+                            }
+
+                            if(node.isMatch){
+                                stats.match++;
+                            }
+                            else {
+                                stats.no_match++;
+                            }
+
+                            break;
+                    }
+                }
+
+                for(k in stats){
+
+                    properties.push({
+                        name: k,
+                        count: stats[k]
+                    });
+                }
+
+                properties.sort(function(a, b) {
+
+                    return (a.count < b.count) ? 1 : ((a.count > b.count) ? -1 : 0);
+                });
+
+                return {
+                    properties: properties
+                };
             }
 
             function loadData(inputArray){
@@ -440,6 +556,8 @@ define(
             this.makeLink = makeLink;
             this.breakLink = breakLink;
             this.updateLink = updateLink;
+
+            this.getStats = getStats;
 
             this.loadData = loadData;
 

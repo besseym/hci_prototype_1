@@ -7,6 +7,7 @@ define(
 
             var form,
                 inputTitle,
+                radioProperty,
                 attributes = {
                     selector: null,
                     topicSubmit: null
@@ -27,8 +28,17 @@ define(
                     inputTitle = form.find("#input-filter-title");
                     inputTitle.on('input', function(event) {
 
-                        courier.publish("view_form_highlight_filter_title", {
+                        courier.publish("view_form_highlight_title", {
                             title: inputTitle.val().toLowerCase()
+                        });
+                    });
+
+                    inputTitle = form.find("#input-filter-title");
+                    $('#form-hightlight input[name=property]:radio').change(function(event) {
+
+                        var property = $(this).val();
+                        courier.publish("view_form_highlight_property", {
+                            property: property
                         });
                     });
                 }

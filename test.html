@@ -121,6 +121,20 @@
 
     </div>
 
+    <script id="template-color-key" type="x-tmpl-mustache">
+
+        <div class="panel-heading">Property Color Key</div>
+
+        <ul class="list-group">
+            {{#each properties}}
+            <li class="list-group-item">
+                {{name}} - <span class="type-highlight-count">{{count}}</span>
+            </li>
+            {{/each}}
+        </ul>
+
+    </script>
+
     <div id="main-container" class="container">
 
         <div id="flash" class="alert alert-success" style="display: none;">
@@ -189,7 +203,84 @@
                                     <input type="text" id="input-filter-title" name="input-filter-title" class="form-control" placeholder="">
                                 </div>
                             </div>
+
+                            <label for="highlight">Highlight by Property</label>
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="radio" name="property" value="type"> Type
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="radio" name="property" value="rating"> Rating
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                            <div class="row">
+
+                                <div class="col-md-6">
+
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="radio" name="property" value="title-type"> Title Type
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="radio" name="property" value="restriction"> Restriction
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="radio" name="property" value="status"> Status
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-md-6">
+
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="radio" name="property" value="match"> Search Match
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
                         </form>
+
+                        <div id="key-color" class="panel panel-default">
+                        </div>
 
                     </div>
 

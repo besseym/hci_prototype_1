@@ -11,6 +11,8 @@ require(
         "model/NodeLinkModel",
         "model/HighlightModel",
         "view/FlashView",
+        "view/LoadingView",
+        "view/ColorKeyView",
         "view/FormViewJqueryImpl",
         "view/FormHighlightView",
         "view/TabbedViewJqueryImpl",
@@ -25,6 +27,8 @@ require(
         NodeLinkModel,
         HighlightModel,
         FlashView,
+        LoadingView,
+        ColorKeyView,
         FormViewImpl,
         FormHighlightView,
         TabbedViewImpl,
@@ -38,6 +42,8 @@ require(
             highlightModel = new HighlightModel(),
 
             flashView = new FlashView({selector: "#flash"}),
+            flashView = new LoadingView({selector: "#flash"}),
+            colorKeyView = new ColorKeyView({selector: "#key-color", templateId: "template-color-key"}),
 
             searchFormView = new FormViewImpl({selector: "#form-search", topicSubmit: "view_form_submit_search"}),
             highlightFormView = new FormHighlightView({selector: "#form-hightlight"}),
@@ -80,7 +86,7 @@ require(
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
         });
 
-        courier.subscribe( "view_form_highlight_filter_title", function(msg){
+        courier.subscribe( "view_form_highlight_title", function(msg){
 
             var highlights;
 
@@ -91,11 +97,16 @@ require(
             adjacencyMatrixView.highlight(highlights);
         });
 
+        courier.subscribe( "view_form_highlight_property", function(msg){
+
+            var stats = nodeLinkModel.getStats(msg.payload.property);
+            //console.log(stats);
+            colorKeyView.updateView(stats);
+        });
+
         courier.subscribe( "view_select_node", function(msg){
 
             var nId = msg.payload.nId;
-
-            console.log( nodeLinkModel.getSelectViewModel(nId) );
 
             selectView.updateView(nodeLinkModel.getSelectViewModel(nId));
 
