@@ -1,16 +1,56 @@
 define(["common"],
+
     function (common) {
 
         var HighlightModel = function (config) {
 
             var attributes = {
-                    title: null
-                };
+                    title: null,
+                    stats: null
+                },
+                colorScaleMap = [];
 
             set(config);
 
             function set(){
+
+                var i, k, size, color, colorScale, property, domain = [];
+
                 common.setAttributes(arguments, attributes);
+
+                if(attributes.stats !== null){
+
+                    size = attributes.stats.properties.length;
+                    for(i = 0; i < size; i++){
+                        property = attributes.stats.properties[i];
+                        domain.push(property.name);
+                    }
+
+                    colorScale = getQualitativeColorScale(domain);
+
+                    for(i = 0; i < size; i++){
+                        property = attributes.stats.properties[i];
+                        property.color = colorScale(property.name);
+                        attributes.stats.properties[i] = property;
+                    }
+                }
+            }
+
+            function getQualitativeColorScale(domain){
+
+                var scale, size = (domain.length < 3) ? 3 : domain.length;
+
+                if(size <= 12){
+                    scale = d3.scale.ordinal().domain(domain).range(colorbrewer.Set3[size]);
+                }
+                else if(size <= 20){
+                    scale = d3.scale.category20();
+                }
+                else {
+                    throw "Too many qualitative values to scale.";
+                }
+
+                return scale;
             }
 
             /***** public methods *****/
@@ -20,11 +60,16 @@ define(["common"],
                 return common.getAttributes(arguments, attributes);
             };
 
-            this.getHighlights = function(){
+            this.getHighlightViewModel = function(){
 
                 return {
                     title: attributes.title
                 };
+            };
+
+            this.getColorKeyViewModel = function(){
+
+                return attributes.stats;
             };
         };
 

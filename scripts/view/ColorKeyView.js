@@ -1,4 +1,5 @@
 define(["common", "view/TemplateView"],
+
     function (common, TemplateView) {
 
         var ColorKeyView = function (config, parent) {

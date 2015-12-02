@@ -332,14 +332,14 @@ define(
                 }
             }
 
-            function getStats(property){
+            function getStats(category){
 
                 var i, k, node, stats = {}, properties = [];
 
                 for(i = 0; i < nodeArray.length; i++){
                     node = nodeArray[i];
 
-                    switch(property){
+                    switch(category){
 
                         case "type":
 
@@ -444,6 +444,7 @@ define(
                 });
 
                 return {
+                    category: category,
                     properties: properties
                 };
             }

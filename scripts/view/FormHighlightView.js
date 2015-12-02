@@ -36,9 +36,9 @@ define(
                     inputTitle = form.find("#input-filter-title");
                     $('#form-hightlight input[name=property]:radio').change(function(event) {
 
-                        var property = $(this).val();
+                        var category = $(this).val();
                         courier.publish("view_form_highlight_property", {
-                            property: property
+                            category: category
                         });
                     });
                 }

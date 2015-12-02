@@ -1,6 +1,7 @@
 requirejs.config({
     paths: {
-        d3: '/hci_prototype_1/bower_components/d3/d3.min'
+        d3: "/hci_prototype_1/bower_components/d3/d3.min"//,
+        //colorbrewer: "/hci_prototype_1/bower_components/colorbrewer/colorbrewer"
     }
 });
 
@@ -42,7 +43,7 @@ require(
             highlightModel = new HighlightModel(),
 
             flashView = new FlashView({selector: "#flash"}),
-            flashView = new LoadingView({selector: "#flash"}),
+            //loadingView = new LoadingView({selector: "#flash"}),
             colorKeyView = new ColorKeyView({selector: "#key-color", templateId: "template-color-key"}),
 
             searchFormView = new FormViewImpl({selector: "#form-search", topicSubmit: "view_form_submit_search"}),
@@ -88,20 +89,20 @@ require(
 
         courier.subscribe( "view_form_highlight_title", function(msg){
 
-            var highlights;
+            var highlightViewModel;
 
             highlightModel.set( msg.payload );
-            highlights = highlightModel.getHighlights();
+            highlightViewModel = highlightModel.getHighlightViewModel();
 
-            itemListView.highlight(highlights);
-            adjacencyMatrixView.highlight(highlights);
+            itemListView.highlight(highlightViewModel);
+            adjacencyMatrixView.highlight(highlightViewModel);
         });
 
         courier.subscribe( "view_form_highlight_property", function(msg){
 
-            var stats = nodeLinkModel.getStats(msg.payload.property);
-            //console.log(stats);
-            colorKeyView.updateView(stats);
+            var stats = nodeLinkModel.getStats(msg.payload.category);
+            highlightModel.set({stats: stats});
+            colorKeyView.updateView(highlightModel.getColorKeyViewModel());
         });
 
         courier.subscribe( "view_select_node", function(msg){
