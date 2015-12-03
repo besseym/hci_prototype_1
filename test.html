@@ -95,7 +95,7 @@
                         </thead>
                         <tbody>
                             {{#each links}}
-                            <tr>
+                            <tr id="s-{{l.lId}}" data-link-id="{{l.lId}}" data-source-id="{{l.source.id}}" data-target-id="{{l.target.id}}" class='s-l'>
                                 <td>
                                     <i class="fa fa-bars"></i>
                                 </td>
@@ -103,7 +103,9 @@
                                 <td>{{n.type}}</td>
                                 <td>{{n.type}}</td>
                                 <td>
-                                    <i class="fa fa-chain-broken"></i>
+                                    <a class='s-l-btn btn btn-lg btn-default' href="#{{l.lId}}">
+                                    <i class="fa fa-chain"></i>
+                                    </a>
                                 </td>
                             </tr>
                             {{/each}}
