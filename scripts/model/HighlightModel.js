@@ -40,8 +40,11 @@ define(["common"],
 
                 var scale, size = (domain.length < 3) ? 3 : domain.length;
 
-                if(size <= 12){
-                    scale = d3.scale.ordinal().domain(domain).range(colorbrewer.Set3[size]);
+                if(size <= 9){
+                    scale = d3.scale.ordinal().domain(domain).range(colorbrewer.Set1[size]);
+                }
+                else if(size <= 12){
+                    scale = d3.scale.ordinal().domain(domain).range(colorbrewer.Paired[size]);
                 }
                 else if(size <= 20){
                     scale = d3.scale.category20();
@@ -63,7 +66,8 @@ define(["common"],
             this.getHighlightViewModel = function(){
 
                 return {
-                    title: attributes.title
+                    title: attributes.title,
+                    stats: attributes.stats
                 };
             };
 

@@ -16,6 +16,7 @@ define(
 
             function updateView(data){
 
+
             }
 
             function highlight(highlights){

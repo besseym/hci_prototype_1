@@ -261,25 +261,41 @@ define(
 
             function highlight(highlights){
 
-                var k, highlightValue, selectResult, count;
+                var i, k, hValue, selectResult, property;
 
                 selectResult = svg.selectAll("text");
                 selectResult.style({'opacity': 1.0});
 
                 for(k in highlights) {
 
-                    highlightValue = highlights[k];
-                    if(common.isBlankStr(highlightValue)){
-                        continue;
-                    }
+                    hValue = highlights[k];
 
                     switch (k) {
 
                         case 'title':
 
-                            selectResult = svg.selectAll("text:not([data-title*='" + highlightValue + "'])");
-                            selectResult.transition().style({'opacity': 0.2});
-                            //highlight.count = data.getNodeCount() - (selectResult[0].length * 0.5);
+                            if(!common.isBlankStr(hValue)) {
+
+                                selectResult = svg.selectAll("text:not([data-title*='" + hValue + "'])");
+                                selectResult.transition().style({'opacity': 0.2});
+                                //highlight.count = data.getNodeCount() - (selectResult[0].length * 0.5);
+                            }
+
+                            break;
+
+                        case 'stats':
+
+                            for(i = 0; i < hValue.properties.length; i++){
+
+                                property = hValue.properties[i];
+
+                                selectResult = d3.selectAll("text." + hValue.category.prefix + property.name);
+                                selectResult.style({fill: property.color});
+                            }
+
+                            //selectResult = d3.selectAll("text." + h.id);
+                            //h.count = selectResult[0].length * 0.5;
+                            //selectResult.style({fill: h.color});
 
                             break;
                     }

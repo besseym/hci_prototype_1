@@ -12,7 +12,18 @@ define(
                 nodeMap,
                 linkArray,
                 linkMap,
-                nodeLinksMap;
+                nodeLinksMap,
+
+                prefix = {
+
+                    type: 't-',
+                    status: 's-',
+                    rating: 'r-',
+                    match: 'm-',
+                    restriction: 'a-',
+                    "title-type": 'tt-',
+                    group: 'g-'
+                };
 
             initModel();
 
@@ -173,13 +184,13 @@ define(
 
                 var classOutArray = [
                     "node",
-                    't-' + node.type,
-                    's-' + node.status,
-                    'r-' + node.rating.toLowerCase(),
-                    'm-' + node.isMatch,
-                    'a-' + node.ageGate,
-                    'tt-' + ((node.seriesId > 0) ? "series" : "show"),
-                    'g-' + node.id
+                    prefix.type + node.type,
+                    prefix.status + node.status,
+                    prefix.rating + node.rating,
+                    prefix.match + ((node.isMatch) ? "match" : "no-match"),
+                    prefix.restriction + ((node.ageGate) ? "restricted" : "unrestricted"),
+                    prefix["title-type"] + (((node.seriesId > 0) ? "series" : "show")),
+                    prefix.group + node.id
                 ];
 
                 node.nId = getNodeId(node.id);
@@ -416,14 +427,14 @@ define(
                             }
 
                             if(stats.no_match === undefined){
-                                stats.no_match = 0;
+                                stats["no-match"] = 0;
                             }
 
                             if(node.isMatch){
                                 stats.match++;
                             }
                             else {
-                                stats.no_match++;
+                                stats["no-match"]++;
                             }
 
                             break;
@@ -444,7 +455,10 @@ define(
                 });
 
                 return {
-                    category: category,
+                    category: {
+                        name: category,
+                        prefix: prefix[category]
+                    },
                     properties: properties
                 };
             }

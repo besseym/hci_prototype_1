@@ -100,9 +100,14 @@ require(
 
         courier.subscribe( "view_form_highlight_property", function(msg){
 
-            var stats = nodeLinkModel.getStats(msg.payload.category);
+            var highlightViewModel,
+                stats = nodeLinkModel.getStats(msg.payload.category);
+
             highlightModel.set({stats: stats});
+            highlightViewModel = highlightModel.getHighlightViewModel();
+
             colorKeyView.updateView(highlightModel.getColorKeyViewModel());
+            adjacencyMatrixView.highlight(highlightViewModel);
         });
 
         courier.subscribe( "view_select_node", function(msg){
@@ -119,6 +124,11 @@ require(
 
             nodeLinkModel.updateLink(msg.payload.sId, msg.payload.tId);
             adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
+        });
+
+        courier.subscribe( "view-hover-link", function(msg){
+
+            //console.log(msg.payload);
         });
     }
 );
