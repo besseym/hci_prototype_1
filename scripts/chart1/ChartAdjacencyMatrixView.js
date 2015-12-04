@@ -1,7 +1,7 @@
 define(
-    ["common", "courier", "chart1/ChartView"],
+    ["common", "dispatch", "chart1/ChartView"],
 
-    function (common, courier, ChartView) {
+    function (common, dispatch, ChartView) {
 
         var ChartAdjacencyMatrixView = function (config, parent) {
 
@@ -10,6 +10,7 @@ define(
                 xScale, yScale, sep = 0.05,
                 colorDefault = "#f5f5f5",
                 cScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(["#eff3ff","#c6dbef","#9ecae1","#6baed6","#4292c6","#2171b5","#084594"]),
+                hScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(["#feedde","#fdd0a2","#fdae6b","#fd8d3c","#f16913","#d94801","#8c2d04"]),
                 attributes = {
                     tranistionTime: 1000
                 },
@@ -109,7 +110,7 @@ define(
                     })
                     .on('click', function(d, i) {
 
-                        courier.publish("view_select_node", {
+                        dispatch.publish("view_select_node", {
                             nId: d.nId
                         });
                     })
@@ -211,14 +212,42 @@ define(
                     })
                     .on('click', function(d, i) {
 
-                        courier.publish("view_update_link", {
+                        dispatch.publish("view_update_link", {
                             sId: d.source.id,
                             tId: d.target.id
                         });
                     })
+                    .on('mouseover', function(d, i) {
+
+                        var sId = d.source.id,
+                            tId = d.target.id;
+
+                        highlightNode(sId, true, true);
+                        highlightNode(tId, false, true);
+
+                        highlightLink(d, true);
+
+                        dispatch.publish("view_chart_mouseover_link", {
+                            lId: d.lId
+                        });
+                    })
+                    .on('mouseout', function(d, i) {
+
+                        var sId = d.source.id,
+                            tId = d.target.id;
+
+                        highlightNode(sId, true, false);
+                        highlightNode(tId, false, false);
+
+                        highlightLink(d, false);
+
+                        dispatch.publish("view_chart_mouseout_link", {
+                            lId: d.lId
+                        });
+                    })
                     .append("title")
                     .text(function(d) {
-                        return d.source.title + " :: " + d.target.title + " :: " + d.weight;
+                        return d.source.title + " :: " + d.target.title + " :: " + d.rank;
                     });
 
                 linksGroup
@@ -240,8 +269,8 @@ define(
                             if(d.source.id === d.target.id){
                                 f = "#d5d5d5";
                             }
-                            else if(d.weight > 0){
-                                f = cScale(d.weight);
+                            else if(d.rank > 0){
+                                f = cScale(d.rank);
                             }
 
                             return f;
@@ -249,7 +278,7 @@ define(
                     })
                     .select("title")
                     .text(function(d) {
-                        return d.source.title + " -- " + d.target.title + " -- " + d.weight;
+                        return d.source.title + " -- " + d.target.title + " -- " + d.rank;
                     });
 
                 linksGroup
@@ -302,6 +331,36 @@ define(
                 }
             }
 
+            function highlightLink(link, doHighlight){
+
+                var f = colorDefault;
+                if(link.rank > 0){
+
+                    if(doHighlight){
+                        f = hScale(link.rank);
+                    }
+                    else {
+                        f = cScale(link.rank);
+                    }
+                }
+
+                svg.select('#' + link.lId).attr({fill: f});
+            }
+
+            function highlightNode(nId, isSource, doHighlight){
+
+                var id = '#' + ((isSource)? 's-' : 't-') + nId;
+
+                if(doHighlight){
+
+                    svg.select(id).style({'font-weight': '900'});
+                }
+                else {
+
+                    svg.select(id).style({'font-weight': 'normal'});
+                }
+            }
+
             /***** public methods *****/
 
             this.set = set;
@@ -311,6 +370,7 @@ define(
             this.updateView = updateView;
 
             this.highlight = highlight;
+            this.highlightLink = highlightLink;
 
         };
 

@@ -12,6 +12,7 @@ define(["common"],
 
                 callbacks = $.Callbacks();
                 topic = {
+
                     publish: callbacks.fire,
                     subscribe: callbacks.add,
                     unsubscribe: callbacks.remove
@@ -26,10 +27,20 @@ define(["common"],
         return {
 
             publish: function(id, payload){
+
+                if(common.isEmpty(id)){
+                    return;
+                }
+
                 getTopic(id).publish(payload);
             },
 
             subscribe: function(id, fn){
+
+                if(common.isEmpty(id)){
+                    return;
+                }
+
                 getTopic(id).subscribe(function(payload){
                     fn({
                         topic: id,
@@ -39,6 +50,11 @@ define(["common"],
             },
 
             unsubscribe: function(id, fn){
+
+                if(common.isEmpty(id)){
+                    return;
+                }
+
                 getTopic(id).unsubscribe(fn);
             }
         };

@@ -1,7 +1,7 @@
 define(
-    ["common", "courier", "view/TemplateView"],
+    ["common", "dispatch", "view/TemplateView"],
 
-    function (common, courier, TemplateView) {
+    function (common, dispatch, TemplateView) {
 
         var SelectView = function (config, parent) {
 
@@ -27,13 +27,23 @@ define(
                         lId = link.data('link-id'),
                         targetId = link.data('target-id');
 
-                    courier.publish("view-hover-link", {
+                    link.addClass("bg-info");
+
+                    dispatch.publish("view_select_mouseover_link", {
                         lId: lId
                     });
                 });
 
                 linkArray.on("mouseout", function() {
 
+                    var link = $(this),
+                        lId = link.data('link-id');
+
+                    link.removeClass("bg-info");
+
+                    dispatch.publish("view_select_mouseout_link", {
+                        lId: lId
+                    });
                 });
 
                 linkBtnArray.on("mouseover", function() {
@@ -45,6 +55,32 @@ define(
 
                     $(this).children('i').removeClass( "fa-chain-broken" ).addClass( "fa-link" );
                 });
+
+                linkBtnArray.on("click", function() {
+
+                    var link = $(this),
+                        lId = link.data('link-id');
+
+                    dispatch.publish("view_select_remove_link", {
+                        lId: lId
+                    });
+                });
+            }
+
+            function highlightLink(lId, doHighlight){
+
+                var view = parent.getView(),
+                    linkRow = view.find('#s-' + lId);
+
+                if(linkRow.length > 0){
+
+                    if(doHighlight){
+                        linkRow.addClass("bg-info");
+                    }
+                    else {
+                        linkRow.removeClass("bg-info");
+                    }
+                }
             }
 
             /***** public methods *****/
@@ -59,6 +95,8 @@ define(
                 parent.updateView(data);
                 updateView(data);
             };
+
+            this.highlightLink = highlightLink;
         };
 
         return function(config){

@@ -1,7 +1,7 @@
 define(
-    ["common", "courier", "view/TemplateView"],
+    ["common", "dispatch", "view/TemplateView"],
 
-    function (common, courier, TemplateView) {
+    function (common, dispatch, TemplateView) {
 
         var ItemListView = function (config, parent) {
 

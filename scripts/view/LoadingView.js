@@ -1,6 +1,6 @@
 define(
-    ["common", "courier", "domJqueryImpl"],
-    function (common, courier, domImpl) {
+    ["common", "dispatch", "domUtil"],
+    function (common, dispatch, domUtil) {
 
         var LoadingView = function (config) {
 

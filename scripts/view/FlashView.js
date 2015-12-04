@@ -1,6 +1,7 @@
 define(
-    ["common", "courier", "domJqueryImpl"],
-    function (common, courier, domImpl) {
+    ["common", "dispatch", "domUtil"],
+
+    function (common, dispatch, domUtil) {
 
         var FlashView = function (config) {
 
@@ -47,7 +48,7 @@ define(
 
                 container.addClass("alert-" + type);
 
-                domImpl.updateText({
+                domUtil.updateText({
                     "flash-msg": data.message
                 }, container);
             }

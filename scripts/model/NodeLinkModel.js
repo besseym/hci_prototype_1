@@ -1,7 +1,7 @@
 define(
-    ["d3", "common", "courier"],
+    ["d3", "common", "dispatch"],
 
-    function (d3, common, courier) {
+    function (d3, common, dispatch) {
 
         var NodeLinkModel = function (config) {
 
@@ -214,6 +214,7 @@ define(
                         lId: 'l-' + sNode.id + "-" + tNode.id,
                         source: sNode,
                         target: tNode,
+                        rank: weight,
                         weight: weight
                     },
                     nodeLinks = nodeLinksMap[sNode.nId];
@@ -552,14 +553,14 @@ define(
 
                         populate(data);
 
-                        courier.publish("model_data_loaded", {
+                        dispatch.publish("model_data_loaded", {
                             resultSize: nodeArray.length
                         });
                     });
                 }
                 else {
 
-                    courier.publish("view_flash", {
+                    dispatch.publish("view_flash", {
                         type: "warning",
                         message: "The search criteria you provided returned too many search results. Please refine your search."
                     });
@@ -575,6 +576,17 @@ define(
             this.getStats = getStats;
 
             this.loadData = loadData;
+
+            this.getLink = function(lId){
+                return linkMap[lId];
+            };
+
+            this.getResultViewModel = function(){
+
+                return {
+                    resultSize: nodeArray.length
+                };
+            };
 
             this.getListViewModel = function(){
 

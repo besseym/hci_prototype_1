@@ -1,7 +1,7 @@
 define(
-    ["common", "courier"],
+    ["common", "dispatch", "domUtil"],
 
-    function (common, courier) {
+    function (common, dispatch, domUtil) {
 
         var FormHighlightView = function (config) {
 
@@ -28,7 +28,7 @@ define(
                     inputTitle = form.find("#input-filter-title");
                     inputTitle.on('input', function(event) {
 
-                        courier.publish("view_form_highlight_title", {
+                        dispatch.publish("view_form_highlight_title", {
                             title: inputTitle.val().toLowerCase()
                         });
                     });
@@ -37,7 +37,7 @@ define(
                     $('#form-hightlight input[name=property]:radio').change(function(event) {
 
                         var category = $(this).val();
-                        courier.publish("view_form_highlight_property", {
+                        dispatch.publish("view_form_highlight_property", {
                             category: category
                         });
                     });
@@ -47,9 +47,16 @@ define(
                 }
             }
 
+            function updateView(data){
+
+                domUtil.updateText({"result-size" : data.resultSize}, form);
+            }
+
             /***** public methods *****/
 
             this.set = set;
+
+            this.updateView = updateView;
 
         };
 

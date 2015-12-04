@@ -8,13 +8,14 @@ requirejs.config({
 require(
     [
         "common",
-        "courier",
+        "dispatch",
         "model/NodeLinkModel",
         "model/HighlightModel",
         "view/FlashView",
         "view/LoadingView",
         "view/ColorKeyView",
-        "view/FormViewJqueryImpl",
+        "view/FormView",
+        "view/ResultView",
         "view/FormHighlightView",
         "view/TabbedViewJqueryImpl",
         "view/ContentSwapView",
@@ -24,13 +25,14 @@ require(
     ],
     function (
         common,
-        courier,
+        dispatch,
         NodeLinkModel,
         HighlightModel,
         FlashView,
         LoadingView,
         ColorKeyView,
-        FormViewImpl,
+        FormView,
+        ResultView,
         FormHighlightView,
         TabbedViewImpl,
         ContentSwapView,
@@ -46,8 +48,10 @@ require(
             //loadingView = new LoadingView({selector: "#flash"}),
             colorKeyView = new ColorKeyView({selector: "#key-color", templateId: "template-color-key"}),
 
-            searchFormView = new FormViewImpl({selector: "#form-search", topicSubmit: "view_form_submit_search"}),
+            searchFormView = new FormView({selector: "#form-search", topicSubmit: "view_form_submit_search"}),
             highlightFormView = new FormHighlightView({selector: "#form-hightlight"}),
+
+            resultView = new ResultView({selector: "#view-result"}),
 
             formTabbedView = new TabbedViewImpl({selector: "#tabs-dialog"}),
             vizTabbedView = new TabbedViewImpl({selector: "#tabs-viz"}),
@@ -60,20 +64,21 @@ require(
                 {
                     selector: "#chart-matrix-video",
                     paddingLeft: 200
-                });
+                }
+            );
 
-        courier.subscribe( "view_flash", function(msg){
+        dispatch.subscribe("view_flash", function(msg){
 
             flashView.update(msg.payload);
             flashView.show();
         });
 
-        courier.subscribe( "view_form_submit_search", function(msg){
+        dispatch.subscribe("view_form_submit_search", function(msg){
 
             nodeLinkModel.loadData(msg.payload);
         });
 
-        courier.subscribe( "model_data_loaded", function(msg){
+        dispatch.subscribe("model_data_loaded", function(msg){
 
             var adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
 
@@ -81,13 +86,15 @@ require(
             formTabbedView.focusTabPane("highlight");
             contentSwapView.swapContent("viz");
 
+            resultView.updateView(nodeLinkModel.getResultViewModel());
+
             itemListView.updateView(nodeLinkModel.getListViewModel());
 
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
         });
 
-        courier.subscribe( "view_form_highlight_title", function(msg){
+        dispatch.subscribe("view_form_highlight_title", function(msg){
 
             var highlightViewModel;
 
@@ -98,7 +105,7 @@ require(
             adjacencyMatrixView.highlight(highlightViewModel);
         });
 
-        courier.subscribe( "view_form_highlight_property", function(msg){
+        dispatch.subscribe("view_form_highlight_property", function(msg){
 
             var highlightViewModel,
                 stats = nodeLinkModel.getStats(msg.payload.category);
@@ -110,7 +117,7 @@ require(
             adjacencyMatrixView.highlight(highlightViewModel);
         });
 
-        courier.subscribe( "view_select_node", function(msg){
+        dispatch.subscribe("view_select_node", function(msg){
 
             var nId = msg.payload.nId;
 
@@ -120,15 +127,37 @@ require(
             formTabbedView.focusTabPane("select");
         });
 
-        courier.subscribe( "view_update_link", function(msg){
+        dispatch.subscribe("view_update_link", function(msg){
 
             nodeLinkModel.updateLink(msg.payload.sId, msg.payload.tId);
             adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
         });
 
-        courier.subscribe( "view-hover-link", function(msg){
+        dispatch.subscribe("view_select_mouseover_link", function(msg){
 
-            //console.log(msg.payload);
+            var link = nodeLinkModel.getLink(msg.payload.lId);
+            adjacencyMatrixView.highlightLink(link, true);
+        });
+
+        dispatch.subscribe("view_select_mouseout_link", function(msg){
+
+            var link = nodeLinkModel.getLink(msg.payload.lId);
+            adjacencyMatrixView.highlightLink(link, false);
+        });
+
+        dispatch.subscribe("view_chart_mouseover_link", function(msg){
+
+            selectView.highlightLink(msg.payload.lId, true);
+        });
+
+        dispatch.subscribe("view_chart_mouseout_link", function(msg){
+
+            selectView.highlightLink(msg.payload.lId, false);
+        });
+
+        dispatch.subscribe("view_select_remove_link", function(msg){
+
+            selectView.highlightLink(msg.payload.lId, false);
         });
     }
 );

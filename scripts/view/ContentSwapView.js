@@ -1,7 +1,7 @@
 define(
-    ["common", "courier"],
+    ["common", "dispatch"],
 
-    function (common, courier) {
+    function (common, dispatch) {
 
         var ContentSwapView = function (config) {
 

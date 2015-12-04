@@ -1,9 +1,8 @@
 define(
     [
-        "common",
-        "courier"
+        "common", "dispatch"
     ],
-    function (common, courier) {
+    function (common, dispatch) {
 
         var TabbedViewImpl = function (config) {
 

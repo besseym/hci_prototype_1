@@ -1,9 +1,9 @@
 define(
-    ["common", "courier"],
+    ["common", "dispatch"],
 
-    function (common, courier) {
+    function (common, dispatch) {
 
-        var FormViewImpl = function (config) {
+        var FormView = function (config) {
 
             var form = null,
                 attributes = {
@@ -25,7 +25,7 @@ define(
 
                     form.on("submit", function(){
 
-                        courier.publish( attributes.topicSubmit, form.serializeArray());
+                        dispatch.publish( attributes.topicSubmit, form.serializeArray());
                         event.preventDefault();
                     });
                 }
@@ -41,7 +41,7 @@ define(
         };
 
         return function(config){
-            return new FormViewImpl(config);
+            return new FormView(config);
         };
     }
 );

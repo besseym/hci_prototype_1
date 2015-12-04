@@ -250,7 +250,7 @@ define(["common"], function (common) {
                 .selectAll("line")
                 .data(force.links(), function(d) { return d.id; })
                 .style("stroke-width", function (d) {
-                    return Math.sqrt((1 / d.weight) * 20);
+                    return Math.sqrt((1 / d.rank) * 20);
                     //return (1 / d.weight) * 10;
                 });
 
