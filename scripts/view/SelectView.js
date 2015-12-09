@@ -56,15 +56,27 @@ define(
                     $(this).children('i').removeClass( "fa-chain-broken" ).addClass( "fa-link" );
                 });
 
-                linkBtnArray.on("click", function() {
+                linkBtnArray.on("click", function(event) {
 
                     var link = $(this),
                         lId = link.data('link-id');
 
+                    removeLink(lId);
+
                     dispatch.publish("view_select_remove_link", {
                         lId: lId
                     });
+
+                    event.preventDefault();
                 });
+            }
+
+            function removeLink(lId){
+
+                var linkElement = $("#s-" + lId);
+                if(linkElement.length > 0){
+                    linkElement.remove();
+                }
             }
 
             function highlightLink(lId, doHighlight){
@@ -97,6 +109,8 @@ define(
             };
 
             this.highlightLink = highlightLink;
+
+            this.removeLink = removeLink;
         };
 
         return function(config){

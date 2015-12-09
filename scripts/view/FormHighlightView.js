@@ -49,7 +49,7 @@ define(
 
             function updateView(data){
 
-                domUtil.updateText({"result-size" : data.resultSize}, form);
+                domUtil.updateText({"filter-title-count" : data.title.count}, form);
             }
 
             /***** public methods *****/

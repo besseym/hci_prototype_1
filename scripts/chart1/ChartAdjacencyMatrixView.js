@@ -303,16 +303,15 @@ define(
 
                         case 'title':
 
-                            if(!common.isBlankStr(hValue)) {
+                            if(!common.isBlankStr(hValue.value)) {
 
-                                selectResult = svg.selectAll("text:not([data-title*='" + hValue + "'])");
+                                selectResult = svg.selectAll("text:not([data-title*='" + hValue.value + "'])");
                                 selectResult.transition().style({'opacity': 0.2});
-                                //highlight.count = data.getNodeCount() - (selectResult[0].length * 0.5);
                             }
 
                             break;
 
-                        case 'stats':
+                        case 'property':
 
                             for(i = 0; i < hValue.properties.length; i++){
 
@@ -321,10 +320,6 @@ define(
                                 selectResult = d3.selectAll("text." + hValue.category.prefix + property.name);
                                 selectResult.style({fill: property.color});
                             }
-
-                            //selectResult = d3.selectAll("text." + h.id);
-                            //h.count = selectResult[0].length * 0.5;
-                            //selectResult.style({fill: h.color});
 
                             break;
                     }

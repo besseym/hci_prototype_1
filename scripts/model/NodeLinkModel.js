@@ -319,6 +319,10 @@ define(
                 return w;
             }
 
+            function hasLink(lId){
+                return linkMap[lId] !== undefined;
+            }
+
             function isConnected(sourceId, targetId){
 
                 var lId = getLinkId(sourceId, targetId);
@@ -344,7 +348,29 @@ define(
                 }
             }
 
-            function getStats(category){
+            function getTitleStats(title){
+
+                var i, node,
+                    stats = {
+                        value: title,
+                        count: 0
+                    };
+
+                if(!common.isBlankStr(title)){
+
+                    for(i = 0; i < nodeArray.length; i++) {
+                        node = nodeArray[i];
+
+                        if(node.titleFilter.indexOf(title) > -1){
+                            stats.count = stats.count + 1;
+                        }
+                    }
+                }
+
+                return stats;
+            }
+
+            function getPropertyStats(category){
 
                 var i, k, node, stats = {}, properties = [];
 
@@ -569,16 +595,35 @@ define(
 
             /***** public methods *****/
 
+            this.getLinkId = getLinkId;
+
             this.makeLink = makeLink;
             this.breakLink = breakLink;
             this.updateLink = updateLink;
-
-            this.getStats = getStats;
-
-            this.loadData = loadData;
+            this.isConnected = isConnected;
+            this.hasLink = hasLink;
 
             this.getLink = function(lId){
                 return linkMap[lId];
+            };
+
+            this.loadData = loadData;
+
+            /***** view model methods *****/
+
+            this.getStats = function(input){
+
+                var stats = {};
+
+                if(input.title !== undefined){
+                    stats.title = getTitleStats(input.title);
+                }
+
+                if(input.category !== undefined){
+                    stats.property = getPropertyStats(input.category);
+                }
+
+                return stats;
             };
 
             this.getResultViewModel = function(){

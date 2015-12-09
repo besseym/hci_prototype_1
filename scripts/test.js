@@ -10,7 +10,6 @@ require(
         "common",
         "dispatch",
         "model/NodeLinkModel",
-        "model/HighlightModel",
         "view/FlashView",
         "view/LoadingView",
         "view/ColorKeyView",
@@ -21,13 +20,13 @@ require(
         "view/ContentSwapView",
         "view/SelectView",
         "view/ItemListView",
+        "chart1/chartUtil",
         "chart1/ChartAdjacencyMatrixView"
     ],
     function (
         common,
         dispatch,
         NodeLinkModel,
-        HighlightModel,
         FlashView,
         LoadingView,
         ColorKeyView,
@@ -38,11 +37,11 @@ require(
         ContentSwapView,
         SelectView,
         ItemListView,
+        chartUtil,
         ChartAdjacencyMatrixView
     ) {
 
         var nodeLinkModel = new NodeLinkModel(),
-            highlightModel = new HighlightModel(),
 
             flashView = new FlashView({selector: "#flash"}),
             //loadingView = new LoadingView({selector: "#flash"}),
@@ -96,25 +95,24 @@ require(
 
         dispatch.subscribe("view_form_highlight_title", function(msg){
 
-            var highlightViewModel;
+            var stats = nodeLinkModel.getStats(msg.payload);
 
-            highlightModel.set( msg.payload );
-            highlightViewModel = highlightModel.getHighlightViewModel();
+            highlightFormView.updateView(stats);
 
-            itemListView.highlight(highlightViewModel);
-            adjacencyMatrixView.highlight(highlightViewModel);
+            itemListView.highlight(stats);
+            adjacencyMatrixView.highlight(stats);
         });
 
         dispatch.subscribe("view_form_highlight_property", function(msg){
 
-            var highlightViewModel,
-                stats = nodeLinkModel.getStats(msg.payload.category);
+            var stats = nodeLinkModel.getStats(msg.payload);
 
-            highlightModel.set({stats: stats});
-            highlightViewModel = highlightModel.getHighlightViewModel();
+            chartUtil.decorateWithColor(stats.property);
 
-            colorKeyView.updateView(highlightModel.getColorKeyViewModel());
-            adjacencyMatrixView.highlight(highlightViewModel);
+            colorKeyView.updateView(stats.property);
+
+            itemListView.highlight(stats);
+            adjacencyMatrixView.highlight(stats);
         });
 
         dispatch.subscribe("view_select_node", function(msg){
@@ -129,8 +127,15 @@ require(
 
         dispatch.subscribe("view_update_link", function(msg){
 
+            var lId = nodeLinkModel.getLinkId(msg.payload.sId, msg.payload.tId);
+
             nodeLinkModel.updateLink(msg.payload.sId, msg.payload.tId);
+
             adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
+
+            if(!nodeLinkModel.hasLink(lId)){
+                selectView.removeLink(lId);
+            }
         });
 
         dispatch.subscribe("view_select_mouseover_link", function(msg){
@@ -157,7 +162,8 @@ require(
 
         dispatch.subscribe("view_select_remove_link", function(msg){
 
-            selectView.highlightLink(msg.payload.lId, false);
+            nodeLinkModel.breakLink(msg.payload.lId);
+            adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
         });
     }
 );

@@ -21,7 +21,7 @@ define(
 
             function highlight(highlights){
 
-                var k, highlightValue, selectResult, count,
+                var k, hValue, selectResult, count, property,
                     view = parent.getView();
 
                 //reset everything first
@@ -31,16 +31,29 @@ define(
 
                 for(k in highlights){
 
-                    highlightValue = highlights[k];
-                    if(common.isBlankStr(highlightValue)){
-                        continue;
-                    }
+                    hValue = highlights[k];
 
                     switch(k) {
 
                         case 'title':
-                            selectResult = view.find("tbody tr:not([data-title*='" + highlightValue + "'])");
-                            selectResult.css({'opacity': 0.2});
+
+                            if(!common.isBlankStr(hValue.value)){
+
+                                selectResult = view.find("tbody tr:not([data-title*='" + hValue.value + "'])");
+                                selectResult.css({'opacity': 0.2});
+                            }
+
+                            break;
+
+                        case 'property':
+
+                            for(i = 0; i < hValue.properties.length; i++){
+
+                                property = hValue.properties[i];
+                                selectResult = view.find("tr." + hValue.category.prefix + property.name);
+                                selectResult.find(".list-video-btn").css({color: 'white', 'background-color': property.color});
+                            }
+
                             break;
                     }
                 }
