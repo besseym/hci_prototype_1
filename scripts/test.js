@@ -9,6 +9,7 @@ require(
     [
         "common",
         "dispatch",
+        "model/AppModel",
         "model/NodeLinkModel",
         "view/FlashView",
         "view/LoadingView",
@@ -26,6 +27,7 @@ require(
     function (
         common,
         dispatch,
+        AppModel,
         NodeLinkModel,
         FlashView,
         LoadingView,
@@ -41,7 +43,8 @@ require(
         ChartAdjacencyMatrixView
     ) {
 
-        var nodeLinkModel = new NodeLinkModel(),
+        var appModel = new AppModel(),
+            nodeLinkModel = new NodeLinkModel(),
 
             flashView = new FlashView({selector: "#flash"}),
             //loadingView = new LoadingView({selector: "#flash"}),
@@ -79,7 +82,8 @@ require(
 
         dispatch.subscribe("model_data_loaded", function(msg){
 
-            var adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            var listViewModel = nodeLinkModel.getListViewModel(),
+                adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
 
             formTabbedView.focusTabNav("highlight");
             formTabbedView.focusTabPane("highlight");
@@ -87,7 +91,8 @@ require(
 
             resultView.updateView(nodeLinkModel.getResultViewModel());
 
-            itemListView.updateView(nodeLinkModel.getListViewModel());
+            listViewModel.selectedNodeId = appModel.get("selectedNodeId");
+            itemListView.updateView(listViewModel);
 
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
@@ -117,9 +122,14 @@ require(
 
         dispatch.subscribe("view_select_node", function(msg){
 
-            var nId = msg.payload.nId;
+            var nId = msg.payload.nId,
+                listViewModel = nodeLinkModel.getListViewModel(nId),
+                selectViewModel = nodeLinkModel.getSelectViewModel(nId);
 
-            selectView.updateView(nodeLinkModel.getSelectViewModel(nId));
+            appModel.set({selectedNodeId: nId});
+
+            selectView.updateView(selectViewModel);
+            itemListView.updateItems(listViewModel, false, true);
 
             formTabbedView.focusTabNav("select");
             formTabbedView.focusTabPane("select");
@@ -127,14 +137,20 @@ require(
 
         dispatch.subscribe("view_update_link", function(msg){
 
-            var lId = nodeLinkModel.getLinkId(msg.payload.sId, msg.payload.tId);
+            var nodeLink, listViewModel,
+                lId = nodeLinkModel.getLinkId(msg.payload.sId, msg.payload.tId);
 
             nodeLinkModel.updateLink(msg.payload.sId, msg.payload.tId);
 
             adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
+            itemListView.updateItems(nodeLinkModel.getListViewModel(), true, false);
 
             if(!nodeLinkModel.hasLink(lId)){
                 selectView.removeLink(lId);
+            }
+            else {
+                nodeLink = nodeLinkModel.getNodeLink(msg.payload.sNodeId, msg.payload.tNodeId);
+                selectView.addLink(nodeLink);
             }
         });
 

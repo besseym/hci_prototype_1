@@ -21,11 +21,33 @@
                 <td>
                     <a class="btn btn-default list-video-btn" href="{{url}}" target='_blank'> <i class='fa fa-play-circle-o'></i></a>
                 </td>
-                <td>{{id}}</td><td>{{threePartKey}}</td><td>{{title}}</td><td></td><td></td>
+                <td>{{id}}</td>
+                <td>{{threePartKey}}</td>
+                <td>{{title}}</td>
+                <td class="ll-connections">{{connections}}</td>
+                <td class="ll-btns"></td>
             </tr>
             {{/nodeArray}}
             </tbody>
         </table>
+    </script>
+
+    <script id="template-list-item-btns" type="x-tmpl-mustache">
+
+        {{#if hasSelectedNode}}
+
+        {{#unless isSelected}}
+
+        {{#unless isConnected}}
+        <a class="btn btn-default btn-primary list-btn-connect" href="#{{nId}}" role="button"><i class="fa fa-chain"></i></a>
+        {{/unless}}
+        <a class="btn btn-default list-btn-select" href="#{{nId}}" role="button"><i class="fa fa-check"></i></a>
+        {{/unless}}
+
+        {{else}}
+        <a class="btn btn-default btn-primary list-btn-select" href="#{{nId}}" role='button'><i class="fa fa-check"></i></a>
+        {{/if}}
+
     </script>
 
     <script id="template-select" type="x-tmpl-mustache">
@@ -94,26 +116,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {{#each links}}
-                            <tr id="s-{{l.lId}}" data-link-id="{{l.lId}}" data-source-id="{{l.source.id}}" data-target-id="{{l.target.id}}" class='s-l'>
-                                <td>
-                                    <i class="fa fa-bars"></i>
-                                </td>
-                                <td>{{n.title}}</td>
-                                <td>{{n.type}}</td>
-                                <td>{{n.type}}</td>
-                                <td>
-                                    <a class="s-l-btn btn btn-lg btn-default" data-link-id="{{l.lId}}" href="#{{l.lId}}">
-                                    <i class="fa fa-chain"></i>
-                                    </a>
-                                </td>
-                            </tr>
-                            {{/each}}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
+
+    </script>
+
+    <script id="template-select-link" type="x-tmpl-mustache">
+
+        <tr id="s-{{l.lId}}" data-link-id="{{l.lId}}" data-source-id="{{l.source.id}}" data-target-id="{{l.target.id}}" class='s-l'>
+            <td>
+                <i class="fa fa-bars"></i>
+            </td>
+            <td>{{n.title}}</td>
+            <td>{{n.type}}</td>
+            <td>{{n.type}}</td>
+            <td>
+                <a class="s-l-btn btn btn-lg btn-default" data-link-id="{{l.lId}}" href="#{{l.lId}}">
+                <i class="fa fa-chain"></i>
+                </a>
+            </td>
+        </tr>
 
     </script>
 

@@ -214,7 +214,9 @@ define(
 
                         dispatch.publish("view_update_link", {
                             sId: d.source.id,
-                            tId: d.target.id
+                            sNodeId: d.source.nId,
+                            tId: d.target.id,
+                            tNodeId: d.target.nId
                         });
                     })
                     .on('mouseover', function(d, i) {

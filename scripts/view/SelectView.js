@@ -6,26 +6,69 @@ define(
         var SelectView = function (config, parent) {
 
             var attributes = {
-            };
+                },
+                linkTable,
+                linkTableBody,
+                linkTemplate;
 
             set(config);
+            setup();
 
             function set(){
                 common.setAttributes(arguments, attributes);
             }
 
+            function setup(){
+
+                var view = parent.getView();
+                linkTemplate = Handlebars.compile(document.getElementById("template-select-link").innerHTML);
+            }
+
+            function getLinkTable(){
+
+                if(linkTable === undefined){
+                    linkTable = parent.getView().find("#s-n-c-tbl");
+                }
+
+                return linkTable;
+            }
+
+            function getLinkTableBody(){
+
+                if(linkTableBody === undefined){
+                    linkTableBody = getLinkTable().find("tbody");
+                }
+
+                return linkTableBody;
+            }
+
+            function getLinkRow(lId){
+                return getLinkTableBody().find("#s-" + lId);
+            }
+
             function updateView(data){
 
-                var view = parent.getView(),
-                    linkTable = view.find("#s-n-c-tbl"),
-                    linkArray = linkTable.find('.s-l');
-                    linkBtnArray = linkTable.find('.s-l-btn');
+                var i, nodeLink;
 
-                linkArray.on("mouseover", function() {
+                for(i = 0; i < data.links.length; i++){
+                    nodeLink = data.links[i];
+                    addLink(nodeLink);
+                }
+            }
+
+            function addLink(nodeLink){
+
+                var linkRow, linkRowBtn,
+                    linkHtml = linkTemplate(nodeLink);
+
+                getLinkTableBody().append(linkHtml);
+                linkRow = getLinkRow(nodeLink.l.lId);
+                linkRowBtn = linkRow.find('.s-l-btn');
+
+                linkRow.on("mouseover", function() {
 
                     var link = $(this),
-                        lId = link.data('link-id'),
-                        targetId = link.data('target-id');
+                        lId = link.data('link-id');
 
                     link.addClass("bg-info");
 
@@ -34,7 +77,7 @@ define(
                     });
                 });
 
-                linkArray.on("mouseout", function() {
+                linkRow.on("mouseout", function() {
 
                     var link = $(this),
                         lId = link.data('link-id');
@@ -46,17 +89,17 @@ define(
                     });
                 });
 
-                linkBtnArray.on("mouseover", function() {
+                linkRowBtn.on("mouseover", function() {
 
                     $(this).children('i').removeClass( "fa-link" ).addClass( "fa-chain-broken" );
                 });
 
-                linkBtnArray.on("mouseout", function() {
+                linkRowBtn.on("mouseout", function() {
 
                     $(this).children('i').removeClass( "fa-chain-broken" ).addClass( "fa-link" );
                 });
 
-                linkBtnArray.on("click", function(event) {
+                linkRowBtn.on("click", function(event) {
 
                     var link = $(this),
                         lId = link.data('link-id');
@@ -73,7 +116,7 @@ define(
 
             function removeLink(lId){
 
-                var linkElement = $("#s-" + lId);
+                var linkElement = getLinkRow(lId);
                 if(linkElement.length > 0){
                     linkElement.remove();
                 }
@@ -104,12 +147,16 @@ define(
 
             this.updateView = function(data){
 
+                linkTable = undefined;
+                linkTableBody = undefined;
+
                 parent.updateView(data);
                 updateView(data);
             };
 
             this.highlightLink = highlightLink;
 
+            this.addLink = addLink;
             this.removeLink = removeLink;
         };
 

@@ -6,17 +6,50 @@ define(
         var ItemListView = function (config, parent) {
 
             var attributes = {
-            };
+                },
+                itemTable,
+                itemBtnTemplate;
 
             set(config);
+            setup();
 
             function set(){
                 common.setAttributes(arguments, attributes);
             }
 
-            function updateView(data){
+            function setup(){
 
+                itemBtnTemplate = Handlebars.compile(document.getElementById("template-list-item-btns").innerHTML);
+            }
 
+            function getItemTable(){
+
+                var view = parent.getView();
+
+                if(itemTable === undefined){
+                    itemTable = view.find("#table-list-widget");
+                }
+
+                return itemTable;
+            }
+
+            function updateItems(data, updateConnections, updateActionBtns){
+
+                var i, node, itemView;
+
+                for(i = 0; i < data.nodeArray.length; i++){
+
+                    node = data.nodeArray[i];
+                    itemView = getItemTable().find("#" + node.nId);
+
+                    if(updateConnections){
+                        itemView.find(".ll-connections").text(node.connections);
+                    }
+
+                    if(updateActionBtns){
+                        itemView.find(".ll-btns").html(itemBtnTemplate(node));
+                    }
+                }
             }
 
             function highlight(highlights){
@@ -62,17 +95,20 @@ define(
             /***** public methods *****/
             this.set = set;
 
+            this.highlight = highlight;
+            this.updateItems = updateItems;
+
             this.get = function(){
                 return common.getAttributes(arguments, attributes);
             };
 
             this.updateView = function(data){
 
-                parent.updateView(data);
-                updateView(data);
-            };
+                itemTable = undefined;
 
-            this.highlight = highlight;
+                parent.updateView(data);
+                updateItems(data, false, true);
+            };
 
         };
 

@@ -81,7 +81,7 @@ define(
                     sNode, tNode,
                     sNodeArray = getNodeArray(sStart, sEnd),
                     tNodeArray = getNodeArray(tStart, tEnd),
-                    lId, link, classOutArray,
+                    lId, link, linkView, classOutArray,
                     linkGridArray = [];
 
                 for(i = 0; i < sNodeArray.length; i++){
@@ -95,24 +95,28 @@ define(
                         lId = getLinkId(sNode.id, tNode.id);
                         link = linkMap[lId];
 
-                        if (link === undefined) {
+                        classOutArray = [
+                            "link",
+                            "s-" + sNode.id,
+                            "t-" + tNode.id
+                        ];
 
-                            classOutArray = [
-                                "link",
-                                "s-" + sNode.id,
-                                "t-" + tNode.id
-                            ];
+                        linkView = {
+                            lId: lId,
+                            class: classOutArray.join(" "),
+                            source: sNode,
+                            target: tNode,
+                            rank: 0,
+                            weight: 0
+                        };
 
-                            link = {
-                                id: lId,
-                                class: classOutArray.join(" "),
-                                source: sNode,
-                                target: tNode,
-                                weight: 0
-                            };
+                        if (link !== undefined) {
+
+                            linkView.rank = link.rank;
+                            linkView.weight = link.weight;
                         }
 
-                        linkGridArray.push(link);
+                        linkGridArray.push(linkView);
                     }
                 }
 
@@ -319,6 +323,10 @@ define(
                 return w;
             }
 
+            function getLink(lId){
+                return linkMap[lId];
+            }
+
             function hasLink(lId){
                 return linkMap[lId] !== undefined;
             }
@@ -327,6 +335,22 @@ define(
 
                 var lId = getLinkId(sourceId, targetId);
                 return linkMap[lId] !== undefined;
+            }
+
+            function getNodeLink(sNodeId, tNodeId){
+
+                var i, nl, nodeLink, nodeLinkArray = nodeLinksMap[sNodeId];
+
+                for(i = 0; i < nodeLinkArray.length; i++){
+
+                    nl = nodeLinkArray[i];
+                    if(nl.n.nId === tNodeId){
+                        nodeLink = nl;
+                        break;
+                    }
+                }
+
+                return nodeLink;
             }
 
             function updateLink(sourceId, targetId){
@@ -602,10 +626,8 @@ define(
             this.updateLink = updateLink;
             this.isConnected = isConnected;
             this.hasLink = hasLink;
-
-            this.getLink = function(lId){
-                return linkMap[lId];
-            };
+            this.getLink = getLink;
+            this.getNodeLink = getNodeLink;
 
             this.loadData = loadData;
 
@@ -633,10 +655,35 @@ define(
                 };
             };
 
-            this.getListViewModel = function(){
+            this.getListViewModel = function(selectedNodeId){
+
+                var i, nodeView, nodeLinks,
+                    selectedNode = nodeMap[selectedNodeId],
+                    nodeViewArray = nodeArray.slice(),
+                    hasSelectedNode = (selectedNodeId !== undefined);
+
+                for(i = 0; i < nodeViewArray.length; i++){
+                    nodeView = nodeViewArray[i];
+
+                    nodeView.isSelected = false;
+                    nodeView.isConnected = false;
+                    nodeView.hasSelectedNode = hasSelectedNode;
+                    if(hasSelectedNode){
+                        nodeView.isSelected = (nodeView.nId === selectedNode.nId);
+                        if(!nodeView.isSelected){
+                            nodeView.isConnected = isConnected(selectedNode.id, nodeView.id);
+                        }
+                    }
+
+                    nodeView.connections = 0;
+                    nodeLinks = nodeLinksMap[nodeView.nId];
+                    if(nodeLinks !== undefined){
+                        nodeView.connections = nodeLinks.length;
+                    }
+                }
 
                 return {
-                    nodeArray: nodeArray
+                    nodeArray: nodeViewArray
                 };
             };
 
