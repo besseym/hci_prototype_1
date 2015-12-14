@@ -5,7 +5,7 @@ define(
 
         var ChartView = function (config) {
 
-            var container = null,
+            var view = null,
                 attributes = {
                     selector: null,
                     exists: false,
@@ -38,11 +38,11 @@ define(
 
             function setup(){
 
-                container = $(attributes.selector);
-                if (container.length > 0){
+                view = document.querySelector(attributes.selector);
+                if (view !== undefined){
                 }
                 else {
-                    throw "Unable to find container.";
+                    throw "Unable to find view.";
                 }
             }
 
@@ -50,6 +50,37 @@ define(
 
             this.set = set;
             this.get = get;
+
+            this.setPadding = function(padding){
+
+                if("top" in padding){
+                    attributes.paddingTop = padding.top;
+                }
+
+                if("right" in padding){
+                    attributes.paddingRight = padding.right;
+                }
+
+                if("bottom" in padding){
+                    attributes.paddingBottom = padding.bottom;
+                }
+
+                if("left" in padding){
+                    attributes.paddingLeft = padding.left;
+                }
+            };
+
+            this.setPaddingAll = function(padding){
+
+                attributes.paddingTop = padding;
+                attributes.paddingRight = padding;
+                attributes.paddingBottom = padding;
+                attributes.paddingLeft = padding;
+            };
+
+            this.getView = function(){
+                return view;
+            };
 
         };
 

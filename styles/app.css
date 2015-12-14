@@ -9730,6 +9730,10 @@ button.close {
   position: absolute;
 }
 
+#chart-matrix-window {
+  position: absolute;
+}
+
 #tab-content-viz #color-key-connection ul {
   list-style: none;
 }

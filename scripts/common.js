@@ -89,13 +89,16 @@ define(function () {
                 }
                 else {
 
-                    rtn = {};
-
                     for(i = 0; i < args.length; i++){
 
                         p = args[i];
 
                         if(attributes.hasOwnProperty(p) && !p.startsWith('_')){
+
+                            if(rtn === undefined){
+                                rtn = {};
+                            }
+
                             rtn[p] = attributes[p];
                         }
                     }
@@ -103,6 +106,17 @@ define(function () {
             }
 
             return rtn;
+        },
+
+        mergeObjs: function(obj1, obj2) {
+
+            var p,
+                obj3 = {};
+
+            for (p in obj1) { obj3[p] = obj1[p]; }
+            for (p in obj2) { obj3[p] = obj2[p]; }
+
+            return obj3;
         }
 
     };

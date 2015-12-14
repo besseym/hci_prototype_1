@@ -1,7 +1,6 @@
 requirejs.config({
     paths: {
-        d3: "/hci_prototype_1/bower_components/d3/d3.min"//,
-        //colorbrewer: "/hci_prototype_1/bower_components/colorbrewer/colorbrewer"
+        d3: "/hci_prototype_1/bower_components/d3/d3.min"
     }
 });
 
@@ -21,7 +20,8 @@ require(
         "view/SelectView",
         "view/ItemListView",
         "chart1/chartUtil",
-        "chart1/ChartAdjacencyMatrixView"
+        "chart1/ChartAdjacencyMatrixView",
+        "chart1/ChartAdjMatrixWindowView"
     ],
     function (
         common,
@@ -38,7 +38,8 @@ require(
         SelectView,
         ItemListView,
         chartUtil,
-        ChartAdjacencyMatrixView
+        ChartAdjacencyMatrixView,
+        ChartAdjMatrixWindowView
     ) {
 
         var nodeLinkModel = new NodeLinkModel(),
@@ -64,7 +65,10 @@ require(
                     selector: "#chart-matrix-video",
                     paddingLeft: 200
                 }
-            );
+            ),
+            adjMatrixWindowView = ChartAdjMatrixWindowView({selector: "#chart-matrix-window"});
+
+        adjMatrixWindowView.setPaddingAll(25);
 
         dispatch.subscribe("view_flash", function(msg){
 
@@ -79,8 +83,12 @@ require(
 
         dispatch.subscribe("model_data_loaded", function(msg){
 
-            var listViewModel = nodeLinkModel.getListViewModel(),
-                adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            var padding,
+                listViewModel = nodeLinkModel.getListViewModel(),
+                adjacencyMatrixViewModel;
+
+            nodeLinkModel.set({sStart: 0, sEnd: 7, tStart: 0});
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
 
             formTabbedView.focusTabNav("highlight");
             formTabbedView.focusTabPane("highlight");
@@ -93,6 +101,15 @@ require(
 
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            padding = adjacencyMatrixView.get("paddingLeft");
+            adjMatrixWindowView.set({
+                width: padding, height: padding
+            });
+
+            adjMatrixWindowView.updateScale();
+            adjMatrixWindowView.draw();
         });
 
         dispatch.subscribe("view_form_highlight_title", function(msg){

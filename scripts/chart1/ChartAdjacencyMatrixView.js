@@ -364,7 +364,16 @@ define(
             /***** public methods *****/
 
             this.set = set;
-            this.get = get;
+            this.get = function(){
+
+                var rtn = get.apply(this, arguments);
+
+                if(rtn === undefined){
+                    rtn = parent.get.apply(parent, arguments);
+                }
+
+                return rtn;
+            };
 
             this.updateScale = updateScale;
             this.updateView = updateView;

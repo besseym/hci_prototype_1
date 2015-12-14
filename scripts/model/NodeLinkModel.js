@@ -6,7 +6,12 @@ define(
         var NodeLinkModel = function (config) {
 
             var attributes = {
-                    selectedNodeId: undefined
+                    selectedNodeId: undefined,
+
+                    sStart: 0,
+                    sEnd: undefined,
+                    tStart: 0,
+                    tEnd: undefined
                 },
                 MAX_LINKS = 7,
                 DATA_PATH = "/hci_prototype_1/data/",
@@ -205,6 +210,8 @@ define(
                         // a must be equal to b
                         return 0;
                     });
+
+                    attributes.sEnd = attributes.tEnd = nodeArray.length;
                 }
             }
 
@@ -762,13 +769,13 @@ define(
                 };
             };
 
-            this.getAdjacencyMatrixViewModel = function(sStart, sEnd, tStart, tEnd){
+            this.getAdjacencyMatrixViewModel = function(){
 
                 return {
-                    sNodeArray: getNodeArray(sStart, sEnd),
-                    sNodeArrayDesc: getNodeArray(sStart, sEnd, true),
-                    tNodeArray: getNodeArray(tStart, tEnd),
-                    linkGridArray: getLinkGridViewArray(sStart, sEnd, tStart, tEnd),
+                    sNodeArray: getNodeArray(attributes.sStart, attributes.sEnd),
+                    sNodeArrayDesc: getNodeArray(attributes.sStart, attributes.sEnd, true),
+                    tNodeArray: getNodeArray(attributes.tStart, attributes.tEnd),
+                    linkGridArray: getLinkGridViewArray(attributes.sStart, attributes.sEnd, attributes.tStart, attributes.tEnd),
                     maxNodeTitleLength: getMaxNodeTitleLength()
                 };
             };
@@ -787,6 +794,22 @@ define(
                 }
 
                 return viewModel;
+            };
+
+            this.getAdjMatrixWindowViewModel = function(){
+
+                return {
+
+                    xMin: 0,
+                    xMax: nodeArray.length,
+                    xStart: attributes.tStart,
+                    xEnd: attributes.tEnd,
+
+                    yMin: 0,
+                    yMax: nodeArray.length,
+                    yStart: attributes.sStart,
+                    yEnd: attributes.sEnd
+                };
             };
         };
 
