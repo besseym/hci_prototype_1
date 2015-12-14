@@ -39,13 +39,13 @@
         {{#unless isSelected}}
 
         {{#unless isConnected}}
-        <a class="btn btn-default btn-primary list-btn-connect" href="#{{nId}}" role="button"><i class="fa fa-chain"></i></a>
+        <a class="btn btn-default btn-primary list-btn-link" data-id="{{id}}" href="#{{nId}}" role="button"><i class="fa fa-chain"></i></a>
         {{/unless}}
-        <a class="btn btn-default list-btn-select" href="#{{nId}}" role="button"><i class="fa fa-check"></i></a>
+        <a class="btn btn-default list-btn-select" data-node-id="{{nId}}" href="#{{nId}}" role="button"><i class="fa fa-check"></i></a>
         {{/unless}}
 
         {{else}}
-        <a class="btn btn-default btn-primary list-btn-select" href="#{{nId}}" role='button'><i class="fa fa-check"></i></a>
+        <a class="btn btn-default btn-primary list-btn-select" data-node-id="{{nId}}" href="#{{nId}}" role='button'><i class="fa fa-check"></i></a>
         {{/if}}
 
     </script>

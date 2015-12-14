@@ -9,7 +9,6 @@ require(
     [
         "common",
         "dispatch",
-        "model/AppModel",
         "model/NodeLinkModel",
         "view/FlashView",
         "view/LoadingView",
@@ -27,7 +26,6 @@ require(
     function (
         common,
         dispatch,
-        AppModel,
         NodeLinkModel,
         FlashView,
         LoadingView,
@@ -43,8 +41,7 @@ require(
         ChartAdjacencyMatrixView
     ) {
 
-        var appModel = new AppModel(),
-            nodeLinkModel = new NodeLinkModel(),
+        var nodeLinkModel = new NodeLinkModel(),
 
             flashView = new FlashView({selector: "#flash"}),
             //loadingView = new LoadingView({selector: "#flash"}),
@@ -91,7 +88,7 @@ require(
 
             resultView.updateView(nodeLinkModel.getResultViewModel());
 
-            listViewModel.selectedNodeId = appModel.get("selectedNodeId");
+            listViewModel.selectedNodeId = nodeLinkModel.get("selectedNodeId");
             itemListView.updateView(listViewModel);
 
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
@@ -122,34 +119,42 @@ require(
 
         dispatch.subscribe("view_select_node", function(msg){
 
-            var nId = msg.payload.nId,
-                listViewModel = nodeLinkModel.getListViewModel(nId),
-                selectViewModel = nodeLinkModel.getSelectViewModel(nId);
+            var nId = msg.payload.nId;
 
-            appModel.set({selectedNodeId: nId});
+            nodeLinkModel.set({selectedNodeId: nId});
 
-            selectView.updateView(selectViewModel);
-            itemListView.updateItems(listViewModel, false, true);
+            selectView.updateView(nodeLinkModel.getSelectViewModel());
+            itemListView.updateItems(nodeLinkModel.getListViewModel(), false, true);
 
             formTabbedView.focusTabNav("select");
             formTabbedView.focusTabPane("select");
         });
 
+        dispatch.subscribe("view_update_selected_link", function(msg){
+
+            nodeLinkModel.updateSelectedLink(msg.payload.id);
+        });
+
         dispatch.subscribe("view_update_link", function(msg){
 
-            var nodeLink, listViewModel,
+            nodeLinkModel.updateLink(msg.payload);
+        });
+
+        dispatch.subscribe("model_update_link_success", function(msg){
+
+            var nodeLink, listViewModel, sNodeId, tNodeId,
                 lId = nodeLinkModel.getLinkId(msg.payload.sId, msg.payload.tId);
 
-            nodeLinkModel.updateLink(msg.payload.sId, msg.payload.tId);
-
             adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
-            itemListView.updateItems(nodeLinkModel.getListViewModel(), true, false);
+            itemListView.updateItems(nodeLinkModel.getListViewModel(), true, true);
 
             if(!nodeLinkModel.hasLink(lId)){
                 selectView.removeLink(lId);
             }
             else {
-                nodeLink = nodeLinkModel.getNodeLink(msg.payload.sNodeId, msg.payload.tNodeId);
+                sNodeId = nodeLinkModel.getNodeId(msg.payload.sId);
+                tNodeId = nodeLinkModel.getNodeId(msg.payload.tId);
+                nodeLink = nodeLinkModel.getNodeLink(sNodeId, tNodeId);
                 selectView.addLink(nodeLink);
             }
         });
@@ -180,6 +185,7 @@ require(
 
             nodeLinkModel.breakLink(msg.payload.lId);
             adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
+            itemListView.updateItems(nodeLinkModel.getListViewModel(), true, true);
         });
     }
 );

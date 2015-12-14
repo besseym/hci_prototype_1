@@ -5,8 +5,12 @@ define(
 
         var NodeLinkModel = function (config) {
 
-            var dataPath = "/hci_prototype_1/data/",
-                urlBase = "http://www.smithsonianchannel.com/videos/video",
+            var attributes = {
+                    selectedNodeId: undefined
+                },
+                MAX_LINKS = 7,
+                DATA_PATH = "/hci_prototype_1/data/",
+                URL_BASE = "http://www.smithsonianchannel.com/videos/video",
                 nodeArray,
                 nodeDescArray,
                 nodeMap,
@@ -26,6 +30,7 @@ define(
                 };
 
             initModel();
+            set(config);
 
             function initModel(){
 
@@ -37,12 +42,31 @@ define(
                 nodeLinksMap = [];
             }
 
+            function set(){
+                common.setAttributes(arguments, attributes);
+            }
+
+            function get(){
+                return common.getAttributes(arguments, attributes);
+            }
+
             function getNodeId(id){
                 return 'n-' + id;
             }
 
             function getLinkId(sourceId, targetId){
                 return 'l-' + sourceId + "-" + targetId;
+            }
+
+            function getSelectedNode(){
+
+                var node;
+
+                if(attributes.selectedNodeId !== undefined) {
+                    node = nodeMap[attributes.selectedNodeId];
+                }
+
+                return node;
             }
 
             function getNodeArray(iStart, iEnd, sDesc){
@@ -75,7 +99,7 @@ define(
                 return nArray;
             }
 
-            function getLinkGridArray(sStart, sEnd, tStart, tEnd){
+            function getLinkGridViewArray(sStart, sEnd, tStart, tEnd){
 
                 var i, j,
                     sNode, tNode,
@@ -200,7 +224,7 @@ define(
                 node.nId = getNodeId(node.id);
                 node.titleFilter = node.title.toLowerCase().replace(/'/g, '');
                 node.threePartKey = node.seriesId + '_' + node.seasonNumber + '_' + node.showId;
-                node.url = urlBase + '/' + node.id;
+                node.url = URL_BASE + '/' + node.id;
                 node.class = classOutArray.join(' ');
 
                 nodeMap[node.nId] = node;
@@ -323,6 +347,10 @@ define(
                 return w;
             }
 
+            function getNode(nId){
+                return nodeMap[nId];
+            }
+
             function getLink(lId){
                 return linkMap[lId];
             }
@@ -353,10 +381,24 @@ define(
                 return nodeLink;
             }
 
-            function updateLink(sourceId, targetId){
+            function updateSelectedLink(tId){
 
-                var sNode, tNode, weight,
-                    lId = getLinkId(sourceId, targetId);
+                var selectedNode = getSelectedNode();
+                if(selectedNode !== undefined){
+
+                    updateLink({
+                        sId: selectedNode.id,
+                        tId: tId
+                    });
+                }
+            }
+
+            function updateLink(data){
+
+                var sNode, tNode, weight, nodeLinks,
+                    sNodeId = getNodeId(data.sId),
+                    tNodeId = getNodeId(data.tId),
+                    lId = getLinkId(data.sId, data.tId);
 
                 //is connected
                 if(linkMap[lId] !== undefined){
@@ -364,12 +406,25 @@ define(
                 }
                 else {
 
-                    sNode = nodeMap[getNodeId(sourceId)];
-                    tNode = nodeMap[getNodeId(targetId)];
-                    weight = getMaxWeight(sNode.nId) + 1;
+                    sNode = nodeMap[sNodeId];
+                    nodeLinks = nodeLinksMap[sNode.nId];
+                    if(nodeLinks === undefined || nodeLinks.length < MAX_LINKS){
 
-                    makeLink(sNode, tNode, weight);
+                        tNode = nodeMap[tNodeId];
+                        weight = getMaxWeight(sNode.nId) + 1;
+
+                        makeLink(sNode, tNode, weight);
+                    }
+                    else {
+
+                        dispatch.publish("view_flash", {
+                            type: "danger",
+                            message: "You've reached the maxiumn number of links for \"" + sNode.title + "\""
+                        });
+                    }
                 }
+
+                dispatch.publish("model_update_link_success", data);
             }
 
             function getTitleStats(title){
@@ -599,7 +654,7 @@ define(
 
                     initModel();
 
-                    d3.json(dataPath + graph, function(error, data) {
+                    d3.json(DATA_PATH + graph, function(error, data) {
 
                         populate(data);
 
@@ -619,6 +674,10 @@ define(
 
             /***** public methods *****/
 
+            this.set = set;
+            this.get = get;
+
+            this.getNodeId = getNodeId;
             this.getLinkId = getLinkId;
 
             this.makeLink = makeLink;
@@ -627,11 +686,27 @@ define(
             this.isConnected = isConnected;
             this.hasLink = hasLink;
             this.getLink = getLink;
+            this.getNode = getNode;
             this.getNodeLink = getNodeLink;
+            this.updateSelectedLink = updateSelectedLink;
+
+            this.getSelectedNode = getSelectedNode;
 
             this.loadData = loadData;
 
             /***** view model methods *****/
+
+
+            this.getSelectedNode = function(){
+
+                var node;
+
+                if(attributes.selectedNodeId !== undefined) {
+                    node = nodeMap[attributes.selectedNodeId];
+                }
+
+                return node;
+            };
 
             this.getStats = function(input){
 
@@ -655,12 +730,12 @@ define(
                 };
             };
 
-            this.getListViewModel = function(selectedNodeId){
+            this.getListViewModel = function(){
 
                 var i, nodeView, nodeLinks,
-                    selectedNode = nodeMap[selectedNodeId],
+                    selectedNode = getSelectedNode(),
                     nodeViewArray = nodeArray.slice(),
-                    hasSelectedNode = (selectedNodeId !== undefined);
+                    hasSelectedNode = (selectedNode !== undefined);
 
                 for(i = 0; i < nodeViewArray.length; i++){
                     nodeView = nodeViewArray[i];
@@ -693,17 +768,25 @@ define(
                     sNodeArray: getNodeArray(sStart, sEnd),
                     sNodeArrayDesc: getNodeArray(sStart, sEnd, true),
                     tNodeArray: getNodeArray(tStart, tEnd),
-                    linkGridArray: getLinkGridArray(sStart, sEnd, tStart, tEnd),
+                    linkGridArray: getLinkGridViewArray(sStart, sEnd, tStart, tEnd),
                     maxNodeTitleLength: getMaxNodeTitleLength()
                 };
             };
 
-            this.getSelectViewModel = function(nId){
+            this.getSelectViewModel = function(){
 
-                return {
-                    node: nodeMap[nId],
-                    links: nodeLinksMap[nId]
-                };
+                var selectedNode = getSelectedNode(),
+                    viewModel = {
+                        node: selectedNode,
+                        links: []
+                    },
+                    nodeLinks = nodeLinksMap[selectedNode.nId];
+
+                if(nodeLinks !== undefined){
+                    viewModel.links = nodeLinks;
+                }
+
+                return viewModel;
             };
         };
 

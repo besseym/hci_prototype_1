@@ -50,6 +50,31 @@ define(
                         itemView.find(".ll-btns").html(itemBtnTemplate(node));
                     }
                 }
+
+                if(updateActionBtns){
+
+                    getItemTable().find(".list-btn-select").on("click", function(event){
+
+                        var nId = $(this).data("node-id");
+
+                        dispatch.publish("view_select_node", {
+                            nId: nId
+                        });
+
+                        event.preventDefault();
+                    });
+
+                    getItemTable().find(".list-btn-link").on("click", function(event){
+
+                        var id = $(this).data("id");
+
+                        dispatch.publish("view_update_selected_link", {
+                            id: id
+                        });
+
+                        event.preventDefault();
+                    });
+                }
             }
 
             function highlight(highlights){

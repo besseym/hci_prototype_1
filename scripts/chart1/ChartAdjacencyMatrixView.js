@@ -9,8 +9,9 @@ define(
                 svg = null,
                 xScale, yScale, sep = 0.05,
                 colorDefault = "#f5f5f5",
-                cScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(["#eff3ff","#c6dbef","#9ecae1","#6baed6","#4292c6","#2171b5","#084594"]),
-                hScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(["#feedde","#fdd0a2","#fdae6b","#fd8d3c","#f16913","#d94801","#8c2d04"]),
+                cScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(colorbrewer.PuBu[7]),
+                hScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(colorbrewer.PuRd[7]),
+                mScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(colorbrewer.BuGn[7]),
                 attributes = {
                     tranistionTime: 1000
                 },
@@ -214,9 +215,7 @@ define(
 
                         dispatch.publish("view_update_link", {
                             sId: d.source.id,
-                            sNodeId: d.source.nId,
-                            tId: d.target.id,
-                            tNodeId: d.target.nId
+                            tId: d.target.id
                         });
                     })
                     .on('mouseover', function(d, i) {
@@ -331,6 +330,10 @@ define(
             function highlightLink(link, doHighlight){
 
                 var f = colorDefault;
+                if(link.source.id === link.target.id){
+                    return;
+                }
+
                 if(link.rank > 0){
 
                     if(doHighlight){
