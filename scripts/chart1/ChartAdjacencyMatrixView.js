@@ -55,7 +55,7 @@ define(
 
             function calculateFontSize (d, i) {
 
-                var fontSize = (yScale.rangeBand() * 0.75);
+                var fontSize = (yScale.rangeBand() * 0.60);
 
                 if(fontSize > 14){
                     fontSize = 14;
@@ -68,9 +68,10 @@ define(
 
                 var width = parseInt(svg.style("width"), 10),
                     height = width,
-                    paddingLeft = width / 4,
-                    paddingTop = width / 4,
-                    paddingRight = width / 20,
+                    unit = (width / data.tNodeArray.length),
+                    paddingLeft = unit * Math.pow(data.tNodeArray.length, 0.6),
+                    paddingTop = paddingLeft,
+                    paddingRight = unit * Math.pow(data.tNodeArray.length, 0.25),
                     paddingBottom = paddingRight;
 
                 svg.attr('height', height);
@@ -126,6 +127,14 @@ define(
                         dispatch.publish("view_select_node", {
                             nId: d.nId
                         });
+                    })
+                    .on('mouseover', function(d, i) {
+
+                        highlightNode(d.id, true, true);
+                    })
+                    .on('mouseout', function(d, i) {
+
+                        highlightNode(d.id, true, false);
                     })
                     .text(function(d) {
                         return d.title;
@@ -218,6 +227,39 @@ define(
                         "class": function(d, i) {
                             return d.class;
                         }
+                    });
+
+                linksGroup
+                    .selectAll("rect")
+                    .data(data.linkGridArray, data.linkDomainMap)
+                    .transition().duration(attributes.tranistionTime)
+                    .attr({
+                        "x": function (d, i) {
+                            return xScale(d.target.id);
+                        },
+                        "y": function (d, i) {
+                            return yScale(d.source.id);
+                        },
+                        "width": xScale.rangeBand(),
+                        "height": yScale.rangeBand()
+                    });
+
+                linksGroup
+                    .selectAll("rect")
+                    .data(data.linkGridArray, data.linkDomainMap)
+                    .attr({
+                        fill: function(d) {
+
+                            var f = colorDefault;
+                            if(d.source.id === d.target.id){
+                                f = "#d5d5d5";
+                            }
+                            else if(d.rank > 0){
+                                f = cScale(d.rank);
+                            }
+
+                            return f;
+                        }
                     })
                     .on('click', function(d, i) {
 
@@ -263,33 +305,6 @@ define(
                             lId: d.lId,
                             withKey: d3.event.shiftKey
                         });
-                    });
-
-                linksGroup
-                    .selectAll("rect")
-                    .data(data.linkGridArray, data.linkDomainMap)
-                    .transition().duration(attributes.tranistionTime)
-                    .attr({
-                        "x": function(d, i) {
-                            return xScale(d.target.id);
-                        },
-                        "y": function (d, i) {
-                            return yScale(d.source.id);
-                        },
-                        "width": xScale.rangeBand(),
-                        "height": yScale.rangeBand(),
-                        fill: function(d) {
-
-                            var f = colorDefault;
-                            if(d.source.id === d.target.id){
-                                f = "#d5d5d5";
-                            }
-                            else if(d.rank > 0){
-                                f = cScale(d.rank);
-                            }
-
-                            return f;
-                        }
                     });
 
                 linksGroup
@@ -373,11 +388,11 @@ define(
 
                 if(doHighlight){
 
-                    svg.select(id).style({'font-weight': '900'});
+                    svg.select(id).style({'text-decoration': 'underline'});
                 }
                 else {
 
-                    svg.select(id).style({'font-weight': 'normal'});
+                    svg.select(id).style({'text-decoration': 'none'});
                 }
             }
 
