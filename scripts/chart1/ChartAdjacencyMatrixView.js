@@ -53,9 +53,9 @@ define(
                 }
             }
 
-            function calculateFontSize (d, i) {
+            function calculateFontSize (d, i, band) {
 
-                var fontSize = (yScale.rangeBand() * 0.60);
+                var fontSize = (band * 0.60);
 
                 if(fontSize > 14){
                     fontSize = 14;
@@ -155,9 +155,11 @@ define(
                         //    return parent.get('padding').left;
                         //},
                         //"lengthAdjust": "spacing",
-                        "font-size": calculateFontSize,
+                        "font-size": function(d, i) {
+                            return calculateFontSize(d, i, yScale.rangeBand());
+                        },
                         "dy": function (d, i) {
-                            return (calculateFontSize(d, i) * 0.5);
+                            return (calculateFontSize(d, i, yScale.rangeBand()) * 0.5);
                         }
                     });
 
@@ -203,9 +205,11 @@ define(
                         //    return parent.get('padding').top;
                         //},
                         //"lengthAdjust": "spacing",
-                        "font-size": calculateFontSize,
+                        "font-size": function(d, i) {
+                            return calculateFontSize(d, i, xScale.rangeBand());
+                        },
                         "dx": function (d, i) {
-                            return (calculateFontSize(d, i) * 0.5);
+                            return (calculateFontSize(d, i, xScale.rangeBand()) * 0.5);
                         }
                     });
 
