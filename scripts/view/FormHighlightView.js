@@ -7,10 +7,11 @@ define(
 
             var form,
                 inputTitle,
-                radioProperty,
                 attributes = {
                     selector: null,
-                    topicSubmit: null
+                    topicSubmit: null,
+                    currentTitle: undefined,
+                    currentProperty: undefined
                 };
 
             set(config);
@@ -28,17 +29,22 @@ define(
                     inputTitle = form.find("#input-filter-title");
                     inputTitle.on('input', function(event) {
 
+                        attributes.currentTitle = inputTitle.val().toLowerCase();
+                        console.log(attributes.currentProperty);
+
                         dispatch.publish("view_form_highlight_title", {
-                            title: inputTitle.val().toLowerCase()
+                            property: attributes.currentProperty,
+                            title: attributes.currentTitle
                         });
                     });
 
-                    inputTitle = form.find("#input-filter-title");
-                    $('#form-hightlight input[name=property]:radio').change(function(event) {
+                    $("#form-hightlight input[name=property]").change(function(event) {
 
-                        var category = $(this).val();
+                        attributes.currentProperty = $(this).val();
+
                         dispatch.publish("view_form_highlight_property", {
-                            category: category
+                            property: attributes.currentProperty,
+                            title: attributes.currentTitle
                         });
                     });
                 }
@@ -57,6 +63,14 @@ define(
             this.set = set;
 
             this.updateView = updateView;
+
+            this.getHighlightViewModel = function(){
+
+                return {
+                    property: attributes.currentProperty,
+                    title: attributes.currentTitle
+                };
+            };
 
         };
 

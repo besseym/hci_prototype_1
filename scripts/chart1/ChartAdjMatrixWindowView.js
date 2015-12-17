@@ -90,10 +90,7 @@ define(
 
                     for(yi = 0; yi < attributes.yMax; yi++){
 
-                        if(xi >= attributes.xStart
-                            && xi < attributes.xEnd
-                            && yi >= attributes.yStart
-                            && yi < attributes.yEnd ){
+                        if(xi >= attributes.xStart && xi < attributes.xEnd && yi >= attributes.yStart && yi < attributes.yEnd ){
 
                             context.fillStyle = "#d5d5d5";
                         }

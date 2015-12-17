@@ -84,7 +84,7 @@ define(
 
                 //reset everything first
                 selectResult = view.find('tbody tr');
-                selectResult.css({'opacity': 1.0});
+                selectResult.css({'opacity': 1.0, 'font-weight': 'normal'});
                 selectResult.find(".list-video-btn").css({color: null, 'background-color': null});
 
                 for(k in highlights){
@@ -92,6 +92,16 @@ define(
                     hValue = highlights[k];
 
                     switch(k) {
+
+                        case 'selectedNode':
+
+                            if(hValue !== undefined) {
+
+                                selectResult = view.find("tbody tr#n-" + hValue.id);
+                                selectResult.css({'font-weight': 900});
+                            }
+
+                            break;
 
                         case 'title':
 

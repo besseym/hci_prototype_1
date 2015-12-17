@@ -294,13 +294,23 @@ define(
                 var i, k, hValue, selectResult, property;
 
                 selectResult = svg.selectAll("text");
-                selectResult.style({'opacity': 1.0});
+                selectResult.style({'opacity': 1.0, 'font-weight': 'normal'});
 
                 for(k in highlights) {
 
                     hValue = highlights[k];
 
                     switch (k) {
+
+                        case 'selectedNode':
+
+                            if(hValue !== undefined) {
+
+                                selectResult = svg.selectAll("#s-" + hValue.id);
+                                selectResult.style({'font-weight': 900});
+                            }
+
+                            break;
 
                         case 'title':
 

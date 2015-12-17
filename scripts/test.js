@@ -114,7 +114,8 @@ require(
 
         dispatch.subscribe("view_form_highlight_title", function(msg){
 
-            var stats = nodeLinkModel.getStats(msg.payload);
+            var highlightViewMode = highlightFormView.getHighlightViewModel(),
+                stats = nodeLinkModel.getStatsViewModel(highlightViewMode);
 
             highlightFormView.updateView(stats);
 
@@ -124,7 +125,8 @@ require(
 
         dispatch.subscribe("view_form_highlight_property", function(msg){
 
-            var stats = nodeLinkModel.getStats(msg.payload);
+            var highlightViewMode = highlightFormView.getHighlightViewModel(),
+                stats = nodeLinkModel.getStatsViewModel(highlightViewMode);
 
             chartUtil.decorateWithColor(stats.property);
 
@@ -136,15 +138,20 @@ require(
 
         dispatch.subscribe("view_select_node", function(msg){
 
-            var nId = msg.payload.nId;
+            var nId = msg.payload.nId,
+                highlightViewMode = highlightFormView.getHighlightViewModel();
 
             nodeLinkModel.set({selectedNodeId: nId});
+            stats = nodeLinkModel.getStatsViewModel(highlightViewMode);
 
             selectView.updateView(nodeLinkModel.getSelectViewModel());
             itemListView.updateItems(nodeLinkModel.getListViewModel(), false, true);
 
             formTabbedView.focusTabNav("select");
             formTabbedView.focusTabPane("select");
+
+            itemListView.highlight(stats);
+            adjacencyMatrixView.highlight(stats);
         });
 
         dispatch.subscribe("view_update_selected_link", function(msg){

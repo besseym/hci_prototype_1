@@ -1,7 +1,7 @@
 define(
-    ["d3", "common", "dispatch"],
+    ["d3", "common", "dispatch", "chart1/chartUtil"],
 
-    function (d3, common, dispatch) {
+    function (d3, common, dispatch, chartUtil) {
 
         var NodeLinkModel = function (config) {
 
@@ -61,17 +61,6 @@ define(
 
             function getLinkId(sourceId, targetId){
                 return 'l-' + sourceId + "-" + targetId;
-            }
-
-            function getSelectedNode(){
-
-                var node;
-
-                if(attributes.selectedNodeId !== undefined) {
-                    node = nodeMap[attributes.selectedNodeId];
-                }
-
-                return node;
             }
 
             function getNodeArray(iStart, iEnd, sDesc){
@@ -356,6 +345,17 @@ define(
 
             function getNode(nId){
                 return nodeMap[nId];
+            }
+
+            function getSelectedNode(){
+
+                var node;
+
+                if(attributes.selectedNodeId !== undefined) {
+                    node = nodeMap[attributes.selectedNodeId];
+                }
+
+                return node;
             }
 
             function getLink(lId){
@@ -703,28 +703,19 @@ define(
 
             /***** view model methods *****/
 
+            this.getStatsViewModel = function(input){
 
-            this.getSelectedNode = function(){
-
-                var node;
-
-                if(attributes.selectedNodeId !== undefined) {
-                    node = nodeMap[attributes.selectedNodeId];
-                }
-
-                return node;
-            };
-
-            this.getStats = function(input){
-
-                var stats = {};
+                var stats = {
+                    selectedNode: getSelectedNode()
+                };
 
                 if(input.title !== undefined){
                     stats.title = getTitleStats(input.title);
                 }
 
-                if(input.category !== undefined){
-                    stats.property = getPropertyStats(input.category);
+                if(input.property !== undefined){
+                    stats.property = getPropertyStats(input.property);
+                    chartUtil.decorateWithColor(stats.property);
                 }
 
                 return stats;
