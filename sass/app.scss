@@ -128,11 +128,22 @@ $clr-link-1: #084594;
 
       cursor: pointer;
     }
+
+    #m-info {
+
+      pointer-events: none;
+      background-color:rgba(245, 245, 245, 0.85);
+
+      width: 500px;
+
+      h4, h5 {
+        text-align: center;
+      }
+    }
   }
 
   .chart-dialog {
 
-    width: 500px;
     visibility: hidden;
     position: absolute;
   }

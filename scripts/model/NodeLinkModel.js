@@ -802,6 +802,27 @@ define(
                     yEnd: attributes.sEnd
                 };
             };
+
+            this.getMatrixInfoViewModel = function(data){
+
+                var source, target,
+                    link = getLink(data.lId);
+
+                if(link === undefined){
+
+                    link = {
+                        lId: data.lId,
+                        rank: 0,
+                        weight: 0,
+                        source: getNode(data.sNodeId),
+                        target: getNode(data.tNodeId)
+                    };
+                }
+
+                return {
+                    link: link
+                };
+            };
         };
 
         return function(config){

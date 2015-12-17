@@ -10,6 +10,7 @@ require(
         "dispatch",
         "model/NodeLinkModel",
         "view/FlashView",
+        "view/QuickInfoView",
         "view/LoadingView",
         "view/ColorKeyView",
         "view/FormView",
@@ -28,6 +29,7 @@ require(
         dispatch,
         NodeLinkModel,
         FlashView,
+        QuickInfoView,
         LoadingView,
         ColorKeyView,
         FormView,
@@ -46,6 +48,8 @@ require(
 
             flashView = new FlashView({selector: "#flash"}),
             //loadingView = new LoadingView({selector: "#flash"}),
+            matrixInfoView = new QuickInfoView({selector: "#m-info"}),
+
             colorKeyView = new ColorKeyView({selector: "#key-color", templateId: "template-color-key"}),
 
             searchFormView = new FormView({selector: "#form-search", topicSubmit: "view_form_submit_search"}),
@@ -87,7 +91,7 @@ require(
                 listViewModel = nodeLinkModel.getListViewModel(),
                 adjacencyMatrixViewModel;
 
-            nodeLinkModel.set({sStart: 0, sEnd: 7, tStart: 0});
+            //nodeLinkModel.set({sStart: 0, sEnd: 7, tStart: 0});
             adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
 
             formTabbedView.focusTabNav("highlight");
@@ -197,12 +201,30 @@ require(
 
         dispatch.subscribe("view_chart_mouseover_link", function(msg){
 
+            var matrixInfoViewModel;
+
             selectView.highlightLink(msg.payload.lId, true);
+
+            if(msg.payload.withKey){
+
+                matrixInfoViewModel = nodeLinkModel.getMatrixInfoViewModel(msg.payload);
+                matrixInfoView.updateView(matrixInfoViewModel);
+                matrixInfoView.show();
+                matrixInfoView.setLocation(msg.payload.location);
+            }
+        });
+
+        dispatch.subscribe("view_chart_mouseout_link", function(msg){
+
+            if(!msg.payload.withKey) {
+                matrixInfoView.hide();
+            }
         });
 
         dispatch.subscribe("view_chart_mouseout_link", function(msg){
 
             selectView.highlightLink(msg.payload.lId, false);
+
         });
 
         dispatch.subscribe("view_select_remove_link", function(msg){

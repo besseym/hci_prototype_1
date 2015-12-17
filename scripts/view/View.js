@@ -33,6 +33,19 @@ define(
 
             this.set = set;
             this.updateView = updateView;
+
+            this.getView = function(){
+                return view;
+            };
+            this.show = function(){
+
+                view.css("visibility", "visible");
+            };
+
+            this.hide = function(){
+
+                view.css("visibility", "hidden");
+            };
         };
 
         return function(config){

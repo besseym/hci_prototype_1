@@ -53,20 +53,32 @@ define(
                 }
             }
 
+            function calculateFontSize (d, i) {
+
+                var fontSize = (yScale.rangeBand() * 0.75);
+
+                if(fontSize > 14){
+                    fontSize = 14;
+                }
+
+                return fontSize;
+            }
+
             function updateScale(data){
 
                 var width = parseInt(svg.style("width"), 10),
                     height = width,
                     paddingLeft = width / 4,
                     paddingTop = width / 4,
-                    paddingRight = width / 10;
+                    paddingRight = width / 20,
+                    paddingBottom = paddingRight;
 
                 svg.attr('height', height);
 
                 parent.set(
                     {
                         width: width, height: height,
-                        paddingLeft: paddingLeft, paddingTop: paddingTop, paddingRight: paddingRight
+                        paddingLeft: paddingLeft, paddingTop: paddingTop, paddingRight: paddingRight, paddingBottom: paddingBottom
                     }
                 );
 
@@ -128,17 +140,15 @@ define(
                             return parent.get('paddingLeft');
                         },
                         "y": function (d, i) {
-                            return yScale(d.id) + (yScale.rangeBand() /2);
+                            return yScale(d.id) + (yScale.rangeBand() * 0.5);
                         },
                         //"textLength":  function (d, i) {
                         //    return parent.get('padding').left;
                         //},
                         //"lengthAdjust": "spacing",
-                        "font-size": function (d, i) {
-                            return Math.sqrt(yScale.rangeBand() * 2);
-                        },
+                        "font-size": calculateFontSize,
                         "dy": function (d, i) {
-                            return (Math.sqrt(yScale.rangeBand() * 2) * 0.5);
+                            return (calculateFontSize(d, i) * 0.5);
                         }
                     });
 
@@ -184,11 +194,9 @@ define(
                         //    return parent.get('padding').top;
                         //},
                         //"lengthAdjust": "spacing",
-                        "font-size": function (d, i) {
-                            return Math.sqrt(xScale.rangeBand() * 2);
-                        },
+                        "font-size": calculateFontSize,
                         "dx": function (d, i) {
-                            return (Math.sqrt(xScale.rangeBand() * 2) * 0.5);
+                            return (calculateFontSize(d, i) * 0.5);
                         }
                     });
 
@@ -221,7 +229,11 @@ define(
                     .on('mouseover', function(d, i) {
 
                         var sId = d.source.id,
-                            tId = d.target.id;
+                            tId = d.target.id,
+                            location = {
+                                x: xScale(d.target.id) + (xScale.rangeBand() * 0.25),
+                                y: yScale(d.source.id) + (yScale.rangeBand() * 0.75)
+                            };
 
                         highlightNode(sId, true, true);
                         highlightNode(tId, false, true);
@@ -229,7 +241,12 @@ define(
                         highlightLink(d, true);
 
                         dispatch.publish("view_chart_mouseover_link", {
-                            lId: d.lId
+
+                            lId: d.lId,
+                            sNodeId: d.source.nId,
+                            tNodeId: d.target.nId,
+                            withKey: d3.event.shiftKey,
+                            location: location
                         });
                     })
                     .on('mouseout', function(d, i) {
@@ -243,12 +260,9 @@ define(
                         highlightLink(d, false);
 
                         dispatch.publish("view_chart_mouseout_link", {
-                            lId: d.lId
+                            lId: d.lId,
+                            withKey: d3.event.shiftKey
                         });
-                    })
-                    .append("title")
-                    .text(function(d) {
-                        return d.source.title + " :: " + d.target.title + " :: " + d.rank;
                     });
 
                 linksGroup
@@ -276,10 +290,6 @@ define(
 
                             return f;
                         }
-                    })
-                    .select("title")
-                    .text(function(d) {
-                        return d.source.title + " -- " + d.target.title + " -- " + d.rank;
                     });
 
                 linksGroup

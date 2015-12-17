@@ -9724,8 +9724,15 @@ button.close {
 .chart.chart-matrix rect.link {
   cursor: pointer;
 }
-.chart .chart-dialog {
+.chart.chart-matrix #m-info {
+  pointer-events: none;
+  background-color: rgba(245, 245, 245, 0.85);
   width: 500px;
+}
+.chart.chart-matrix #m-info h4, .chart.chart-matrix #m-info h5 {
+  text-align: center;
+}
+.chart .chart-dialog {
   visibility: hidden;
   position: absolute;
 }
