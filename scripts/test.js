@@ -9,6 +9,7 @@ require(
         "common",
         "dispatch",
         "model/NodeLinkModel",
+        "view/KeyboardView",
         "view/FlashView",
         "view/QuickInfoView",
         "view/LoadingView",
@@ -28,6 +29,7 @@ require(
         common,
         dispatch,
         NodeLinkModel,
+        KeyboardView,
         FlashView,
         QuickInfoView,
         LoadingView,
@@ -45,6 +47,8 @@ require(
     ) {
 
         var nodeLinkModel = new NodeLinkModel(),
+
+            keyboardView = new KeyboardView(),
 
             flashView = new FlashView({selector: "#flash"}),
             //loadingView = new LoadingView({selector: "#flash"}),
@@ -72,7 +76,7 @@ require(
             ),
             adjMatrixWindowView = ChartAdjMatrixWindowView({selector: "#chart-matrix-window"});
 
-        adjMatrixWindowView.setPaddingAll(25);
+        adjMatrixWindowView.setPaddingAll(5);
 
         dispatch.subscribe("view_flash", function(msg){
 
@@ -232,6 +236,49 @@ require(
             nodeLinkModel.breakLink(msg.payload.lId);
             adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
             itemListView.updateItems(nodeLinkModel.getListViewModel(), true, true);
+        });
+
+        dispatch.subscribe("view_keyboard_left", function(msg){
+
+            console.log("keyboard_left");
+        });
+
+        dispatch.subscribe("view_keyboard_up", function(msg){
+
+            console.log("keyboard_up");
+        });
+
+        dispatch.subscribe("view_keyboard_right", function(msg){
+
+            console.log("keyboard_right");
+        });
+
+        dispatch.subscribe("view_keyboard_down", function(msg){
+
+            console.log("keyboard_down");
+        });
+
+        dispatch.subscribe("view_keyboard_zoom", function(msg){
+
+            var adjacencyMatrixViewModel;
+
+            nodeLinkModel.zoom();
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+
+            adjMatrixWindowView.updateScale();
+            adjMatrixWindowView.draw();
+        });
+
+        dispatch.subscribe("view_keyboard_expand", function(msg){
+
+            nodeLinkModel.expand();
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+
+            adjMatrixWindowView.updateScale();
+            adjMatrixWindowView.draw();
+
         });
     }
 );

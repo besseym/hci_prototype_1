@@ -71,7 +71,7 @@ define(
                     unit = (width / data.tNodeArray.length),
                     paddingLeft = unit * Math.pow(data.tNodeArray.length, 0.6),
                     paddingTop = paddingLeft,
-                    paddingRight = unit * Math.pow(data.tNodeArray.length, 0.25),
+                    paddingRight = unit * Math.pow(data.tNodeArray.length, 0.2),
                     paddingBottom = paddingRight;
 
                 svg.attr('height', height);

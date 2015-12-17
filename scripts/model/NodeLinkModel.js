@@ -8,6 +8,10 @@ define(
             var attributes = {
                     selectedNodeId: undefined,
 
+                    zRate: 3,
+                    xRate: 3,
+                    mRate: 3,
+
                     sStart: 0,
                     sEnd: undefined,
                     tStart: 0,
@@ -679,10 +683,47 @@ define(
                 }
             }
 
+            function zoom(){
+
+                if((attributes.sStart + attributes.zRate) < (attributes.sEnd - attributes.zRate)){
+
+                    attributes.sStart = attributes.sStart + attributes.zRate;
+                    attributes.sEnd = attributes.sEnd - attributes.zRate;
+                }
+
+                if((attributes.tStart + attributes.zRate) < (attributes.tEnd - attributes.zRate)){
+
+                    attributes.tStart = attributes.tStart + attributes.zRate;
+                    attributes.tEnd = attributes.tEnd - attributes.zRate;
+                }
+            }
+
+            function expand(){
+
+                if((attributes.sStart - attributes.xRate) >= 0){
+                    attributes.sStart = attributes.sStart - attributes.xRate;
+                }
+
+                if((attributes.sEnd + attributes.xRate) <= nodeArray.length){
+                    attributes.sEnd = attributes.sEnd + attributes.xRate;
+                }
+
+                if((attributes.tStart - attributes.xRate) >= 0){
+                    attributes.tStart = attributes.tStart - attributes.xRate;
+                }
+
+                if((attributes.tEnd + attributes.xRate) <= nodeArray.length){
+                    attributes.tEnd = attributes.tEnd + attributes.xRate;
+                }
+            }
+
             /***** public methods *****/
 
             this.set = set;
             this.get = get;
+
+            this.zoom = zoom;
+            this.expand = expand;
 
             this.getNodeId = getNodeId;
             this.getLinkId = getLinkId;
