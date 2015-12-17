@@ -55,7 +55,7 @@ define(
 
             function calculateFontSize (d, i, band) {
 
-                var fontSize = (band * 0.60);
+                var fontSize = (band * 0.5);
 
                 if(fontSize > 14){
                     fontSize = 14;

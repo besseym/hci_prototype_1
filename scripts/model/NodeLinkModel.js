@@ -683,6 +683,48 @@ define(
                 }
             }
 
+            function move(direction){
+
+                switch (direction) {
+
+                    case "left":
+
+                        if((attributes.tStart - attributes.mRate) >= 0){
+                            attributes.tStart = attributes.tStart - attributes.mRate;
+                            attributes.tEnd = attributes.tEnd - attributes.mRate;
+                        }
+
+                        break;
+
+                    case "up":
+
+                        if((attributes.sStart - attributes.mRate) >= 0){
+                            attributes.sStart = attributes.sStart - attributes.mRate;
+                            attributes.sEnd = attributes.sEnd - attributes.mRate;
+                        }
+
+                        break;
+
+                    case "right":
+
+                        if((attributes.tEnd + attributes.mRate) <= nodeArray.length){
+                            attributes.tStart = attributes.tStart + attributes.mRate;
+                            attributes.tEnd = attributes.tEnd + attributes.mRate;
+                        }
+
+                        break;
+
+                    case "down":
+
+                        if((attributes.sEnd + attributes.mRate) <= nodeArray.length){
+                            attributes.sStart = attributes.sStart + attributes.mRate;
+                            attributes.sEnd = attributes.sEnd + attributes.mRate;
+                        }
+
+                        break;
+                }
+            }
+
             function zoom(){
 
                 if((attributes.sStart + attributes.zRate) < (attributes.sEnd - attributes.zRate)){
@@ -723,6 +765,7 @@ define(
             this.get = get;
 
             this.zoom = zoom;
+            this.move = move;
             this.expand = expand;
 
             this.getNodeId = getNodeId;

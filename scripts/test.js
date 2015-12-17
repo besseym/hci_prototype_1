@@ -240,22 +240,50 @@ require(
 
         dispatch.subscribe("view_keyboard_left", function(msg){
 
-            console.log("keyboard_left");
+            nodeLinkModel.move("left");
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            adjMatrixWindowView.draw();
+
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
         });
 
         dispatch.subscribe("view_keyboard_up", function(msg){
 
-            console.log("keyboard_up");
+            nodeLinkModel.move("up");
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            adjMatrixWindowView.draw();
+
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
         });
 
         dispatch.subscribe("view_keyboard_right", function(msg){
 
-            console.log("keyboard_right");
+            nodeLinkModel.move("right");
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            adjMatrixWindowView.draw();
+
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
         });
 
         dispatch.subscribe("view_keyboard_down", function(msg){
 
-            console.log("keyboard_down");
+            nodeLinkModel.move("down");
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            adjMatrixWindowView.draw();
+
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
         });
 
         dispatch.subscribe("view_keyboard_zoom", function(msg){
@@ -265,9 +293,11 @@ require(
             nodeLinkModel.zoom();
 
             adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-
-            adjMatrixWindowView.updateScale();
             adjMatrixWindowView.draw();
+
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
         });
 
         dispatch.subscribe("view_keyboard_expand", function(msg){
@@ -275,10 +305,11 @@ require(
             nodeLinkModel.expand();
 
             adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-
-            adjMatrixWindowView.updateScale();
             adjMatrixWindowView.draw();
 
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
         });
     }
 );
