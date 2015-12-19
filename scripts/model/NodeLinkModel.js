@@ -49,6 +49,9 @@ define(
                 linkArray = [];
                 linkMap = [];
                 nodeLinksMap = [];
+
+                attributes.sStart = 0;
+                attributes.tStart = 0;
             }
 
             function set(){
@@ -97,13 +100,70 @@ define(
                 return nArray;
             }
 
+            function getLinkView(data){
+
+                var classOutArray = [
+                        "link"
+                    ],
+                    linkView = {
+
+                        rank: 0,
+                        weight: 0,
+                        isManual: false
+                    };
+
+                if (data.link !== undefined) {
+
+                    linkView.lId = data.link.lId;
+
+                    linkView.source = data.link.source;
+                    linkView.target = data.link.target;
+
+                    linkView.rank = data.link.rank;
+                    linkView.weight = data.link.weight;
+                    linkView.isManual = data.link.isManual;
+                }
+                else if(data.sNode !== undefined && data.tNode !== undefined){
+
+                    linkView.lId = getLinkId(data.sNode.id, data.tNode.id);
+
+                    linkView.source = data.sNode;
+                    linkView.target = data.tNode;
+                }
+                else {
+                    throw "Need a source and target for link view.";
+                }
+
+                classOutArray.push("s-" + linkView.source.id);
+                classOutArray.push("t-" + linkView.target.id);
+
+                linkView.class = classOutArray.join(" ");
+
+                return linkView;
+            }
+
+            function getLinkViewArray(){
+
+                var i, link, linkView,
+                    linkViewArray = [];
+
+                for(i = 0; i < linkArray.length; i++){
+
+                    link = linkArray[i];
+                    linkView = getLinkView({link: link});
+                    linkViewArray.push(linkView);
+                }
+
+                return linkViewArray;
+            }
+
             function getLinkGridViewArray(sStart, sEnd, tStart, tEnd){
 
                 var i, j,
                     sNode, tNode,
                     sNodeArray = getNodeArray(sStart, sEnd),
                     tNodeArray = getNodeArray(tStart, tEnd),
-                    lId, link, linkView, classOutArray,
+                    lId, link, linkView,
                     linkGridArray = [];
 
                 for(i = 0; i < sNodeArray.length; i++){
@@ -117,26 +177,11 @@ define(
                         lId = getLinkId(sNode.id, tNode.id);
                         link = linkMap[lId];
 
-                        classOutArray = [
-                            "link",
-                            "s-" + sNode.id,
-                            "t-" + tNode.id
-                        ];
-
-                        linkView = {
-                            lId: lId,
-                            class: classOutArray.join(" "),
-                            source: sNode,
-                            target: tNode,
-                            rank: 0,
-                            weight: 0
-                        };
-
-                        if (link !== undefined) {
-
-                            linkView.rank = link.rank;
-                            linkView.weight = link.weight;
-                        }
+                        linkView = getLinkView({
+                            link: link,
+                            sNode: sNode,
+                            tNode: tNode
+                        });
 
                         linkGridArray.push(linkView);
                     }
@@ -175,7 +220,7 @@ define(
                     for(i = 0; i < data.links.length; i++){
 
                         l = data.links[i];
-                        addLink(l);
+                        addLink(createLinkByIndex(l));
                     }
 
                     nodeArray.sort(function(a, b) {
@@ -231,21 +276,30 @@ define(
                 nodeArray.push(node);
             }
 
-            function addLink(link){
+            function createLinkByIndex(l){
 
-                return makeLink(nodeArray[link.source], nodeArray[link.target], link.weight);
+                var sNode = nodeArray[l.source],
+                    tNode = nodeArray[l.target];
+
+                return createLink(sNode, tNode, l.weight);
             }
 
-            function makeLink(sNode, tNode, weight){
+            function createLink(sNode, tNode, weight){
 
-                var link = {
-                        lId: 'l-' + sNode.id + "-" + tNode.id,
-                        source: sNode,
-                        target: tNode,
-                        rank: weight,
-                        weight: weight
-                    },
-                    nodeLinks = nodeLinksMap[sNode.nId];
+                return {
+
+                    lId: 'l-' + sNode.id + "-" + tNode.id,
+                    source: sNode,
+                    target: tNode,
+                    rank: weight,
+                    weight: weight,
+                    isManual: false
+                };
+            }
+
+            function addLink(link){
+
+                var nodeLinks = nodeLinksMap[link.source.nId];
 
                 linkMap[link.lId] = link;
                 linkArray.push(link);
@@ -257,10 +311,10 @@ define(
 
                 nodeLinks.push({
                     l: link,
-                    n: tNode
+                    n: link.target
                 });
 
-                nodeLinksMap[sNode.nId] = sortNodeLinkArray(nodeLinks);
+                nodeLinksMap[link.source.nId] = sortNodeLinkArray(nodeLinks);
             }
 
             function breakLink(lId){
@@ -409,7 +463,8 @@ define(
                 var sNode, tNode, weight, nodeLinks,
                     sNodeId = getNodeId(data.sId),
                     tNodeId = getNodeId(data.tId),
-                    lId = getLinkId(data.sId, data.tId);
+                    lId = getLinkId(data.sId, data.tId),
+                    link;
 
                 //is connected
                 if(linkMap[lId] !== undefined){
@@ -424,7 +479,9 @@ define(
                         tNode = nodeMap[tNodeId];
                         weight = getMaxWeight(sNode.nId) + 1;
 
-                        makeLink(sNode, tNode, weight);
+                        link = createLink(sNode, tNode, weight);
+                        link.isManual = true;
+                        addLink(link);
                     }
                     else {
 
@@ -759,6 +816,14 @@ define(
                 }
             }
 
+            function nodeDomainMap(d){
+                return d.id;
+            }
+
+            function linkDomainMap(d){
+                return d.lId;
+            }
+
             /***** public methods *****/
 
             this.set = set;
@@ -771,7 +836,6 @@ define(
             this.getNodeId = getNodeId;
             this.getLinkId = getLinkId;
 
-            this.makeLink = makeLink;
             this.breakLink = breakLink;
             this.updateLink = updateLink;
             this.isConnected = isConnected;
@@ -851,7 +915,9 @@ define(
                     sNodeArrayDesc: getNodeArray(attributes.sStart, attributes.sEnd, true),
                     tNodeArray: getNodeArray(attributes.tStart, attributes.tEnd),
                     linkGridArray: getLinkGridViewArray(attributes.sStart, attributes.sEnd, attributes.tStart, attributes.tEnd),
-                    maxNodeTitleLength: getMaxNodeTitleLength()
+                    maxNodeTitleLength: getMaxNodeTitleLength(),
+                    nodeDomainMap: nodeDomainMap,
+                    linkDomainMap: linkDomainMap
                 };
             };
 
@@ -869,6 +935,16 @@ define(
                 }
 
                 return viewModel;
+            };
+
+            this.getNodeLinkViewModel = function(){
+
+                return {
+                    nodeArray: nodeArray,
+                    linkArray: getLinkViewArray(),
+                    nodeDomainMap: nodeDomainMap,
+                    linkDomainMap: linkDomainMap
+                };
             };
 
             this.getAdjMatrixWindowViewModel = function(){
