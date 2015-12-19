@@ -22,6 +22,7 @@ require(
         "view/SelectView",
         "view/ItemListView",
         "chart1/chartUtil",
+        "chart1/ChartNodeLinkView",
         "chart1/ChartAdjacencyMatrixView",
         "chart1/ChartAdjMatrixWindowView"
     ],
@@ -42,6 +43,7 @@ require(
         SelectView,
         ItemListView,
         chartUtil,
+        ChartNodeLinkView,
         ChartAdjacencyMatrixView,
         ChartAdjMatrixWindowView
     ) {
@@ -68,6 +70,7 @@ require(
             selectView = new SelectView({selector: "#tab-pane-select", templateId: "template-select"}),
 
             itemListView = new ItemListView({selector: "#list-widget", templateId: "template-item-list"}),
+            chartNodeLinkView = new ChartNodeLinkView({selector: "#chart-graph-video"}),
             adjacencyMatrixView = ChartAdjacencyMatrixView(
                 {
                     selector: "#chart-matrix-video",
@@ -77,6 +80,14 @@ require(
             adjMatrixWindowView = ChartAdjMatrixWindowView({selector: "#chart-matrix-window"});
 
         adjMatrixWindowView.setPaddingAll(5);
+
+        function highlightMatrix(){
+
+            var highlightViewMode = highlightFormView.getHighlightViewModel(),
+                stats = nodeLinkModel.getStatsViewModel(highlightViewMode);
+
+            adjacencyMatrixView.highlight(stats);
+        }
 
         dispatch.subscribe("view_flash", function(msg){
 
@@ -93,10 +104,11 @@ require(
 
             var padding,
                 listViewModel = nodeLinkModel.getListViewModel(),
-                adjacencyMatrixViewModel;
+                adjacencyMatrixViewModel, nodeLinkViewModel;
 
             //nodeLinkModel.set({sStart: 0, sEnd: 7, tStart: 0});
             adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            nodeLinkViewModel = nodeLinkModel.getNodeLinkViewModel();
 
             formTabbedView.focusTabNav("highlight");
             formTabbedView.focusTabPane("highlight");
@@ -118,39 +130,44 @@ require(
 
             adjMatrixWindowView.updateScale();
             adjMatrixWindowView.draw();
+
+            chartNodeLinkView.updateScale(nodeLinkViewModel);
+            chartNodeLinkView.updateView(nodeLinkViewModel);
         });
 
         dispatch.subscribe("view_form_highlight_title", function(msg){
 
             var highlightViewMode = highlightFormView.getHighlightViewModel(),
-                stats = nodeLinkModel.getStatsViewModel(highlightViewMode);
+                statsViewModel = nodeLinkModel.getStatsViewModel(highlightViewMode);
 
-            highlightFormView.updateView(stats);
+            highlightFormView.updateView(statsViewModel);
 
-            itemListView.highlight(stats);
-            adjacencyMatrixView.highlight(stats);
+            itemListView.highlight(statsViewModel);
+            adjacencyMatrixView.highlight(statsViewModel);
+            chartNodeLinkView.highlight(statsViewModel);
         });
 
         dispatch.subscribe("view_form_highlight_property", function(msg){
 
             var highlightViewMode = highlightFormView.getHighlightViewModel(),
-                stats = nodeLinkModel.getStatsViewModel(highlightViewMode);
+                statsViewModel = nodeLinkModel.getStatsViewModel(highlightViewMode);
 
-            chartUtil.decorateWithColor(stats.property);
+            chartUtil.decorateWithColor(statsViewModel.property);
 
-            colorKeyView.updateView(stats.property);
+            colorKeyView.updateView(statsViewModel.property);
 
-            itemListView.highlight(stats);
-            adjacencyMatrixView.highlight(stats);
+            itemListView.highlight(statsViewModel);
+            adjacencyMatrixView.highlight(statsViewModel);
+            chartNodeLinkView.highlight(statsViewModel);
         });
 
         dispatch.subscribe("view_select_node", function(msg){
 
-            var nId = msg.payload.nId,
+            var nId = msg.payload.nId, statsViewModel,
                 highlightViewMode = highlightFormView.getHighlightViewModel();
 
             nodeLinkModel.set({selectedNodeId: nId});
-            stats = nodeLinkModel.getStatsViewModel(highlightViewMode);
+            statsViewModel = nodeLinkModel.getStatsViewModel(highlightViewMode);
 
             selectView.updateView(nodeLinkModel.getSelectViewModel());
             itemListView.updateItems(nodeLinkModel.getListViewModel(), false, true);
@@ -158,8 +175,9 @@ require(
             formTabbedView.focusTabNav("select");
             formTabbedView.focusTabPane("select");
 
-            itemListView.highlight(stats);
-            adjacencyMatrixView.highlight(stats);
+            itemListView.highlight(statsViewModel);
+            adjacencyMatrixView.highlight(statsViewModel);
+            chartNodeLinkView.highlight(statsViewModel);
         });
 
         dispatch.subscribe("view_update_selected_link", function(msg){
@@ -248,6 +266,8 @@ require(
             adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_up", function(msg){
@@ -260,6 +280,8 @@ require(
             adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_right", function(msg){
@@ -272,6 +294,8 @@ require(
             adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_down", function(msg){
@@ -284,6 +308,8 @@ require(
             adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_zoom", function(msg){
@@ -298,6 +324,8 @@ require(
             adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_expand", function(msg){
@@ -310,6 +338,8 @@ require(
             adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
             adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
         });
     }
 );

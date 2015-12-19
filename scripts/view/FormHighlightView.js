@@ -30,7 +30,6 @@ define(
                     inputTitle.on('input', function(event) {
 
                         attributes.currentTitle = inputTitle.val().toLowerCase();
-                        console.log(attributes.currentProperty);
 
                         dispatch.publish("view_form_highlight_title", {
                             property: attributes.currentProperty,
