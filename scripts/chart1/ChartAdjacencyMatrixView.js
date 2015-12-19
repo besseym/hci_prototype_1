@@ -14,9 +14,6 @@ define(
                 mScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(colorbrewer.BuGn[7]),
                 attributes = {
                     tranistionTime: 1000
-                },
-                domainMap = function(d){
-                    return d.id;
                 };
 
             set(config);
@@ -83,13 +80,21 @@ define(
                     }
                 );
 
-                xScale = d3.scale.ordinal().domain(data.tNodeArray.map(domainMap)).rangeBands(parent.get('rangeX'), sep);
-                yScale = d3.scale.ordinal().domain(data.sNodeArrayDesc.map(domainMap)).rangeBands(parent.get('rangeY'), sep);
+                xScale = d3.scale.ordinal().domain(data.tNodeArray.map(data.nodeDomainMap)).rangeBands(parent.get('rangeX'), sep);
+                yScale = d3.scale.ordinal().domain(data.sNodeArrayDesc.map(data.nodeDomainMap)).rangeBands(parent.get('rangeY'), sep);
             }
 
             function updateView(data){
 
-                var sLabelsGroup = svg.select("g.s-labels"),
+                var rangeX = parent.get('rangeX'),
+                    dWidth = rangeX[1] - rangeX[0],
+                    hWidth = dWidth * 0.5,
+                    midX = rangeX[0] + hWidth,
+                    rangeY = parent.get('rangeY'),
+                    dHeight = rangeY[0] - rangeY[1],
+                    hHeight = dHeight * 0.5,
+                    midY = rangeY[1] + hHeight,
+                    sLabelsGroup = svg.select("g.s-labels"),
                     tLabelsGroup = svg.select("g.t-labels"),
                     linksGroup = svg.select("g.links");
 
@@ -107,12 +112,27 @@ define(
 
                 sLabelsGroup
                     .selectAll("text")
-                    .data(data.sNodeArray, domainMap)
+                    .data(data.sNodeArray, data.nodeDomainMap)
                     .enter()
                     .append("text")
                     .attr({
                         "id": function(d, i) {
                             return "s-" + d.id;
+                        },
+                        "x": function (d, i) {
+                            return 0;
+                        },
+                        "y": function (d, i) {
+
+                            var y = yScale(d.id);
+                            if(y <= midY){
+                                y = rangeY[1] - y;
+                            }
+                            else {
+                                y = rangeY[0] + y;
+                            }
+
+                            return y;
                         },
                         "class": function(d, i) {
                             return d.class;
@@ -142,7 +162,7 @@ define(
 
                 sLabelsGroup
                     .selectAll("text")
-                    .data(data.sNodeArray, domainMap)
+                    .data(data.sNodeArray, data.nodeDomainMap)
                     .transition().duration(attributes.tranistionTime)
                     .attr({
                         "x": function(d, i) {
@@ -165,18 +185,31 @@ define(
 
                 sLabelsGroup
                     .selectAll("text")
-                    .data(data.sNodeArray, domainMap)
+                    .data(data.sNodeArray, data.nodeDomainMap)
                     .exit()
                     .remove();
 
                 tLabelsGroup
                     .selectAll("text")
-                    .data(data.tNodeArray, domainMap)
+                    .data(data.tNodeArray, data.nodeDomainMap)
                     .enter()
                     .append("text")
                     .attr({
                         "id": function(d, i) {
                             return "t-" + d.id;
+                        },
+                        "transform": function(d, i) {
+
+                            var x = xScale(d.id), y = 0;
+
+                            if(x <= midX){
+                                x = rangeX[0] - x;
+                            }
+                            else {
+                                x = rangeX[1] + x;
+                            }
+
+                            return "translate(" + x + ", " + y + ") rotate(-35)";
                         },
                         "class": function(d, i) {
                             return d.class;
@@ -191,9 +224,15 @@ define(
 
                 tLabelsGroup
                     .selectAll("text")
-                    .data(data.tNodeArray, domainMap)
+                    .data(data.tNodeArray, data.nodeDomainMap)
                     .transition().duration(attributes.tranistionTime)
                     .attr({
+                        //"x": function(d, i) {
+                        //    return xScale(d.id) + (xScale.rangeBand() * 0.5);
+                        //},
+                        //"y": function (d, i) {
+                        //    return parent.get('paddingTop');
+                        //},
                         "transform": function(d, i) {
 
                             var x = xScale(d.id) + (xScale.rangeBand() /2),
@@ -215,7 +254,7 @@ define(
 
                 tLabelsGroup
                     .selectAll("text")
-                    .data(data.tNodeArray, domainMap)
+                    .data(data.tNodeArray, data.nodeDomainMap)
                     .exit()
                     .remove();
 
@@ -230,7 +269,33 @@ define(
                         },
                         "class": function(d, i) {
                             return d.class;
-                        }
+                        },
+                        "x": function (d, i) {
+
+                            var x = xScale(d.target.id);
+                            if(x <= midX){
+                                x = rangeX[0] - x;
+                            }
+                            else {
+                                x = rangeX[1] + x;
+                            }
+
+                            return x;
+                        },
+                        "y": function (d, i) {
+
+                            var y = yScale(d.source.id);
+                            if(y <= midY){
+                                y = rangeY[1] - y;
+                            }
+                            else {
+                                y = rangeY[0] + y;
+                            }
+
+                            return y;
+                        },
+                        "width": xScale.rangeBand(),
+                        "height": yScale.rangeBand()
                     });
 
                 linksGroup
@@ -254,15 +319,7 @@ define(
                     .attr({
                         fill: function(d) {
 
-                            var f = colorDefault;
-                            if(d.source.id === d.target.id){
-                                f = "#d5d5d5";
-                            }
-                            else if(d.rank > 0){
-                                f = cScale(d.rank);
-                            }
-
-                            return f;
+                            return getLinkColor(d);
                         }
                     })
                     .on('click', function(d, i) {
@@ -366,24 +423,38 @@ define(
                 }
             }
 
-            function highlightLink(link, doHighlight){
+            function getLinkColor(link, doHighlight){
 
                 var f = colorDefault;
                 if(link.source.id === link.target.id){
-                    return;
+                    f = "#d5d5d5";
                 }
+                else if(link.rank > 0){
 
-                if(link.rank > 0){
-
-                    if(doHighlight){
+                    if(doHighlight !== undefined & doHighlight) {
                         f = hScale(link.rank);
                     }
                     else {
-                        f = cScale(link.rank);
+                        if(!link.isManual) {
+                            f = cScale(link.rank);
+                        }
+                        else {
+                            f = mScale(link.rank);
+                        }
                     }
                 }
 
-                svg.select('#' + link.lId).attr({fill: f});
+                return f;
+            }
+
+            function highlightLink(link, doHighlight){
+
+                var f = colorDefault;
+                if(link.source.id !== link.target.id){
+
+                    f = getLinkColor(link, doHighlight);
+                    svg.select('#' + link.lId).attr({fill: f});
+                }
             }
 
             function highlightNode(nId, isSource, doHighlight){
