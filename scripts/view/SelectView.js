@@ -104,9 +104,7 @@ define(
                     var link = $(this),
                         lId = link.data('link-id');
 
-                    removeLink(lId);
-
-                    dispatch.publish("view_select_remove_link", {
+                    dispatch.publish("view_remove_link", {
                         lId: lId
                     });
 
