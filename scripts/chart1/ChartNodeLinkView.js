@@ -37,7 +37,12 @@ define(
                 view = d3.select(attributes.selector);
                 if (!view.empty()){
 
+                    svg = view.select("svg");
 
+                    svg.on('click', function() {
+
+                        dispatch.publish("view_chart_node_link_click", {});
+                    });
                 }
                 else {
                     throw "Unable to find view.";
@@ -46,7 +51,6 @@ define(
 
             function updateScale(data){
 
-                svg = view.select("svg");
                 width = parseInt(svg.style("width"), 10);
                 svg.attr('height', width);
                 height = width;
@@ -93,6 +97,33 @@ define(
                         "data-title": function (d, i) {
                             return d.titleFilter;
                         }
+                    })
+                    .on('mouseover', function(d, i) {
+
+                        var mouse = d3.mouse(this);
+
+                        dispatch.publish("view_chart_node_link_mouseover_node", {
+                            id: d.id,
+                            nId: d.nId,
+                            x: d.x,
+                            y: d.y
+                        });
+                    })
+                    .on('mouseout', function(d, i) {
+
+                        var mouse = d3.mouse(this);
+
+                        dispatch.publish("view_chart_node_link_mouseout_node", {
+                            nId: d.nId,
+                            x: d.x,
+                            y: d.y
+                        });
+                    })
+                    .on('click', function(d, i) {
+
+                        dispatch.publish("view_select_node", {
+                            nId: d.nId
+                        });
                     });
 
                 linksGroup
@@ -107,6 +138,16 @@ define(
                             return d.class;
                         },
                         "marker-end": "url(#arrow)"
+                    })
+                    .on('mouseover', function(d, i) {
+
+                        var mouse = d3.mouse(this);
+
+                        dispatch.publish("view_chart_node_link_mouseover_link", {
+                            lId: d.lId,
+                            x: mouse[0] + "px",
+                            y: mouse[1] + "px"
+                        });
                     });
 
                 nodes = nodesGroup.selectAll(".node");
@@ -141,7 +182,7 @@ define(
                 svg.selectAll('line').style({'opacity': 1.0, 'pointer-events': 'auto'});
                 svg.selectAll('circle').style({'opacity': 1.0});
                 svg.selectAll("circle").style({'stroke': '#fff'});
-                
+
                 for(k in highlights) {
 
                     hValue = highlights[k];

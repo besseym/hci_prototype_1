@@ -9,6 +9,7 @@ require(
         "common",
         "dispatch",
         "model/NodeLinkModel",
+        "view/View",
         "view/KeyboardView",
         "view/FlashView",
         "view/QuickInfoView",
@@ -20,6 +21,8 @@ require(
         "view/TabbedViewJqueryImpl",
         "view/ContentSwapView",
         "view/SelectView",
+        "view/NodeDialogView",
+        "view/LinkDialogView",
         "view/ItemListView",
         "chart1/chartUtil",
         "chart1/ChartNodeLinkView",
@@ -30,6 +33,7 @@ require(
         common,
         dispatch,
         NodeLinkModel,
+        View,
         KeyboardView,
         FlashView,
         QuickInfoView,
@@ -41,6 +45,8 @@ require(
         TabbedViewImpl,
         ContentSwapView,
         SelectView,
+        NodeDialogView,
+        LinkDialogView,
         ItemListView,
         chartUtil,
         ChartNodeLinkView,
@@ -52,7 +58,7 @@ require(
 
             keyboardView = new KeyboardView(),
 
-            flashView = new FlashView({selector: "#flash"}),
+            flashView = new FlashView({selector: "#flash", isRemoveable: true}),
             //loadingView = new LoadingView({selector: "#flash"}),
             matrixInfoView = new QuickInfoView({selector: "#m-info"}),
 
@@ -66,6 +72,9 @@ require(
             formTabbedView = new TabbedViewImpl({selector: "#tabs-dialog"}),
             vizTabbedView = new TabbedViewImpl({selector: "#tabs-viz"}),
             contentSwapView = new ContentSwapView({selector: "#content-main"}),
+
+            nodeDialogView = new NodeDialogView({selector: "#n-dialog"}),
+            linkDialogView = new LinkDialogView({selector: "#l-dialog"}),
 
             selectView = new SelectView({selector: "#tab-pane-select", templateId: "template-select"}),
 
@@ -91,7 +100,7 @@ require(
 
         dispatch.subscribe("view_flash", function(msg){
 
-            flashView.update(msg.payload);
+            flashView.updateView(msg.payload);
             flashView.show();
         });
 
@@ -196,6 +205,7 @@ require(
                 lId = nodeLinkModel.getLinkId(msg.payload.sId, msg.payload.tId);
 
             adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
+            chartNodeLinkView.updateView(nodeLinkModel.getNodeLinkViewModel());
             itemListView.updateItems(nodeLinkModel.getListViewModel(), true, true);
 
             if(!nodeLinkModel.hasLink(lId)){
@@ -249,11 +259,17 @@ require(
 
         });
 
-        dispatch.subscribe("view_select_remove_link", function(msg){
+        dispatch.subscribe("view_remove_link", function(msg){
 
-            nodeLinkModel.breakLink(msg.payload.lId);
+            var lId = msg.payload.lId;
+
+            nodeLinkModel.breakLink(lId);
+
             adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
+            chartNodeLinkView.updateView(nodeLinkModel.getNodeLinkViewModel());
             itemListView.updateItems(nodeLinkModel.getListViewModel(), true, true);
+
+            selectView.removeLink(lId);
         });
 
         dispatch.subscribe("view_keyboard_left", function(msg){
@@ -340,6 +356,38 @@ require(
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
 
             highlightMatrix();
+        });
+
+        dispatch.subscribe("view_chart_node_link_click", function(msg){
+
+            nodeDialogView.hide();
+            linkDialogView.hide();
+        });
+
+        dispatch.subscribe("view_chart_node_link_mouseover_node", function(msg){
+
+            var nodeDialogViewModel = nodeLinkModel.getNodeDialogViewModel(msg.payload);
+
+            linkDialogView.hide();
+
+            nodeDialogView.setLocation(msg.payload);
+            nodeDialogView.show();
+            nodeDialogView.updateView(nodeDialogViewModel);
+        });
+
+        dispatch.subscribe("view_chart_node_link_mouseout_node", function(msg){
+
+        });
+
+        dispatch.subscribe("view_chart_node_link_mouseover_link", function(msg){
+
+            var linkDialogViewModel = nodeLinkModel.getLinkDialogViewModel(msg.payload);
+
+            nodeDialogView.hide();
+
+            linkDialogView.setLocation(msg.payload);
+            linkDialogView.show();
+            linkDialogView.updateView(linkDialogViewModel);
         });
     }
 );

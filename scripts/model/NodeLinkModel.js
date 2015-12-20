@@ -424,10 +424,21 @@ define(
                 return linkMap[lId] !== undefined;
             }
 
+            function isSelected(nId){
+                return (attributes.selectedNodeId === nId);
+            }
+
             function isConnected(sourceId, targetId){
 
                 var lId = getLinkId(sourceId, targetId);
                 return linkMap[lId] !== undefined;
+            }
+
+            function isConnectedToSelected(targetId){
+
+                var selectedNode = getSelectedNode();
+
+                return isConnected(selectedNode.id, targetId);
             }
 
             function getNodeLink(sNodeId, tNodeId){
@@ -839,6 +850,7 @@ define(
             this.breakLink = breakLink;
             this.updateLink = updateLink;
             this.isConnected = isConnected;
+            this.isSelected = isSelected;
             this.hasLink = hasLink;
             this.getLink = getLink;
             this.getNode = getNode;
@@ -981,6 +993,50 @@ define(
 
                 return {
                     link: link
+                };
+            };
+
+            this.getNodeDialogViewModel = function(data){
+
+                var node = getNode(data.nId),
+                    selectedNodeId,
+                    selectedNode = getSelectedNode(),
+                    hasSelected = selectedNode !== undefined,
+                    isConnectedToSelected = false,
+                    isSelectedConnectedToThis = false;
+
+                if(hasSelected){
+
+                    selectedNodeId = selectedNode.id;
+
+                    isConnectedToSelected = isConnected(selectedNode.id, data.id);
+                    isSelectedConnectedToThis = isConnected(data.id, selectedNode.id);
+                }
+
+                return {
+                    id: node.id,
+                    nId: node.nId,
+                    "n-d-id": node.id,
+                    "n-d-title": node.title,
+                    "n-d-type": node.type,
+                    "n-d-series-id": node.seriesId,
+                    "n-d-season-number": node.seasonNumber,
+                    "n-d-show-id": node.showId,
+                    selectedNodeId: selectedNodeId,
+                    hasSelected: hasSelected,
+                    isConnectedToSelected: isConnectedToSelected,
+                    isSelectedConnectedToThis: isSelectedConnectedToThis
+                };
+            };
+
+            this.getLinkDialogViewModel = function(data){
+
+                var link = getLink(data.lId);
+
+                return {
+                    lId: link.lId,
+                    source: link.source.title,
+                    target: link.target.title
                 };
             };
         };

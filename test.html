@@ -142,12 +142,6 @@
 
     </script>
 
-    <div class="container page-header">
-
-        <h1><i class="fa fa-connectdevelop"></i> Video Connection Visualization</h1>
-
-    </div>
-
     <script id="template-color-key" type="x-tmpl-mustache">
 
         <div class="panel-heading">Property Color Key</div>
@@ -162,6 +156,32 @@
         </ul>
 
     </script>
+
+    <script id="template-n-action-btns" type="x-tmpl-mustache">
+
+        {{#if hasSelected}}
+
+        {{#unless isConnectedToSelected}}
+        <p>
+            <a id="d-n-this-to-selected-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect This Video to Selected</a>
+        </p>
+        {{/unless}}
+
+        {{#unless isSelectedConnectedToThis}}
+        <p>
+            <a id="d-n-selected-to-this-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect Selected to This Video</a>
+        </p>
+        {{/unless}}
+
+        {{/if}}
+
+    </script>
+
+    <div class="container page-header">
+
+        <h1><i class="fa fa-connectdevelop"></i> Video Connection Visualization</h1>
+
+    </div>
 
     <div id="main-container" class="container">
 
@@ -443,15 +463,9 @@
 
                                     </div>
 
-                                    <p id="d-n-select">
-                                        <a id="d-n-select-btn" class="btn btn-default btn-block btn-primary" href="#" role="button"><i class='fa fa-check'></i> Select</a>
-                                    </p>
-                                    <p id="d-n-this-to-selected">
-                                        <a id="d-n-this-to-selected-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect This Video to Selected</a>
-                                    </p>
-                                    <p id="d-n-selected-to-this">
-                                        <a id="d-n-selected-to-this-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect Selected to This Video</a>
-                                    </p>
+                                    <div id="d-n-action-btns">
+
+                                    </div>
                                 </div>
 
                                 <div id="l-dialog" class="chart-dialog well">
