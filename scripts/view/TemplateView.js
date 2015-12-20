@@ -1,12 +1,10 @@
-define(["common"],
-    function (common) {
+define(["common", "view/View"],
+    function (common, View) {
 
-        var TemplateView = function (config) {
+        var TemplateView = function (config, parent) {
 
-            var view,
-                template,
+            var template,
                 attributes = {
-                    selector: null,
                     templateId: null
                 };
 
@@ -19,38 +17,29 @@ define(["common"],
 
             function setup(){
 
-                view = $(attributes.selector);
-                if (view.length > 0){
-
-                    template = Handlebars.compile(document.getElementById(attributes.templateId).innerHTML);
-                    //Mustache.parse(template); // optional, speeds up future uses
-                }
-                else {
-                    throw "Unable to find view.";
-                }
-            }
-
-            function updateView(data){
-
-                view.html(template(data));
+                template = Handlebars.compile(document.getElementById(attributes.templateId).innerHTML);
             }
 
             /***** public methods *****/
-            this.set = set;
+            this.set = function(){
 
-            this.get = function(){
-                return common.getAttributes(arguments, attributes);
+                parent.set.apply(parent, arguments);
+                set.apply(this, arguments);
             };
 
-            this.getView = function(){
-                return view;
-            };
+            this.updateView = function(data){
 
-            this.updateView = updateView;
+                var view = parent.getView();
+                view.html(template(data));
+            };
         };
 
         return function(config){
-            return new TemplateView(config);
+
+            var parent = new View(config);
+            TemplateView.prototype = parent;
+            TemplateView.prototype.constructor = TemplateView;
+            return new TemplateView(config, parent);
         };
     }
 );
