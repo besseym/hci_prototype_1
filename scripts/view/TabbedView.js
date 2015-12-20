@@ -4,7 +4,7 @@ define(
     ],
     function (common, dispatch) {
 
-        var TabbedViewImpl = function (config) {
+        var TabbedView = function (config) {
 
             var attributes = {
                     selector: null
@@ -21,7 +21,17 @@ define(
             function setup() {
 
                 container = $(attributes.selector);
-                if (container.length <= 0){
+                if (container.length > 0){
+
+                    container.find(".nav-tab").on("shown.bs.tab", function( event ) {
+
+                        var navTab = $(this),
+                            tab = $(this).attr("href").replace(/#|-/g, "_");
+
+                        dispatch.publish("view" + tab, {});
+                    });
+                }
+                else {
                     throw "Unable to find container.";
                 }
             }
@@ -42,7 +52,7 @@ define(
         };
 
         return function(config){
-            return new TabbedViewImpl(config);
+            return new TabbedView(config);
         };
     }
 );

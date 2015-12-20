@@ -364,20 +364,20 @@
                     <div id="wait-feedback" style="display: none"><i class="fa fa-spinner fa-pulse"></i></div>
 
                     <ul id="tabs-viz" class="nav nav-tabs nav-justified" role="tablist">
-                        <li id="nav-tab-list" role="presentation">
-                            <a href="#tab-pane-list" data-toggle="tab"><i class="fa fa-list-alt"></i><br/> List</a>
+                        <li id="nav-tab-list" role="presentation" class="active">
+                            <a href="#tab-pane-list" class="nav-tab" data-toggle="tab"><i class="fa fa-list-alt"></i><br/> List</a>
                         </li>
                         <li id="nav-tab-matrix" role="presentation">
-                            <a href="#tab-pane-matrix" data-toggle="tab"><i class="fa fa-table"></i><br/> Matrix</a>
+                            <a href="#tab-pane-matrix" class="nav-tab" data-toggle="tab"><i class="fa fa-table"></i><br/> Matrix</a>
                         </li>
-                        <li id="nav-node-link" role="presentation" class="active">
-                            <a href="#tab-pane-node-link" data-toggle="tab"><i class="fa fa-code-fork"></i><br/> Node Link</a>
+                        <li id="nav-node-link" role="presentation">
+                            <a href="#tab-pane-node-link" class="nav-tab" data-toggle="tab"><i class="fa fa-code-fork"></i><br/> Node Link</a>
                         </li>
                     </ul>
 
                     <div id="tab-content-viz" class="tab-content">
 
-                        <div id="tab-pane-list" role="tabpanel" class="tab-pane">
+                        <div id="tab-pane-list" role="tabpanel" class="tab-pane active">
 
                             <div id="list-widget">
 
@@ -418,7 +418,7 @@
 
                         </div>
 
-                        <div id="tab-pane-node-link" role="tabpanel" class="tab-pane active">
+                        <div id="tab-pane-node-link" role="tabpanel" class="tab-pane">
 
                             <div id="chart-graph-video" class="chart chart-graph">
                                 <svg >
@@ -473,9 +473,13 @@
                                     <h5 id="source"></h5>
                                     </p>
                                     <p>
-                                        <a id="l-btn" href="#" class="btn btn-default btn-lg">
-                                            <i class="fa fa-link"></i>
-                                        </a>
+                                        <h4>
+                                            <a id="l-btn" href="#" class="btn btn-default btn-lg">
+                                                <i class="fa fa-link"></i>
+                                            </a>
+                                            <span id="d-l-info-rank"></span>
+                                        </h4>
+
                                     </p>
                                     <p>
                                     <h5 id="target"></h5>

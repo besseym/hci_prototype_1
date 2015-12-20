@@ -137,6 +137,8 @@ define(
                         "class": function(d, i){
                             return d.class;
                         },
+                        'opacity': 0.1,
+                        'pointer-events': 'none',
                         "marker-end": "url(#arrow)"
                     })
                     .on('mouseover', function(d, i) {
@@ -148,9 +150,24 @@ define(
                             x: mouse[0] + "px",
                             y: mouse[1] + "px"
                         });
+
+                        dispatch.publish("view_chart_mouseover_link", {
+                            lId: d.lId
+                        });
+                    })
+                    .on('mouseout', function(d, i) {
+
+                        dispatch.publish("view_chart_mouseout_link", {
+                            lId: d.lId
+                        });
                     });
 
                 nodes = nodesGroup.selectAll(".node");
+
+                nodes.data(force.nodes(), data.nodeDomainMap)
+                    .exit()
+                    .remove();
+
                 links = linksGroup.selectAll(".link");
 
                 links.data(force.links(), data.linkDomainMap)
@@ -175,13 +192,22 @@ define(
                 });
             }
 
+            function highlightLink(link, doHighlight){
+
+                if(doHighlight){
+                    svg.select('#' + link.lId).classed('highlight', true);
+                }
+                else {
+                    svg.select('#' + link.lId).classed('highlight', false);
+                }
+            }
+
             function highlight(highlights){
 
                 var i, k, hValue, selectResult, property;
 
-                svg.selectAll('line').style({'opacity': 1.0, 'pointer-events': 'auto'});
-                svg.selectAll('circle').style({'opacity': 1.0});
-                svg.selectAll("circle").style({'stroke': '#fff'});
+                svg.selectAll('line').style({'opacity': 0.1, 'pointer-events': 'none'});
+                svg.selectAll('circle').style({'opacity': 1.0, 'stroke': '#fff'});
 
                 for(k in highlights) {
 
@@ -193,7 +219,7 @@ define(
 
                             if(hValue !== undefined) {
 
-                                svg.selectAll('line:not(.s-' + hValue.id + ')').transition().style({'opacity': 0.1, 'pointer-events': 'none'});
+                                svg.selectAll('line.s-' + hValue.id).transition().style({'opacity': 1.0, 'pointer-events': 'auto'});
                                 svg.selectAll('circle:not(.g-' + hValue.id + ')').transition().style({'opacity': 0.3});
                             }
 
@@ -233,6 +259,7 @@ define(
             this.updateView = updateView;
 
             this.highlight = highlight;
+            this.highlightLink = highlightLink;
 
             this.getView = function(){
                 return view;

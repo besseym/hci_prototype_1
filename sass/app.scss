@@ -91,6 +91,7 @@ $clr-link-1: #084594;
 
     line.link {
       stroke: #aaa;
+      cursor:pointer;
 
       &.highlight {
         stroke: #337ab7;
@@ -106,6 +107,8 @@ $clr-link-1: #084594;
       stroke:#fff;
       stroke-width:5px;
       fill:#555;
+
+      cursor:pointer;
 
       &.text {
         stroke:#333;
@@ -129,17 +132,22 @@ $clr-link-1: #084594;
       cursor: pointer;
     }
 
-    #m-info {
 
-      pointer-events: none;
-      background-color:rgba(245, 245, 245, 0.85);
+  }
 
-      width: 500px;
+  #l-dialog, #m-info {
 
-      h4, h5 {
-        text-align: center;
-      }
+    width: 500px;
+
+    h4, h5 {
+      text-align: center;
     }
+  }
+
+  #m-info {
+
+    pointer-events: none;
+    background-color:rgba(245, 245, 245, 0.85);
   }
 
   .chart-dialog {

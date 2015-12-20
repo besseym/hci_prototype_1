@@ -424,7 +424,7 @@ define(
                 return linkMap[lId] !== undefined;
             }
 
-            function isSelected(nId){
+            function isSelectedNodeId(nId){
                 return (attributes.selectedNodeId === nId);
             }
 
@@ -850,7 +850,7 @@ define(
             this.breakLink = breakLink;
             this.updateLink = updateLink;
             this.isConnected = isConnected;
-            this.isSelected = isSelected;
+            this.isSelectedNodeId = isSelectedNodeId;
             this.hasLink = hasLink;
             this.getLink = getLink;
             this.getNode = getNode;
@@ -1036,7 +1036,8 @@ define(
                 return {
                     lId: link.lId,
                     source: link.source.title,
-                    target: link.target.title
+                    target: link.target.title,
+                    "d-l-info-rank": link.rank
                 };
             };
         };

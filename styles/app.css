@@ -9702,6 +9702,7 @@ button.close {
 }
 .chart.chart-graph line.link {
   stroke: #aaa;
+  cursor: pointer;
 }
 .chart.chart-graph line.link.highlight {
   stroke: #337ab7;
@@ -9713,6 +9714,7 @@ button.close {
   stroke: #fff;
   stroke-width: 5px;
   fill: #555;
+  cursor: pointer;
 }
 .chart.chart-graph circle.node.text {
   stroke: #333;
@@ -9724,13 +9726,15 @@ button.close {
 .chart.chart-matrix rect.link {
   cursor: pointer;
 }
-.chart.chart-matrix #m-info {
-  pointer-events: none;
-  background-color: rgba(245, 245, 245, 0.85);
+.chart #l-dialog, .chart #m-info {
   width: 500px;
 }
-.chart.chart-matrix #m-info h4, .chart.chart-matrix #m-info h5 {
+.chart #l-dialog h4, .chart #l-dialog h5, .chart #m-info h4, .chart #m-info h5 {
   text-align: center;
+}
+.chart #m-info {
+  pointer-events: none;
+  background-color: rgba(245, 245, 245, 0.85);
 }
 .chart .chart-dialog {
   visibility: hidden;
