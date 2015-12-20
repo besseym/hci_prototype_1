@@ -1,14 +1,12 @@
 define(
-    ["common", "dispatch", "domUtil"],
+    ["common", "dispatch", "domUtil", "view/View"],
 
-    function (common, dispatch, domUtil) {
+    function (common, dispatch, domUtil, View) {
 
-        var FlashView = function (config) {
+        var FlashView = function (config, parent) {
 
             var attributes = {
-                    selector: null
                 },
-                container = null,
                 btnClose = null;
 
             set(config);
@@ -20,55 +18,48 @@ define(
 
             function setup(){
 
-                container = $(attributes.selector);
-                if (container.length > 0){
+                var view = parent.getView();
 
-                    btnClose = container.find("#flash-btn-close");
-                    btnClose.on("click", function(){
-                        hide();
-                    });
-                }
-                else {
-                    throw "Unable to find view container.";
-                }
+                btnClose = view.find("#flash-btn-close");
+                btnClose.on("click", function(){
+                    parent.hide();
+                });
             }
 
-            function update(data){
+            function updateView(data){
 
-                var type = "info";
+                var type = "info",
+                    view = parent.getView();
+
+
                 if(data.type !== undefined){
                     type = data.type;
                 }
 
-                container.removeClass("alert-success")
+                view.removeClass("alert-success")
                     .removeClass("alert-warning")
                     .removeClass("alert-info")
                     .removeClass("alert-danger");
 
 
-                container.addClass("alert-" + type);
+                view.addClass("alert-" + type);
 
-                domUtil.updateText({
+                parent.updateView({
                     "flash-msg": data.message
-                }, container);
-            }
-
-            function show(){
-                container.css("display", "block");
-            }
-
-            function hide(){
-                container.css("display", "none");
+                });
             }
 
             /***** public methods *****/
-            this.update = update;
-            this.show = show;
-            this.hide = hide;
+
+            this.updateView = updateView;
         };
 
         return function(config){
-            return new FlashView(config);
+
+            var parent = new View(config);
+            FlashView.prototype = parent;
+            FlashView.prototype.constructor = FlashView;
+            return new FlashView(config, parent);
         };
     }
 );
