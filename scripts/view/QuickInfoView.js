@@ -32,11 +32,6 @@ define(
                     "target-title": data.link.target.title
                 });
             };
-
-            this.setLocation = function(location){
-
-                parent.getView().css("left", location.x).css("top", location.y);
-            };
         };
 
         return function(config){
