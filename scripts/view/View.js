@@ -5,9 +5,10 @@ define(
         var View = function (config) {
 
             var attributes = {
-                    selector: null
+                    selector: null,
+                    isRemoveable: false
                 },
-                view = null;
+                view;
 
             set(config);
             setup();
@@ -37,14 +38,30 @@ define(
             this.getView = function(){
                 return view;
             };
+
             this.show = function(){
 
-                view.css("visibility", "visible");
+                if(attributes.isRemoveable) {
+                    view.css("display", "block");
+                }
+                else {
+                    view.css("visibility", "visible");
+                }
             };
 
             this.hide = function(){
 
-                view.css("visibility", "hidden");
+                if(attributes.isRemoveable) {
+                    view.css("display", "none");
+                }
+                else {
+                    view.css("visibility", "hidden");
+                }
+            };
+
+            this.setLocation = function(location){
+
+                view.css("left", location.x).css("top", location.y);
             };
         };
 
