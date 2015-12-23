@@ -121,6 +121,11 @@ require(
             adjMatrixWindowView.draw();
         }
 
+        dispatch.subscribe("view_tab_pane_list", function(msg){
+
+            itemListView.updateView(nodeLinkModel.getListViewModel());
+        });
+
         dispatch.subscribe("view_tab_pane_matrix", function(msg){
 
             var padding;
@@ -157,16 +162,14 @@ require(
 
         dispatch.subscribe("model_data_loaded", function(msg){
 
-            var listViewModel = nodeLinkModel.getListViewModel();
-
             formTabbedView.focusTabNav("highlight");
             formTabbedView.focusTabPane("highlight");
             contentSwapView.swapContent("viz");
 
             resultView.updateView(nodeLinkModel.getResultViewModel());
-
-            listViewModel.selectedNodeId = nodeLinkModel.get("selectedNodeId");
-            itemListView.updateView(listViewModel);
+            
+            vizTabbedView.focusTabNav("list");
+            vizTabbedView.focusTabPane("list");
 
         });
 
@@ -305,12 +308,7 @@ require(
 
             nodeLinkModel.move("left");
 
-            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            adjMatrixWindowView.draw();
-
-            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+            refreshMatrixCharts();
 
             highlightMatrix();
         });
@@ -319,12 +317,7 @@ require(
 
             nodeLinkModel.move("up");
 
-            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            adjMatrixWindowView.draw();
-
-            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+            refreshMatrixCharts();
 
             highlightMatrix();
         });
@@ -333,12 +326,7 @@ require(
 
             nodeLinkModel.move("right");
 
-            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            adjMatrixWindowView.draw();
-
-            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+            refreshMatrixCharts();
 
             highlightMatrix();
         });
@@ -347,28 +335,14 @@ require(
 
             nodeLinkModel.move("down");
 
-            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            adjMatrixWindowView.draw();
-
-            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+            refreshMatrixCharts();
 
             highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_zoom", function(msg){
 
-            var adjacencyMatrixViewModel;
-
             nodeLinkModel.zoom();
-
-            //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            //adjMatrixWindowView.draw();
-            //
-            //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
 
             refreshMatrixCharts();
 
@@ -378,13 +352,6 @@ require(
         dispatch.subscribe("view_keyboard_expand", function(msg){
 
             nodeLinkModel.expand();
-
-            //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            //adjMatrixWindowView.draw();
-            //
-            //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
 
             refreshMatrixCharts();
 
