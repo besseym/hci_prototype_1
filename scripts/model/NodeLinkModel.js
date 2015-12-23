@@ -25,7 +25,7 @@ define(
                         return this.tEnd - this.tStart;
                     }
                 },
-                MAX_LINKS = 7,
+                MAX_LINKS = 6,
                 DATA_PATH = "/hci_prototype_1/data/",
                 URL_BASE = "http://www.smithsonianchannel.com/videos/video",
                 nodeArray,

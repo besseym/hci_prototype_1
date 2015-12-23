@@ -9,9 +9,9 @@ define(
                 svg = null,
                 xScale, yScale, sep = 0.05,
                 colorDefault = "#f5f5f5",
-                cScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(colorbrewer.PuBu[7]),
-                hScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(colorbrewer.PuRd[7]),
-                mScale = d3.scale.ordinal().domain([7, 6, 5, 4, 3, 2, 1]).range(colorbrewer.BuGn[7]),
+                cScale = d3.scale.ordinal().domain([6, 5, 4, 3, 2, 1]).range(colorbrewer.Blues[6]),
+                hScale = d3.scale.ordinal().domain([6, 5, 4, 3, 2, 1]).range(colorbrewer.Purples[6]),
+                mScale = d3.scale.ordinal().domain([6, 5, 4, 3, 2, 1]).range(colorbrewer.Greens[6]),
                 attributes = {
                     tranistionTime: 1000
                 };
