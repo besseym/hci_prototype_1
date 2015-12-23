@@ -219,7 +219,7 @@
                                     <br/>
 
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="keywords" name="keywords" value="robots" placeholder="Keywords (common separated)">
+                                        <input type="text" class="form-control" id="keywords" name="keywords" value="robots" placeholder="Keywords">
                                     </div>
 
                                 </div>
@@ -332,6 +332,26 @@
                         <div id="key-color" class="panel panel-default">
                         </div>
 
+                        <div id="info-matrix" class="panel panel-default">
+                            <div class="panel-heading"><i class="fa fa-info-circle"></i> Information</div>
+                            <div class="panel-body">
+                                <ul>
+                                    <li>A colored square represents a connection between a video in the y-axis to a video in the x-axis. Connections are directional, y-axis <i class="fa fa-arrow-right"></i> x-axis.</li>
+                                    <li>Hold dow [Shift] as you hover your mouse over the matrix to see conneciton details.
+                                    <li>For a large matrix you can use the following key commands to zoom and navigate the matrix:
+                                        <ul>
+                                            <li>Zoom In: <span class="key-cmd">[Alt] + z</span></li>
+                                            <li>Zoom Out: <span class="key-cmd">[Alt] + x</span></li>
+                                            <li>Move Up: <span class="key-cmd">[Alt] + w</span></li>
+                                            <li>Move Down: <span class="key-cmd">[Alt] + s</span></li>
+                                            <li>Move Left: <span class="key-cmd">[Alt] + a</span></li>
+                                            <li>Move Right: <span class="key-cmd">[Alt] + d</span></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div id="tab-pane-select" role="tabpanel" class="tab-pane">
@@ -362,7 +382,7 @@
                     <img style="display: block; margin: 0 auto;" src="/hci_prototype_1/images/outlet_videos.png" />
 
                 </div>
-
+                
                 <div id="content-viz" class="content" style="display: none;">
 
                     <div id="wait-feedback" style="display: none"><i class="fa fa-spinner fa-pulse"></i></div>
@@ -415,7 +435,6 @@
                                     <li><span class="clr-link-label">Rank 4</span> <span id="clr-link-4" class="clr-link">&nbsp;</span></li>
                                     <li><span class="clr-link-label">Rank 5</span> <span id="clr-link-5" class="clr-link">&nbsp;</span></li>
                                     <li><span class="clr-link-label">Rank 6</span> <span id="clr-link-6" class="clr-link">&nbsp;</span></li>
-                                    <li><span class="clr-link-label">Rank 7</span> <span id="clr-link-7" class="clr-link">&nbsp;</span></li>
                                 </ul>
 
                             </div>
