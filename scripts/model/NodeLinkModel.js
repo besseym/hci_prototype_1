@@ -626,7 +626,7 @@ define(
                                 stats.match = 0;
                             }
 
-                            if(stats.no_match === undefined){
+                            if(stats["no-match"] === undefined){
                                 stats["no-match"] = 0;
                             }
 
