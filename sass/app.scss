@@ -11,204 +11,203 @@ $clr-link-3: #6baed6;
 $clr-link-2: #3182bd;
 $clr-link-1: #08519c;
 
-#tab-content-dialog {
+#video-graph-viz {
 
-  #tab-pane-highlight {
+  #tab-content-dialog {
 
-    #key-color {
+    #tab-pane-highlight {
 
-      .type-highlight-count {
-        font-style: italic;
+      #key-color {
+
+        .type-highlight-count {
+          font-style: italic;
+        }
+      }
+
+      #info-matrix {
+
+        .key-cmd {
+          font-weight: 700;
+        }
       }
     }
 
-    #info-matrix {
+    #tab-pane-select {
 
-      .key-cmd {
-        font-weight: 700;
+      #s-n-c-tbl {
+
+        tbody {
+
+          tr {
+
+            cursor: pointer;
+          }
+        }
       }
     }
   }
 
-  #tab-pane-select {
+  #content-viz {
 
-    #s-n-c-tbl {
+    #wait-feedback{
+      font-size: 30px;
+    }
+
+    #tab-content-viz {
+      padding: 2em 0 0 0;
+    }
+  }
+
+  #list-widget {
+
+    table#table-list-widget {
 
       tbody {
 
-        tr {
+        tr.selectedNode {
+
+          font-weight: bold;
+        }
+      }
+    }
+
+  }
+
+
+  .chart {
+
+    width: 100%;
+    margin: 0; padding: 0;
+    position: relative;
+
+    svg {
+
+      display: inline-block;
+      width: 100%;
+      margin: 0; padding: 0;
+    }
+
+    &.chart-graph {
+      height: 1000px;
+
+      line.link {
+        stroke: #aaa;
+        cursor:pointer;
+
+        &.highlight {
+          stroke: #337ab7;
+        }
+      }
+
+      .arrow {
+        fill: #aaa;
+      }
+
+      circle.node {
+
+        stroke:#fff;
+        stroke-width:5px;
+        fill:#555;
+
+        cursor:pointer;
+
+        &.text {
+          stroke:#333;
+          cursos:pointer;
+        }
+      }
+    }
+
+    &.chart-matrix {
+
+      g.s-labels {
+
+        text.node {
 
           cursor: pointer;
         }
       }
-    }
-  }
-}
 
-#content-viz {
-
-  #wait-feedback{
-    font-size: 30px;
-  }
-
-  #tab-content-viz {
-    padding: 2em 0 0 0;
-  }
-}
-
-#list-widget {
-
-  table#table-list-widget {
-
-    tbody {
-
-      tr.selectedNode {
-
-        font-weight: bold;
-      }
-    }
-  }
-
-}
-
-
-.chart {
-
-  width: 100%;
-  margin: 0; padding: 0;
-  position: relative;
-
-  svg {
-
-    display: inline-block;
-    width: 100%;
-    margin: 0; padding: 0;
-  }
-
-  &.chart-graph {
-    height: 1000px;
-
-    line.link {
-      stroke: #aaa;
-      cursor:pointer;
-
-      &.highlight {
-        stroke: #337ab7;
-      }
-    }
-
-    .arrow {
-      fill: #aaa;
-    }
-
-    circle.node {
-
-      stroke:#fff;
-      stroke-width:5px;
-      fill:#555;
-
-      cursor:pointer;
-
-      &.text {
-        stroke:#333;
-        cursos:pointer;
-      }
-    }
-  }
-
-  &.chart-matrix {
-
-    g.s-labels {
-
-      text.node {
+      rect.link {
 
         cursor: pointer;
       }
+
+
     }
 
-    rect.link {
+    #l-dialog, #m-info {
 
-      cursor: pointer;
+      width: 500px;
+
+      h4, h5 {
+        text-align: center;
+      }
     }
 
+    #m-info {
+
+      pointer-events: none;
+      background-color:rgba(245, 245, 245, 0.85);
+    }
+
+    .chart-dialog {
+
+      visibility: hidden;
+      position: absolute;
+    }
 
   }
 
-  #l-dialog, #m-info {
-
-    width: 500px;
-
-    h4, h5 {
-      text-align: center;
-    }
-  }
-
-  #m-info {
-
-    pointer-events: none;
-    background-color:rgba(245, 245, 245, 0.85);
-  }
-
-  .chart-dialog {
-
-    visibility: hidden;
+  #chart-matrix-window {
     position: absolute;
   }
 
-}
+  #tab-content-viz {
 
-#chart-matrix-window {
-  position: absolute;
-}
+    #color-key-connection {
 
-#tab-content-viz {
+      ul {
+        list-style: none;
 
-  #color-key-connection {
+        li {
+          float: left;  width: 14.28%; height: auto;
 
-    ul {
-      list-style: none;
+          span {
+            float: left;
+          }
 
-      li {
-        float: left;  width: 14.28%; height: auto;
+          .clr-link-label {
+            width: 50%;
+          }
 
-        span {
-          float: left;
-        }
+          .clr-link {
+            margin: 0 auto; border: 1px solid black; width: 1.25em; height: 1.25em;
+          }
 
-        .clr-link-label {
-          width: 50%;
-        }
+          #clr-link-1 {
+            background-color: $clr-link-1;
+          }
 
-        .clr-link {
-          margin: 0 auto; border: 1px solid black; width: 1.25em; height: 1.25em;
-        }
+          #clr-link-2 {
+            background-color: $clr-link-2;
+          }
 
-        #clr-link-1 {
-          background-color: $clr-link-1;
-        }
+          #clr-link-3 {
+            background-color: $clr-link-3;
+          }
 
-        #clr-link-2 {
-          background-color: $clr-link-2;
-        }
+          #clr-link-4 {
+            background-color: $clr-link-4;
+          }
 
-        #clr-link-3 {
-          background-color: $clr-link-3;
-        }
+          #clr-link-5 {
+            background-color: $clr-link-5;
+          }
 
-        #clr-link-4 {
-          background-color: $clr-link-4;
-        }
-
-        #clr-link-5 {
-          background-color: $clr-link-5;
-        }
-
-        #clr-link-6 {
-          background-color: $clr-link-6;
-        }
-
-        #clr-link-7 {
-          background-color: $clr-link-7;
+          #clr-link-6 {
+            background-color: $clr-link-6;
+          }
         }
       }
     }

@@ -9664,126 +9664,118 @@ button.close {
   content: "";
 }
 
-#tab-content-dialog #tab-pane-highlight #key-color .type-highlight-count {
+#video-graph-viz #tab-content-dialog #tab-pane-highlight #key-color .type-highlight-count {
   font-style: italic;
 }
-#tab-content-dialog #tab-pane-highlight #info-matrix .key-cmd {
+#video-graph-viz #tab-content-dialog #tab-pane-highlight #info-matrix .key-cmd {
   font-weight: 700;
 }
-#tab-content-dialog #tab-pane-select #s-n-c-tbl tbody tr {
+#video-graph-viz #tab-content-dialog #tab-pane-select #s-n-c-tbl tbody tr {
   cursor: pointer;
 }
-
-#content-viz #wait-feedback {
+#video-graph-viz #content-viz #wait-feedback {
   font-size: 30px;
 }
-#content-viz #tab-content-viz {
+#video-graph-viz #content-viz #tab-content-viz {
   padding: 2em 0 0 0;
 }
-
-#list-widget table#table-list-widget tbody tr.selectedNode {
+#video-graph-viz #list-widget table#table-list-widget tbody tr.selectedNode {
   font-weight: bold;
 }
-
-.chart {
+#video-graph-viz .chart {
   width: 100%;
   margin: 0;
   padding: 0;
   position: relative;
 }
-.chart svg {
+#video-graph-viz .chart svg {
   display: inline-block;
   width: 100%;
   margin: 0;
   padding: 0;
 }
-.chart.chart-graph {
+#video-graph-viz .chart.chart-graph {
   height: 1000px;
 }
-.chart.chart-graph line.link {
+#video-graph-viz .chart.chart-graph line.link {
   stroke: #aaa;
   cursor: pointer;
 }
-.chart.chart-graph line.link.highlight {
+#video-graph-viz .chart.chart-graph line.link.highlight {
   stroke: #337ab7;
 }
-.chart.chart-graph .arrow {
+#video-graph-viz .chart.chart-graph .arrow {
   fill: #aaa;
 }
-.chart.chart-graph circle.node {
+#video-graph-viz .chart.chart-graph circle.node {
   stroke: #fff;
   stroke-width: 5px;
   fill: #555;
   cursor: pointer;
 }
-.chart.chart-graph circle.node.text {
+#video-graph-viz .chart.chart-graph circle.node.text {
   stroke: #333;
   cursos: pointer;
 }
-.chart.chart-matrix g.s-labels text.node {
+#video-graph-viz .chart.chart-matrix g.s-labels text.node {
   cursor: pointer;
 }
-.chart.chart-matrix rect.link {
+#video-graph-viz .chart.chart-matrix rect.link {
   cursor: pointer;
 }
-.chart #l-dialog, .chart #m-info {
+#video-graph-viz .chart #l-dialog, #video-graph-viz .chart #m-info {
   width: 500px;
 }
-.chart #l-dialog h4, .chart #l-dialog h5, .chart #m-info h4, .chart #m-info h5 {
+#video-graph-viz .chart #l-dialog h4, #video-graph-viz .chart #l-dialog h5, #video-graph-viz .chart #m-info h4, #video-graph-viz .chart #m-info h5 {
   text-align: center;
 }
-.chart #m-info {
+#video-graph-viz .chart #m-info {
   pointer-events: none;
   background-color: rgba(245, 245, 245, 0.85);
 }
-.chart .chart-dialog {
+#video-graph-viz .chart .chart-dialog {
   visibility: hidden;
   position: absolute;
 }
-
-#chart-matrix-window {
+#video-graph-viz #chart-matrix-window {
   position: absolute;
 }
-
-#tab-content-viz #color-key-connection ul {
+#video-graph-viz #tab-content-viz #color-key-connection ul {
   list-style: none;
 }
-#tab-content-viz #color-key-connection ul li {
+#video-graph-viz #tab-content-viz #color-key-connection ul li {
   float: left;
   width: 14.28%;
   height: auto;
 }
-#tab-content-viz #color-key-connection ul li span {
+#video-graph-viz #tab-content-viz #color-key-connection ul li span {
   float: left;
 }
-#tab-content-viz #color-key-connection ul li .clr-link-label {
+#video-graph-viz #tab-content-viz #color-key-connection ul li .clr-link-label {
   width: 50%;
 }
-#tab-content-viz #color-key-connection ul li .clr-link {
+#video-graph-viz #tab-content-viz #color-key-connection ul li .clr-link {
   margin: 0 auto;
   border: 1px solid black;
   width: 1.25em;
   height: 1.25em;
 }
-#tab-content-viz #color-key-connection ul li #clr-link-1 {
-  background-color: #084594;
+#video-graph-viz #tab-content-viz #color-key-connection ul li #clr-link-1 {
+  background-color: #08519c;
 }
-#tab-content-viz #color-key-connection ul li #clr-link-2 {
-  background-color: #2171b5;
+#video-graph-viz #tab-content-viz #color-key-connection ul li #clr-link-2 {
+  background-color: #3182bd;
 }
-#tab-content-viz #color-key-connection ul li #clr-link-3 {
-  background-color: #4292c6;
-}
-#tab-content-viz #color-key-connection ul li #clr-link-4 {
+#video-graph-viz #tab-content-viz #color-key-connection ul li #clr-link-3 {
   background-color: #6baed6;
 }
-#tab-content-viz #color-key-connection ul li #clr-link-5 {
+#video-graph-viz #tab-content-viz #color-key-connection ul li #clr-link-4 {
   background-color: #9ecae1;
 }
-#tab-content-viz #color-key-connection ul li #clr-link-6 {
+#video-graph-viz #tab-content-viz #color-key-connection ul li #clr-link-5 {
   background-color: #c6dbef;
 }
-#tab-content-viz #color-key-connection ul li #clr-link-7 {
+#video-graph-viz #tab-content-viz #color-key-connection ul li #clr-link-6 {
   background-color: #eff3ff;
 }
 
