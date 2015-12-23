@@ -90,14 +90,6 @@ require(
 
         adjMatrixWindowView.setPaddingAll(5);
 
-        function highlightMatrix(){
-
-            var highlightViewMode = highlightFormView.getHighlightViewModel(),
-                stats = nodeLinkModel.getStatsViewModel(highlightViewMode);
-
-            adjacencyMatrixView.highlight(stats);
-        }
-
         dispatch.subscribe("view_loading_show", function(msg){
 
             loadingView.show();
@@ -121,9 +113,33 @@ require(
             adjMatrixWindowView.draw();
         }
 
+        function updateHighlight(data){
+
+            var highlightViewMode = highlightFormView.getHighlightViewModel(),
+                statsViewModel = nodeLinkModel.getStatsViewModel(highlightViewMode);
+
+            chartUtil.decorateWithColor(statsViewModel.property);
+
+            if(data.list){
+                itemListView.highlight(statsViewModel);
+            }
+
+            if(data.matrix){
+                adjacencyMatrixView.highlight(statsViewModel);
+            }
+
+            if(data.nodeLink){
+                chartNodeLinkView.highlight(statsViewModel);
+            }
+        }
+
         dispatch.subscribe("view_tab_pane_list", function(msg){
 
             itemListView.updateView(nodeLinkModel.getListViewModel());
+
+            updateHighlight({
+                list: true
+            });
         });
 
         dispatch.subscribe("view_tab_pane_matrix", function(msg){
@@ -138,6 +154,10 @@ require(
             });
 
             refreshMatrixCharts();
+
+            updateHighlight({
+                matrix: true
+            });
         });
 
         dispatch.subscribe("view_tab_pane_node_link", function(msg){
@@ -146,6 +166,10 @@ require(
 
             chartNodeLinkView.updateScale(nodeLinkViewModel);
             chartNodeLinkView.updateView(nodeLinkViewModel);
+
+            updateHighlight({
+                nodeLink: true
+            });
         });
 
         dispatch.subscribe("view_flash", function(msg){
@@ -167,7 +191,7 @@ require(
             contentSwapView.swapContent("viz");
 
             resultView.updateView(nodeLinkModel.getResultViewModel());
-            
+
             vizTabbedView.focusTabNav("list");
             vizTabbedView.focusTabPane("list");
 
@@ -310,7 +334,9 @@ require(
 
             refreshMatrixCharts();
 
-            highlightMatrix();
+            updateHighlight({
+                matrix: true
+            });
         });
 
         dispatch.subscribe("view_keyboard_up", function(msg){
@@ -319,7 +345,9 @@ require(
 
             refreshMatrixCharts();
 
-            highlightMatrix();
+            updateHighlight({
+                matrix: true
+            });
         });
 
         dispatch.subscribe("view_keyboard_right", function(msg){
@@ -328,7 +356,9 @@ require(
 
             refreshMatrixCharts();
 
-            highlightMatrix();
+            updateHighlight({
+                matrix: true
+            });
         });
 
         dispatch.subscribe("view_keyboard_down", function(msg){
@@ -337,7 +367,9 @@ require(
 
             refreshMatrixCharts();
 
-            highlightMatrix();
+            updateHighlight({
+                matrix: true
+            });
         });
 
         dispatch.subscribe("view_keyboard_zoom", function(msg){
@@ -346,7 +378,9 @@ require(
 
             refreshMatrixCharts();
 
-            highlightMatrix();
+            updateHighlight({
+                matrix: true
+            });
         });
 
         dispatch.subscribe("view_keyboard_expand", function(msg){
@@ -355,7 +389,9 @@ require(
 
             refreshMatrixCharts();
 
-            highlightMatrix();
+            updateHighlight({
+                matrix: true
+            });
         });
 
         dispatch.subscribe("view_chart_node_link_click", function(msg){

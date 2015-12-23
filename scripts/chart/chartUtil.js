@@ -34,18 +34,21 @@ define(
 
                 var i, k, size, color, colorScale, property, domain = [];
 
-                size = data.properties.length;
-                for(i = 0; i < size; i++){
-                    property = data.properties[i];
-                    domain.push(property.name);
-                }
+                if(data !== undefined && "properties" in data){
 
-                colorScale = getQualitativeColorScale(domain);
+                    size = data.properties.length;
+                    for(i = 0; i < size; i++){
+                        property = data.properties[i];
+                        domain.push(property.name);
+                    }
 
-                for(i = 0; i < size; i++){
-                    property = data.properties[i];
-                    property.color = colorScale(property.name);
-                    data.properties[i] = property;
+                    colorScale = getQualitativeColorScale(domain);
+
+                    for(i = 0; i < size; i++){
+                        property = data.properties[i];
+                        property.color = colorScale(property.name);
+                        data.properties[i] = property;
+                    }
                 }
             }
 
