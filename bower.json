@@ -21,6 +21,9 @@
     "fontawesome": "~4.3.0",
     "bootstrap-sass-official": "~3.3.4",
     "d3": "~3.5.5",
-    "jquery-ui": "~1.11.4"
+    "jquery-ui": "~1.11.4",
+    "mustache.js": "mustache#~2.2.0",
+    "handlebars": "~4.0.5",
+    "colorbrewer": "~1.0.0"
   }
 }

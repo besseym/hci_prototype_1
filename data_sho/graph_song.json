@@ -1,0 +1,1053 @@
+{
+  "data" : {
+    "nodeCount" : 9,
+    "nodes" : [ {
+      "id" : 36420,
+      "seriesId" : 0,
+      "seasonNumber" : 0,
+      "showId" : 3414660,
+      "title" : "Song One Trailer",
+      "description" : "A woman whose brother is in a coma seeks out his music idols.",
+      "type" : "trl",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 110000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 35793,
+      "seriesId" : 0,
+      "seasonNumber" : 0,
+      "showId" : 3393625,
+      "title" : "Swingers Trailer",
+      "description" : "A lovesick guy tries to move on from his ex with the help of his friends.",
+      "type" : "trl",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 119000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36877,
+      "seriesId" : 0,
+      "seasonNumber" : 0,
+      "showId" : 3411769,
+      "title" : "Snowpiercer Trailer",
+      "description" : "A rebel fights a class war on a train circling the globe in the icy future.",
+      "type" : "trl",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 31000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 35460,
+      "seriesId" : 0,
+      "seasonNumber" : 0,
+      "showId" : 129720,
+      "title" : "An Inconvenient Truth Trailer",
+      "description" : "Former Vice President Al Gore's Oscar-winning look at global warming.",
+      "type" : "trl",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 150000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36210,
+      "seriesId" : 0,
+      "seasonNumber" : 0,
+      "showId" : 3403512,
+      "title" : "Vampire Academy Trailer",
+      "description" : "A teenage vampire and her guardian best friend must escape evil foes.",
+      "type" : "trl",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 125000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36137,
+      "seriesId" : 0,
+      "seasonNumber" : 0,
+      "showId" : 3417608,
+      "title" : "Halo: Nightfall Trailer",
+      "description" : "A naval officer is on a dangerous mission in a distant colony world. ",
+      "type" : "trl",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 144000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36315,
+      "seriesId" : 0,
+      "seasonNumber" : 0,
+      "showId" : 3403508,
+      "title" : "Begin Again Trailer",
+      "description" : "A brokenhearted musician has a chance encounter that transforms her life.",
+      "type" : "trl",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 145000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 33687,
+      "seriesId" : 1003223,
+      "seasonNumber" : 1,
+      "showId" : 0,
+      "title" : "Penny Dreadful: The Best of Ethan Chandler ",
+      "description" : "Behind Ethan Chandler's bright eyes lurk dark secrets. Watch the best of Ethan Chandler (Josh Hartnett) from Penny Dreadful. Song: Fire Inside by I Will Never Be The Same. ",
+      "type" : "ext",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 77000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 34059,
+      "seriesId" : 1003223,
+      "seasonNumber" : 1,
+      "showId" : 0,
+      "title" : "Helen McCrory Explores an Occult Bookshop",
+      "description" : "Helen McCrory explores the Atlantis Bookshop which specializes in magic and the occult.",
+      "type" : "bsc",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 140000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 34006,
+      "seriesId" : 1003223,
+      "seasonNumber" : 1,
+      "showId" : 0,
+      "title" : "In Memoriam: Proteus ",
+      "description" : "A tribute to Proteus who lived a short life but one filled with much curiosity. R.I.P Proteus, you will be missed.",
+      "type" : "ext",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 50000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 34097,
+      "seriesId" : 1003223,
+      "seasonNumber" : 1,
+      "showId" : 0,
+      "title" : "Penny Dreadful New Year's Marathon",
+      "description" : "Don't miss the Penny Dreadful New Year's Eve marathon beginning at 8PM ET/PT.",
+      "type" : "pro",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 35000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 34017,
+      "seriesId" : 1003223,
+      "seasonNumber" : 1,
+      "showId" : 0,
+      "title" : "Penny Dreadful: Production Blog - Visual Effects",
+      "description" : "The cast and crew of discuss creating all the visual effects in Penny Dreadful.",
+      "type" : "bsc",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 135000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 34066,
+      "seriesId" : 1003223,
+      "seasonNumber" : 1,
+      "showId" : 0,
+      "title" : "Penny Dreadful: Production Blog - Prosthetics",
+      "description" : "The cast and crew discuss creating all the prosthetics used in Penny Dreadful.",
+      "type" : "bsc",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 154000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 33986,
+      "seriesId" : 1003223,
+      "seasonNumber" : 1,
+      "showId" : 0,
+      "title" : "\"A Vision\" by John Clare",
+      "description" : "\"A Vision\" by John Clare read by Josh Hartnett. ",
+      "type" : "ext",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 60000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 40617,
+      "seriesId" : 1031103,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "The Affair Season 2 Main Title Sequence  ",
+      "description" : "Main title sequence from the Showtime series, The Affair, with the original song \"Container\" written and performed by Grammy Award-winning singer-songwriter Fiona Apple.",
+      "type" : "crd",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 71000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 39017,
+      "seriesId" : 1031103,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "To Us (The Affair Season 2 Spot)",
+      "description" : "Don't miss new episodes of The Affair, Sundays at 10PM ET/PT.",
+      "type" : "pro",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 30000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 38257,
+      "seriesId" : 1031103,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "The Affair Season 2: Noah",
+      "description" : "Dominic West discusses the evolution of Noah in season 2 of The Affair. ",
+      "type" : "prf",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 120000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 39678,
+      "seriesId" : 1031103,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "Passion Has a Price (The Affair Season 2 Spot) ",
+      "description" : "Don't miss new episodes of The Affair, Sundays at 10PM ET/PT.",
+      "type" : "pro",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 31000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 39177,
+      "seriesId" : 1031103,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "The Affair Season 2 Look Ahead",
+      "description" : "Get a sneak peek look at what's in-store for season 2 of The Affair.",
+      "type" : "pro",
+      "status" : "delivered",
+      "rating" : "TV-MA ",
+      "duration" : 90000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 42097,
+      "seriesId" : 1031103,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "2016 Golden Globe Nominations",
+      "description" : "Congratulations to all our 2016 Golden Globe nominees. ",
+      "type" : "pro",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 15000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 42218,
+      "seriesId" : 1031103,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "The Affair Returns",
+      "description" : "The Affair will return for season 3.",
+      "type" : "pro",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 15000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36929,
+      "seriesId" : 1003223,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "Penny Dreadful Season 2: One Second a Day",
+      "description" : "Get a behind the scenes look at the cast, crew and set of Penny Dreadful. One second was captured everyday during the filming of season 2, check it out now! Featuring the song \"Spinning Signs\" by Painted Palms.",
+      "type" : "bsc",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 175000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36838,
+      "seriesId" : 1003223,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "Penny Dreadful Production Blog: Dolls",
+      "description" : "The cast and crew discuss creating the voodoo dolls used by Evelyn Poole in Penny Dreadful season 2. ",
+      "type" : "bsc",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 190000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36009,
+      "seriesId" : 1003223,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "Penny Dreadful: Eva Green on Sensing Ethan's Darkness",
+      "description" : "Eva Green discusses Vanessa sensing Ethan's darkness.",
+      "type" : "bsc",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 33000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36925,
+      "seriesId" : 1003223,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "Penny Dreadful Returns",
+      "description" : "Penny Dreadful will return for a new season.",
+      "type" : "pro",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 15000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36984,
+      "seriesId" : 1003223,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "Penny Dreadful: Demimonde - Official Gameplay Teaser Trailer",
+      "description" : "Penny Dreadful: Demimonde is a spellbinding puzzle and collectible card game for the living and the undead. Explore Victorian London with your favorite characters from Penny Dreadful on your phone or mobile tablet. This unique puzzle and collectible card game will allow you to:   Explore: Complete puzzles and quests from each episode of the show.  Collect: Assemble your own team of \"dreadful\" characters, Tarot cards, and artifacts  Compete: Battle other players' teams on different battlefields    Coming Soon!",
+      "type" : "trl",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 80000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36008,
+      "seriesId" : 1003223,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "Penny Dreadful: Eva Green on Ethan and Vanessa's Romance",
+      "description" : "Eva Green discusses her character's romance with Ethan.",
+      "type" : "bsc",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 30000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36010,
+      "seriesId" : 1003223,
+      "seasonNumber" : 2,
+      "showId" : 0,
+      "title" : "Penny Dreadful: Eva Green on the Season Finale",
+      "description" : "Eva Green discusses the season 2 finale of Penny Dreadful.",
+      "type" : "bsc",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 21000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 20598,
+      "seriesId" : 796,
+      "seasonNumber" : 4,
+      "showId" : 3377780,
+      "title" : "A New Direction",
+      "description" : "Nick asks the guys for help on his new rap song.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 55000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 28938,
+      "seriesId" : 796,
+      "seasonNumber" : 5,
+      "showId" : 3392788,
+      "title" : "Takeoff",
+      "description" : "Bradley and his date go dog-fighting in fighter planes.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 129000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 28954,
+      "seriesId" : 796,
+      "seasonNumber" : 5,
+      "showId" : 3392788,
+      "title" : "Sharpshooter",
+      "description" : "Nick bets the guys that he has a better shot than Bradley.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 95000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 36994,
+      "seriesId" : 796,
+      "seasonNumber" : 6,
+      "showId" : 0,
+      "title" : "No Guts, No Glory (Gigolos Season 6 Spot)",
+      "description" : "Gigolos returns for season 6. ",
+      "type" : "pro",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 30000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 29153,
+      "seriesId" : 796,
+      "seasonNumber" : 5,
+      "showId" : 3392789,
+      "title" : "Brace's Commercial ",
+      "description" : "Brace shows his new commercial to the rest of the gigolos.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 77000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 28831,
+      "seriesId" : 796,
+      "seasonNumber" : 5,
+      "showId" : 3392787,
+      "title" : "Writing for Women",
+      "description" : "The guys are given the opportunity to write about their experiences.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 71000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 20597,
+      "seriesId" : 796,
+      "seasonNumber" : 4,
+      "showId" : 3377780,
+      "title" : "Bradley",
+      "description" : "The guys meet the newest gigolo.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 56000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 21517,
+      "seriesId" : 810,
+      "seasonNumber" : 3,
+      "showId" : 3384130,
+      "title" : "Don't Sing",
+      "description" : "Fiona meets with an alcoholic client who is also a song writer.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 60000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 21631,
+      "seriesId" : 810,
+      "seasonNumber" : 3,
+      "showId" : 3384131,
+      "title" : "Jay Z or Jay T",
+      "description" : "Fiona discusses the music business with a client",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 47000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 22299,
+      "seriesId" : 810,
+      "seasonNumber" : 3,
+      "showId" : 3384136,
+      "title" : "Gender Reassignment Surgery",
+      "description" : "Fiona has a session with her first husband who is now a woman.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 79000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 22371,
+      "seriesId" : 810,
+      "seasonNumber" : 3,
+      "showId" : 3384136,
+      "title" : "Best Bluffer",
+      "description" : "A gambling addict learns that Fiona has bested him at poker.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 115000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 21516,
+      "seriesId" : 810,
+      "seasonNumber" : 3,
+      "showId" : 3384130,
+      "title" : "Donkey Booty",
+      "description" : "Fiona speaks to her former husband and his new lover.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 62000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 33978,
+      "seriesId" : 810,
+      "seasonNumber" : 4,
+      "showId" : 3411695,
+      "title" : "View My Channel",
+      "description" : "Fiona gets a call from Casper asking about his YouTube Channel.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 106000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 33979,
+      "seriesId" : 810,
+      "seasonNumber" : 4,
+      "showId" : 3411695,
+      "title" : "I Know What Goes On",
+      "description" : "Fiona's patient claims to know what goes on in her other sessions.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 117000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 34678,
+      "seriesId" : 0,
+      "seasonNumber" : 0,
+      "showId" : 3356657,
+      "title" : "Paul Williams Still Alive Trailer",
+      "description" : "An intimate look at legendary songwriter and 70's icon Paul Williams.",
+      "type" : "trl",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 131000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 41097,
+      "seriesId" : 804,
+      "seasonNumber" : 5,
+      "showId" : 3422779,
+      "title" : "Singing Like a Songbird",
+      "description" : "Carrie tries to convince Dar Adal that Allison is a traitor. ",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 50000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 42037,
+      "seriesId" : 804,
+      "seasonNumber" : 5,
+      "showId" : 3422801,
+      "title" : "Next on Episode 12",
+      "description" : "Carrie tries to stop a terrorist attack. Season finale.        \t",
+      "type" : "nxt",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 30000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 41040,
+      "seriesId" : 804,
+      "seasonNumber" : 5,
+      "showId" : 3422779,
+      "title" : "He Just Disappeared ",
+      "description" : "Carrie tries to figure out Quinn's whereabouts. ",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 47000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 41678,
+      "seriesId" : 804,
+      "seasonNumber" : 5,
+      "showId" : 3422780,
+      "title" : "What Your Word Is Worth",
+      "description" : "During calls Saul.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 54000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 41037,
+      "seriesId" : 804,
+      "seasonNumber" : 5,
+      "showId" : 3422779,
+      "title" : "Next on Episode 10",
+      "description" : "A new threat emerges.      \t",
+      "type" : "nxt",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 30000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 41677,
+      "seriesId" : 804,
+      "seasonNumber" : 5,
+      "showId" : 3422780,
+      "title" : "We Need Him Awake",
+      "description" : "Saul and Carrie speak to a doctor about Quinn's condition.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 49000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 42257,
+      "seriesId" : 804,
+      "seasonNumber" : 5,
+      "showId" : 3422801,
+      "title" : "Light Coming In ",
+      "description" : "Carries stands over Quinn's unconscious body.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 47000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 16357,
+      "seriesId" : 411,
+      "seasonNumber" : 5,
+      "showId" : 139055,
+      "title" : "Next on Episode 6",
+      "description" : "Hank tries to write a song that will help Sam break his musical block.",
+      "type" : "nxt",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 30000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 16356,
+      "seriesId" : 411,
+      "seasonNumber" : 5,
+      "showId" : 139055,
+      "title" : "A Sad Clown",
+      "description" : "Hank and Bates seek Karen's forgiveness.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 104000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 16135,
+      "seriesId" : 411,
+      "seasonNumber" : 5,
+      "showId" : 139054,
+      "title" : "The Moral Thing",
+      "description" : "Hank, Samurai Apocalypse, and Charlie go for a joy ride in a police car.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 75000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 16151,
+      "seriesId" : 411,
+      "seasonNumber" : 5,
+      "showId" : 139054,
+      "title" : "Warm and Cuddly",
+      "description" : "Samurai Apocalypse pulls over Kali and her date.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 70000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 16335,
+      "seriesId" : 411,
+      "seasonNumber" : 5,
+      "showId" : 139055,
+      "title" : "Heart Breaking Champagne",
+      "description" : "Kali and Hank continue their affair.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 52000,
+      "ageGate" : false,
+      "isMatch" : false
+    }, {
+      "id" : 16030,
+      "seriesId" : 411,
+      "seasonNumber" : 5,
+      "showId" : 139052,
+      "title" : "Long for Companionship",
+      "description" : "Things start to heat up when Hank is asked to show Kali a night on the town.",
+      "type" : "eps",
+      "status" : "delivered",
+      "rating" : "TV-14 ",
+      "duration" : 69000,
+      "ageGate" : false,
+      "isMatch" : false
+    } ],
+    "links" : [ {
+      "isLink" : true,
+      "source" : 35,
+      "target" : 41,
+      "rank" : 1,
+      "weight" : 1
+    }, {
+      "isLink" : true,
+      "source" : 35,
+      "target" : 40,
+      "rank" : 0,
+      "weight" : 0
+    }, {
+      "isLink" : true,
+      "source" : 7,
+      "target" : 11,
+      "rank" : 3,
+      "weight" : 3
+    }, {
+      "isLink" : true,
+      "source" : 7,
+      "target" : 10,
+      "rank" : 0,
+      "weight" : 0
+    }, {
+      "isLink" : true,
+      "source" : 14,
+      "target" : 20,
+      "rank" : 0,
+      "weight" : 0
+    }, {
+      "isLink" : true,
+      "source" : 7,
+      "target" : 13,
+      "rank" : 5,
+      "weight" : 5
+    }, {
+      "isLink" : true,
+      "source" : 7,
+      "target" : 12,
+      "rank" : 1,
+      "weight" : 1
+    }, {
+      "isLink" : true,
+      "source" : 28,
+      "target" : 29,
+      "rank" : 3,
+      "weight" : 3
+    }, {
+      "isLink" : true,
+      "source" : 35,
+      "target" : 38,
+      "rank" : 2,
+      "weight" : 2
+    }, {
+      "isLink" : true,
+      "source" : 35,
+      "target" : 37,
+      "rank" : 3,
+      "weight" : 3
+    }, {
+      "isLink" : true,
+      "source" : 35,
+      "target" : 36,
+      "rank" : 4,
+      "weight" : 4
+    }, {
+      "isLink" : true,
+      "source" : 50,
+      "target" : 51,
+      "rank" : 0,
+      "weight" : 0
+    }, {
+      "isLink" : true,
+      "source" : 50,
+      "target" : 53,
+      "rank" : 2,
+      "weight" : 2
+    }, {
+      "isLink" : true,
+      "source" : 50,
+      "target" : 52,
+      "rank" : 3,
+      "weight" : 3
+    }, {
+      "isLink" : true,
+      "source" : 50,
+      "target" : 55,
+      "rank" : 4,
+      "weight" : 4
+    }, {
+      "isLink" : true,
+      "source" : 50,
+      "target" : 54,
+      "rank" : 1,
+      "weight" : 1
+    }, {
+      "isLink" : true,
+      "source" : 35,
+      "target" : 39,
+      "rank" : 5,
+      "weight" : 5
+    }, {
+      "isLink" : true,
+      "source" : 28,
+      "target" : 30,
+      "rank" : 2,
+      "weight" : 2
+    }, {
+      "isLink" : true,
+      "source" : 28,
+      "target" : 33,
+      "rank" : 4,
+      "weight" : 4
+    }, {
+      "isLink" : true,
+      "source" : 28,
+      "target" : 34,
+      "rank" : 5,
+      "weight" : 5
+    }, {
+      "isLink" : true,
+      "source" : 28,
+      "target" : 31,
+      "rank" : 0,
+      "weight" : 0
+    }, {
+      "isLink" : true,
+      "source" : 28,
+      "target" : 32,
+      "rank" : 1,
+      "weight" : 1
+    }, {
+      "isLink" : true,
+      "source" : 7,
+      "target" : 8,
+      "rank" : 2,
+      "weight" : 2
+    }, {
+      "isLink" : true,
+      "source" : 7,
+      "target" : 9,
+      "rank" : 4,
+      "weight" : 4
+    }, {
+      "isLink" : true,
+      "source" : 43,
+      "target" : 47,
+      "rank" : 4,
+      "weight" : 4
+    }, {
+      "isLink" : true,
+      "source" : 43,
+      "target" : 48,
+      "rank" : 2,
+      "weight" : 2
+    }, {
+      "isLink" : true,
+      "source" : 43,
+      "target" : 49,
+      "rank" : 0,
+      "weight" : 0
+    }, {
+      "isLink" : true,
+      "source" : 42,
+      "target" : 0,
+      "rank" : 1,
+      "weight" : 1
+    }, {
+      "isLink" : true,
+      "source" : 42,
+      "target" : 1,
+      "rank" : 5,
+      "weight" : 5
+    }, {
+      "isLink" : true,
+      "source" : 43,
+      "target" : 44,
+      "rank" : 1,
+      "weight" : 1
+    }, {
+      "isLink" : true,
+      "source" : 42,
+      "target" : 2,
+      "rank" : 0,
+      "weight" : 0
+    }, {
+      "isLink" : true,
+      "source" : 43,
+      "target" : 45,
+      "rank" : 5,
+      "weight" : 5
+    }, {
+      "isLink" : true,
+      "source" : 43,
+      "target" : 46,
+      "rank" : 3,
+      "weight" : 3
+    }, {
+      "isLink" : true,
+      "source" : 42,
+      "target" : 4,
+      "rank" : 3,
+      "weight" : 3
+    }, {
+      "isLink" : true,
+      "source" : 42,
+      "target" : 5,
+      "rank" : 4,
+      "weight" : 4
+    }, {
+      "isLink" : true,
+      "source" : 42,
+      "target" : 6,
+      "rank" : 2,
+      "weight" : 2
+    }, {
+      "isLink" : true,
+      "source" : 14,
+      "target" : 16,
+      "rank" : 5,
+      "weight" : 5
+    }, {
+      "isLink" : true,
+      "source" : 14,
+      "target" : 17,
+      "rank" : 2,
+      "weight" : 2
+    }, {
+      "isLink" : true,
+      "source" : 21,
+      "target" : 27,
+      "rank" : 1,
+      "weight" : 1
+    }, {
+      "isLink" : true,
+      "source" : 21,
+      "target" : 26,
+      "rank" : 5,
+      "weight" : 5
+    }, {
+      "isLink" : true,
+      "source" : 14,
+      "target" : 15,
+      "rank" : 4,
+      "weight" : 4
+    }, {
+      "isLink" : true,
+      "source" : 21,
+      "target" : 25,
+      "rank" : 0,
+      "weight" : 0
+    }, {
+      "isLink" : true,
+      "source" : 0,
+      "target" : 1,
+      "rank" : 4,
+      "weight" : 4
+    }, {
+      "isLink" : true,
+      "source" : 0,
+      "target" : 2,
+      "rank" : 0,
+      "weight" : 0
+    }, {
+      "isLink" : true,
+      "source" : 0,
+      "target" : 3,
+      "rank" : 5,
+      "weight" : 5
+    }, {
+      "isLink" : true,
+      "source" : 0,
+      "target" : 4,
+      "rank" : 2,
+      "weight" : 2
+    }, {
+      "isLink" : true,
+      "source" : 0,
+      "target" : 5,
+      "rank" : 3,
+      "weight" : 3
+    }, {
+      "isLink" : true,
+      "source" : 0,
+      "target" : 6,
+      "rank" : 1,
+      "weight" : 1
+    }, {
+      "isLink" : true,
+      "source" : 21,
+      "target" : 24,
+      "rank" : 2,
+      "weight" : 2
+    }, {
+      "isLink" : true,
+      "source" : 21,
+      "target" : 23,
+      "rank" : 3,
+      "weight" : 3
+    }, {
+      "isLink" : true,
+      "source" : 14,
+      "target" : 18,
+      "rank" : 3,
+      "weight" : 3
+    }, {
+      "isLink" : true,
+      "source" : 21,
+      "target" : 22,
+      "rank" : 4,
+      "weight" : 4
+    }, {
+      "isLink" : true,
+      "source" : 14,
+      "target" : 19,
+      "rank" : 1,
+      "weight" : 1
+    } ]
+  }
+}

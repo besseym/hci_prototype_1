@@ -4,13 +4,12 @@
 $fa-font-path: '/hci_prototype_1/fonts';
 @import '../bower_components/fontawesome/scss/font-awesome';
 
-$clr-link-7: #eff3ff;
-$clr-link-6: #c6dbef;
-$clr-link-5: #9ecae1;
-$clr-link-4: #6baed6;
-$clr-link-3: #4292c6;
-$clr-link-2: #2171b5;
-$clr-link-1: #084594;
+$clr-link-6: #eff3ff;
+$clr-link-5: #c6dbef;
+$clr-link-4: #9ecae1;
+$clr-link-3: #6baed6;
+$clr-link-2: #3182bd;
+$clr-link-1: #08519c;
 
 #tab-content-dialog {
 
@@ -91,6 +90,7 @@ $clr-link-1: #084594;
 
     line.link {
       stroke: #aaa;
+      cursor:pointer;
 
       &.highlight {
         stroke: #337ab7;
@@ -106,6 +106,8 @@ $clr-link-1: #084594;
       stroke:#fff;
       stroke-width:5px;
       fill:#555;
+
+      cursor:pointer;
 
       &.text {
         stroke:#333;
@@ -128,15 +130,35 @@ $clr-link-1: #084594;
 
       cursor: pointer;
     }
+
+
+  }
+
+  #l-dialog, #m-info {
+
+    width: 500px;
+
+    h4, h5 {
+      text-align: center;
+    }
+  }
+
+  #m-info {
+
+    pointer-events: none;
+    background-color:rgba(245, 245, 245, 0.85);
   }
 
   .chart-dialog {
 
-    width: 500px;
     visibility: hidden;
     position: absolute;
   }
 
+}
+
+#chart-matrix-window {
+  position: absolute;
 }
 
 #tab-content-viz {

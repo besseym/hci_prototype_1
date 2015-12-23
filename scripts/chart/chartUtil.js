@@ -2,69 +2,49 @@ define(["d3", "common"],
 
     function (d3, common) {
 
-        var dataPath = "/hci_prototype_1/data/",
+        function getQualitativeColorScale(domain){
 
-            colorDefault = "#f5f5f5",
-            typeColorScale = d3.scale.category20(),
-            ratingColorScale = d3.scale.category20(),
-            otherColorScale = d3.scale.category10();
+            var scale, size = (domain.length < 3) ? 3 : domain.length;
 
-
-        function buildTypeColorArray(hArray, colorScale){
-
-            var k, h,
-                typeColorArray = [];
-
-            for(k in hArray){
-
-                h = hArray[k];
-                c = colorScale(h.id);
-
-                typeColorArray.push({
-                    id: h.id,
-                    name: h.name,
-                    color: c
-                });
+            if(size <= 9){
+                scale = d3.scale.ordinal().domain(domain).range(colorbrewer.Set1[size]);
+            }
+            else if(size <= 12){
+                scale = d3.scale.ordinal().domain(domain).range(colorbrewer.Paired[size]);
+            }
+            else if(size <= 20){
+                scale = d3.scale.category20();
+            }
+            else {
+                throw "Too many qualitative values to scale.";
             }
 
-            return typeColorArray;
+            return scale;
         }
 
         return {
 
-            loadNodeLinkData: function (path, onLoad) {
+            getQualitativeColorScale: getQualitativeColorScale,
 
-                d3.json(dataPath + path, onLoad);
-            },
+            decorateWithColor: function(data){
 
-            getTypeColorArray: function(type, data){
+                var i, k, size, color, colorScale, property, domain = [];
 
-                var typeColorArray;
-
-                switch(type){
-
-                    case 'type':
-                        typeColorArray = buildTypeColorArray(data.get('typeAttrMap'), typeColorScale);
-                        break;
-                    case 'status':
-                        typeColorArray = buildTypeColorArray(data.get('statusAttrMap'), otherColorScale);
-                        break;
-                    case 'rating':
-                        typeColorArray = buildTypeColorArray(data.get('ratingAttrMap'), ratingColorScale);
-                        break;
-                    case 'match':
-                        typeColorArray = buildTypeColorArray(data.get('matchAttrMap'), otherColorScale);
-                        break;
-                    case 'restriction':
-                        typeColorArray = buildTypeColorArray(data.get('ageGateAttrMap'), otherColorScale);
-                        break;
-                    case 'title-type':
-                        typeColorArray = buildTypeColorArray(data.get('titleTypeAttrMap'), otherColorScale);
-                        break;
+                size = data.properties.length;
+                for(i = 0; i < size; i++){
+                    property = data.properties[i];
+                    domain.push(property.name);
                 }
 
-                return typeColorArray;
+                colorScale = getQualitativeColorScale(domain);
+
+                for(i = 0; i < size; i++){
+                    property = data.properties[i];
+                    property.color = colorScale(property.name);
+                    data.properties[i] = property;
+                }
             }
+
         };
     }
 );
