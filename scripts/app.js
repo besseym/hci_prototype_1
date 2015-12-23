@@ -1,861 +1,431 @@
 requirejs.config({
     paths: {
-        d3: '/hci_prototype_1/bower_components/d3/d3.min'
+        d3: "/hci_prototype_1/bower_components/d3/d3.min"
     }
 });
 
 require(
     [
-        "common", "chart/chartUtil", "chart/DataNodeLink", "chart/WidgetItemList", "chart/ChartNodeLink", "chart/ChartAdjMatrixD3Impl"
+        "common",
+        "dispatch",
+        "model/NodeLinkModel",
+        "view/View",
+        "view/KeyboardView",
+        "view/FlashView",
+        "view/QuickInfoView",
+        "view/LoadingView",
+        "view/ColorKeyView",
+        "view/FormView",
+        "view/ResultView",
+        "view/FormHighlightView",
+        "view/TabbedView",
+        "view/ContentSwapView",
+        "view/SelectView",
+        "view/NodeDialogView",
+        "view/LinkDialogView",
+        "view/ItemListView",
+        "chart/chartUtil",
+        "chart/ChartNodeLinkView",
+        "chart/ChartAdjacencyMatrixView",
+        "chart/ChartAdjMatrixWindowView"
     ],
-    function(common, chartUtil, DataNodeLink, WidgetItemList, ChartNodeLink, ChartAdjMatrix) {
+    function (
+        common,
+        dispatch,
+        NodeLinkModel,
+        View,
+        KeyboardView,
+        FlashView,
+        QuickInfoView,
+        LoadingView,
+        ColorKeyView,
+        FormView,
+        ResultView,
+        FormHighlightView,
+        TabbedView,
+        ContentSwapView,
+        SelectView,
+        NodeDialogView,
+        LinkDialogView,
+        ItemListView,
+        chartUtil,
+        ChartNodeLinkView,
+        ChartAdjacencyMatrixView,
+        ChartAdjMatrixWindowView
+    ) {
 
-        var selectedNodeId,
+        var nodeLinkModel = new NodeLinkModel(),
 
-            p,
-            parameterMap = common.getParameterMap(),
-            task = {
-                isEnabled: false,
-                id: 0
-            },
+            keyboardView = new KeyboardView(),
 
-            activeChart = "list",
-            titleFilter = "",
-            typeColorArray,
+            flashView = new FlashView({selector: "#flash", isRemoveable: true}),
+            loadingView = new View({selector: "#loading", isRemoveable: true}),
+            matrixInfoView = new QuickInfoView({selector: "#m-info"}),
 
-            dataNodeLink,
-            listWidget,
-            nodeLinkChart,
-            adjMatrixChart,
+            colorKeyView = new ColorKeyView({selector: "#key-color", templateId: "template-color-key"}),
 
-            highlights = {},
+            searchFormView = new FormView({selector: "#form-search", topicSubmit: "view_form_submit_search"}),
+            highlightFormView = new FormHighlightView({selector: "#form-hightlight"}),
 
-            infoMatrix = $('#info-matrix'),
+            resultView = new ResultView({selector: "#view-result"}),
 
-            titleFilterCount = $('#filter-title-count'),
-            inputTitleFilter = $('#input-filter-title'),
-            inputHighlightSelect = $('#form-hightlight input[name=highlight]:radio'),
+            formTabbedView = new TabbedView({selector: "#tabs-dialog"}),
+            vizTabbedView = new TabbedView({selector: "#tabs-viz"}),
+            contentSwapView = new ContentSwapView({selector: "#content-main"}),
 
-            waitFeedback = $("#wait-feedback"),
+            nodeDialogView = new NodeDialogView({selector: "#n-dialog"}),
+            linkDialogView = new LinkDialogView({selector: "#l-dialog"}),
 
-            propertyColorKey = $("#key-color"),
+            selectView = new SelectView({selector: "#tab-pane-select", templateId: "template-select"}),
 
-            flashSuccess = $("#flash-success"),
-            flashSuccessCloseBtn = flashSuccess.find("#btn-close-success"),
-            flashSuccessMsg = flashSuccess.find("#flash-success-msg"),
-
-            flashInfo = $("#flash-info"),
-            flashInfoCloseBtn = flashInfo.find("#btn-close-info"),
-            flashInfoMsg = flashInfo.find("#flash-info-msg"),
-
-            flashWarning = $("#flash-warning"),
-            flashWarningCloseBtn = flashWarning.find("#btn-close-warning"),
-            flashWarningMsg = flashWarning.find("#flash-warning-msg"),
-
-            flashDanger = $("#flash-danger"),
-            flashDangerCloseBtn = flashDanger.find("#btn-close-danger"),
-            flashDangerMsg = flashDanger.find("#flash-danger-msg"),
-
-            nodeDialog = $("#n-dialog"),
-            nodeDialogSelectBtn = nodeDialog.find("#d-n-select-btn"),
-            nodeDialogThisToSelectedBtn = nodeDialog.find("#d-n-this-to-selected-btn"),
-            nodeDialogSelectedToThisBtn = nodeDialog.find("#d-n-selected-to-this-btn"),
-
-            linkDialog = $("#l-dialog"),
-            linkDialogBtn = linkDialog.find("#l-btn"),
-
-            highlightTabPane = $("#tab-pane-highlight"),
-            resultCount = highlightTabPane.find("#result-count"),
-
-            selectTabPane = $("#tab-pane-select"),
-            connectionTableBody = selectTabPane.find("#s-n-c-tbl tbody");
-
-        //intialize
-        if(!common.isUndefined(parameterMap)){
-
-            for(p in parameterMap){
-
-                switch(p){
-
-                    case 'task':
-
-                        if(parameterMap[p] === '1'){
-
-                            task.isEnabled = true;
-                            task.id = 1;
-                            task.href = '/hci_prototype_1/task_success_1.html';
-                        }
-                        else if(parameterMap[p] === '2'){
-
-                            task.isEnabled = true;
-                            task.id = 2;
-                            task.href = '/hci_prototype_1/task_success_2.html';
-                        }
-                        else if(parameterMap[p] === '3'){
-
-                            task.isEnabled = true;
-                            task.id = 3;
-                            task.href = '/hci_prototype_1/task_success_3.html';
-                        }
-                        else {
-                            task.isEnabled = false;
-                        }
-
-                        break;
+            itemListView = new ItemListView({selector: "#list-widget", templateId: "template-item-list"}),
+            chartNodeLinkView = new ChartNodeLinkView({selector: "#chart-graph-video"}),
+            adjacencyMatrixView = ChartAdjacencyMatrixView(
+                {
+                    selector: "#chart-matrix-video",
+                    paddingLeft: 200
                 }
-            }
+            ),
+            adjMatrixWindowView = ChartAdjMatrixWindowView({selector: "#chart-matrix-window"});
+
+        adjMatrixWindowView.setPaddingAll(5);
+
+        function highlightMatrix(){
+
+            var highlightViewMode = highlightFormView.getHighlightViewModel(),
+                stats = nodeLinkModel.getStatsViewModel(highlightViewMode);
+
+            adjacencyMatrixView.highlight(stats);
         }
 
-        $('#keywords').focus();
-        $( "#form-search" ).submit(function( event ) {
+        dispatch.subscribe("view_loading_show", function(msg){
 
-            var isMatch = false,
-                graph,
-                formArray = $( this ).serializeArray();
+            loadingView.show();
+        });
 
-            waitFeedback.show();
+        dispatch.subscribe("view_loading_hide", function(msg){
 
-            jQuery.each( formArray, function( i, field ) {
+            loadingView.hide();
+        });
 
-                if(field.name === "showId"){
+        function refreshMatrixCharts(){
 
-                    switch(field.value){
+            var adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
 
-                        case "3412157":
-                            graph = "graph_show_3412157.json";
-                            isMatch = true;
-                            break;
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
 
-                        case "3413913":
-                            graph = "graph_show_3413913.json";
-                            isMatch = true;
-                            break;
-                    }
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
 
-                }
-                else if(field.name === "seriesId"){
+            adjMatrixWindowView.updateScale();
+            adjMatrixWindowView.draw();
+        }
 
-                    switch(field.value){
+        dispatch.subscribe("view_tab_pane_matrix", function(msg){
 
-                        case "701":
-                            graph = "graph_series_701.json";
-                            isMatch = true;
-                            break;
+            var padding;
 
-                        case "1003303":
-                            graph = "graph_series_1003303.json";
-                            isMatch = true;
-                            break;
-                    }
+            adjacencyMatrixView.updateDimensions();
 
-                }
-                else if(field.name === "keywords"){
-
-                    switch(field.value){
-
-                        case "test":
-                            graph = "graph_test.json";
-                            isMatch = true;
-                            break;
-
-                        case "america":
-                            graph = "graph_america.json";
-                            isMatch = true;
-                            break;
-
-                        case "bionic":
-                            graph = "graph_bionic.json";
-                            isMatch = true;
-                            break;
-
-                        case "speed":
-                            graph = "graph_speed.json";
-                            isMatch = true;
-                            break;
-
-                        case "design":
-                            graph = "graph_design.json";
-                            isMatch = true;
-                            break;
-
-                        case "crime":
-                            graph = "graph_crime.json";
-                            isMatch = true;
-                            break;
-
-                        case "robots":
-                            graph = "graph_robots.json";
-                            isMatch = true;
-                            break;
-                    }
-                }
+            padding = adjacencyMatrixView.get("paddingLeft");
+            adjMatrixWindowView.set({
+                width: padding, height: padding
             });
 
-            if(isMatch){
+            refreshMatrixCharts();
+        });
 
-                $('#content-viz').show();
-                $('#content-overview').hide();
+        dispatch.subscribe("view_tab_pane_node_link", function(msg){
 
-                chartUtil.loadNodeLinkData(graph, function(error, data) {
+            var nodeLinkViewModel = nodeLinkModel.getNodeLinkViewModel();
 
-                    if (error) throw error;
+            chartNodeLinkView.updateScale(nodeLinkViewModel);
+            chartNodeLinkView.updateView(nodeLinkViewModel);
+        });
 
-                    if(!common.isUndefined(nodeLinkChart)){
-                        nodeLinkChart.clear();
-                    }
+        dispatch.subscribe("view_flash", function(msg){
 
-                    if(!common.isUndefined(adjMatrixChart)){
-                        adjMatrixChart.clear();
-                    }
+            flashView.updateView(msg.payload);
+            flashView.show();
+        });
 
-                    dataNodeLink = DataNodeLink.getInstance(data);
+        dispatch.subscribe("view_form_submit_search", function(msg){
 
-                    resultCount.text(dataNodeLink.getNodeCount());
-                    focusHighlightTab();
+            nodeLinkModel.loadData(msg.payload);
 
-                    loadListWidget();
-                    loadNodeLinkChart();
-                    loadAdjMatrixChart();
+        });
 
-                    if("list" === activeChart) {
-                        listWidget.display();
-                    }
-                    else if("nodeLink" === activeChart) {
-                        nodeLinkChart.display();
-                    }
-                    else if("matrix" === activeChart){
-                        adjMatrixChart.display();
-                    }
+        dispatch.subscribe("model_data_loaded", function(msg){
 
-                    waitFeedback.hide();
-                });
+            var listViewModel = nodeLinkModel.getListViewModel();
+
+            formTabbedView.focusTabNav("highlight");
+            formTabbedView.focusTabPane("highlight");
+            contentSwapView.swapContent("viz");
+
+            resultView.updateView(nodeLinkModel.getResultViewModel());
+
+            listViewModel.selectedNodeId = nodeLinkModel.get("selectedNodeId");
+            itemListView.updateView(listViewModel);
+
+        });
+
+        dispatch.subscribe("view_form_highlight_title", function(msg){
+
+            var highlightViewMode = highlightFormView.getHighlightViewModel(),
+                statsViewModel = nodeLinkModel.getStatsViewModel(highlightViewMode);
+
+            highlightFormView.updateView(statsViewModel);
+
+            itemListView.highlight(statsViewModel);
+            adjacencyMatrixView.highlight(statsViewModel);
+            chartNodeLinkView.highlight(statsViewModel);
+        });
+
+        dispatch.subscribe("view_form_highlight_property", function(msg){
+
+            var highlightViewMode = highlightFormView.getHighlightViewModel(),
+                statsViewModel = nodeLinkModel.getStatsViewModel(highlightViewMode);
+
+            chartUtil.decorateWithColor(statsViewModel.property);
+
+            colorKeyView.updateView(statsViewModel.property);
+
+            itemListView.highlight(statsViewModel);
+            adjacencyMatrixView.highlight(statsViewModel);
+            chartNodeLinkView.highlight(statsViewModel);
+        });
+
+        dispatch.subscribe("view_select_node", function(msg){
+
+            var nId = msg.payload.nId, statsViewModel,
+                highlightViewMode = highlightFormView.getHighlightViewModel();
+
+            nodeLinkModel.set({selectedNodeId: nId});
+            statsViewModel = nodeLinkModel.getStatsViewModel(highlightViewMode);
+
+            selectView.updateView(nodeLinkModel.getSelectViewModel());
+            itemListView.updateItems(nodeLinkModel.getListViewModel(), false, true);
+
+            formTabbedView.focusTabNav("select");
+            formTabbedView.focusTabPane("select");
+
+            itemListView.highlight(statsViewModel);
+            adjacencyMatrixView.highlight(statsViewModel);
+            chartNodeLinkView.highlight(statsViewModel);
+        });
+
+        dispatch.subscribe("view_update_selected_link", function(msg){
+
+            nodeLinkModel.updateSelectedLink(msg.payload.id);
+        });
+
+        dispatch.subscribe("view_update_link", function(msg){
+
+            nodeLinkModel.updateLink(msg.payload);
+        });
+
+        dispatch.subscribe("model_update_link_success", function(msg){
+
+            var nodeLink, listViewModel, sNodeId, tNodeId,
+                lId = nodeLinkModel.getLinkId(msg.payload.sId, msg.payload.tId);
+
+            adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
+            chartNodeLinkView.updateView(nodeLinkModel.getNodeLinkViewModel());
+            itemListView.updateItems(nodeLinkModel.getListViewModel(), true, true);
+
+            if(!nodeLinkModel.hasLink(lId)){
+                selectView.removeLink(lId);
             }
             else {
-
-                waitFeedback.hide();
-
-                showWarningMsg("The search criteria you provided returned too many search results. Please refine your search.");
-            }
-
-            event.preventDefault();
-        });
-
-        $("#form-hightlight").submit(function( event ) {
-            event.preventDefault();
-        });
-
-        $("a[href='#tab-pane-list']").on("shown.bs.tab", function( event ) {
-
-            listWidget.display();
-            listWidget.highlight(highlights);
-
-            infoMatrix.hide();
-
-            activeChart = "list";
-        });
-
-        $("a[href='#tab-pane-node-link']").on("shown.bs.tab", function( event ) {
-
-            nodeLinkChart.display();
-            nodeLinkChart.highlight(highlights);
-
-            nodeLinkChart.focusOnNode(selectedNodeId);
-
-            infoMatrix.hide();
-
-            activeChart = "nodeLink";
-        });
-
-        $("a[href='#tab-pane-matrix']").on("shown.bs.tab", function( event ) {
-
-            adjMatrixChart.display();
-            adjMatrixChart.highlight(highlights);
-            adjMatrixChart.selectNode(selectedNodeId);
-
-            infoMatrix.show();
-
-            activeChart = "matrix";
-        });
-
-        function loadListWidget(){
-
-            listWidget = WidgetItemList.getInstance({
-                selector: "#list-widget",
-                data: dataNodeLink,
-
-                app: {
-
-                    getSelectedNodeId: function(){
-                        return selectedNodeId;
-                    },
-                    selectNode: selectNode,
-                    makeLink: makeLink,
-                    breakLink: breakLink,
-                    showDangerMsg: showDangerMsg
-                }
-            });
-        }
-
-        function loadNodeLinkChart(){
-
-            nodeLinkChart = ChartNodeLink.getInstance({
-
-                selector: "#chart-graph-video",
-                data: dataNodeLink,
-
-                app: {
-
-                    selectNode: selectNode,
-
-                    makeLink: makeLink,
-                    breakLink: breakLink,
-
-                    focusSelectTab: focusSelectTab,
-                    buildSelectPanel: buildSelectPanel,
-
-                    populateNodeDialog: populateNodeDialog,
-                    setNodeDialogLocation: setNodeDialogLocation,
-                    hideNodeDialog: hideNodeDialog,
-
-                    populateLinkDialog: populateLinkDialog,
-                    setLinkDialogLocation: setLinkDialogLocation,
-                    hideLinkDialog: hideLinkDialog
-                }
-            });
-        }
-
-        function loadAdjMatrixChart(){
-
-            adjMatrixChart = ChartAdjMatrix.getInstance({
-                selector: "#chart-matrix-video",
-                data: dataNodeLink,
-                padding: {
-                    top: 100, right: 50, bottom: 0, left: 200
-                },
-
-                app: {
-                    getSelectedNodeId: function(){
-                        return selectedNodeId;
-                    },
-                    selectNode: selectNode,
-                    changeSelectedLinkColor: changeSelectedLinkColor,
-                    makeLink: makeLink,
-                    breakLink: breakLink,
-                    showDangerMsg: showDangerMsg
-                }
-            });
-        }
-
-        inputHighlightSelect.change(function(event) {
-
-            var value = $(this).val();
-
-            typeColorArray = chartUtil.getTypeColorArray(value, dataNodeLink);
-
-            highlights.property = {
-                typeColorArray: typeColorArray
-            };
-
-            if("list" === activeChart) {
-                listWidget.highlight(highlights);
-            }
-            else if("matrix" === activeChart){
-                adjMatrixChart.highlight(highlights);
-            }
-            else if("nodeLink" === activeChart) {
-                nodeLinkChart.highlight(highlights);
-            }
-
-            propertyColorKey.show();
-            buildColorKey(typeColorArray);
-        });
-
-        inputTitleFilter.on('input', function(event) {
-
-            titleFilter = $(this).val().toLowerCase();
-
-            highlights.title = {
-                value: titleFilter
-            };
-
-            if("list" === activeChart) {
-                listWidget.highlight(highlights);
-            }
-            else if("nodeLink" === activeChart) {
-                nodeLinkChart.highlight(highlights);
-            }
-            else if("matrix" === activeChart){
-                adjMatrixChart.highlight(highlights);
-            }
-
-            titleFilterCount.text(highlights.title.count);
-            titleFilterCount.show();
-
-        });
-
-        function selectNode(sNodeId){
-
-            if(dataNodeLink.hasNode(sNodeId)) {
-
-                buildSelectPanel(dataNodeLink.getNode(sNodeId), dataNodeLink.getNodeConnect(sNodeId));
-                focusSelectTab();
-
-                selectedNodeId = sNodeId;
-            }
-        }
-
-        //node dialog actions
-        nodeDialogSelectBtn.on('click', function( event ) {
-
-            selectedNodeId = nodeDialog.find("#n-d-id").text();
-
-            selectNode(selectedNodeId);
-
-            nodeLinkChart.focusOnNode(selectedNodeId);
-
-            event.preventDefault();
-        });
-
-        nodeDialogThisToSelectedBtn.on('click', function( event ) {
-
-            var nodeId = nodeDialog.find("#n-d-id").text();
-            nodeLinkChart.makeLink(selectedNodeId, nodeId);
-
-            event.preventDefault();
-        });
-
-        nodeDialogSelectedToThisBtn.on('click', function( event ) {
-
-            var nodeId = nodeDialog.find("#n-d-id").text();
-            nodeLinkChart.makeLink(nodeId, selectedNodeId);
-
-            event.preventDefault();
-        });
-
-        //link dialog actions
-        linkDialogBtn.on('click', function( event ) {
-
-            var id = $(this).attr('href');
-            nodeLinkChart.breakLink(id);
-
-            event.preventDefault();
-        });
-
-        linkDialogBtn.on("mouseover", function() {
-
-            $(this).children('i').removeClass( "fa-link" ).addClass( "fa-chain-broken" );
-        });
-
-        linkDialogBtn.on("mouseout", function() {
-
-            $(this).children('i').removeClass( "fa-chain-broken" ).addClass( "fa-link" );
-        });
-
-        flashSuccessCloseBtn.on("click", function(event){
-
-            flashSuccess.css("display", "none");
-            event.preventDefault();
-        });
-
-        flashInfoCloseBtn.on("click", function(event){
-
-            flashInfo.css("display", "none");
-            event.preventDefault();
-        });
-
-        flashWarningCloseBtn.on("click", function(event){
-
-            flashWarning.css("display", "none");
-            event.preventDefault();
-        });
-
-        flashDangerCloseBtn.on("click", function(event){
-
-            flashDanger.css("display", "none");
-            event.preventDefault();
-        });
-
-        function populateNodeDialog(d){
-
-            var hasSelected = !common.isUndefined(selectedNodeId),
-                isSelectedNode = selectedNodeId === d.id,
-                isThisConnectedToSelected,
-                isSelectedConnectedToThis,
-                selectBlk, thisToSelectedBlk, selectedToThisBlk;
-
-            nodeDialog.find("#n-d-id").text(d.id);
-            nodeDialog.find("#n-d-title").text(d.title);
-            nodeDialog.find("#n-d-type").text(d.type);
-
-            nodeDialog.find("#n-d-series-id").text(d.seriesId);
-            nodeDialog.find("#n-d-season-number").text(d.seasonNumber);
-            nodeDialog.find("#n-d-show-id").text(d.showId);
-
-            if(hasSelected && !isSelectedNode){
-                isThisConnectedToSelected = dataNodeLink.isConnected(selectedNodeId, d.id);
-                isSelectedConnectedToThis = dataNodeLink.isConnected(d.id, selectedNodeId);
-            }
-
-            selectBlk = nodeDialog.find("#d-n-select");
-            if(!hasSelected || !isSelectedNode ){
-                selectBlk.css("display", "block");
-            }
-            else {
-                selectBlk.css("display", "none");
-            }
-
-            thisToSelectedBlk = nodeDialog.find("#d-n-this-to-selected");
-            selectedToThisBlk = nodeDialog.find("#d-n-selected-to-this");
-            if(hasSelected && !isSelectedNode){
-
-                if(!isThisConnectedToSelected) {
-                    thisToSelectedBlk.css("display", "block");
-                }
-                else {
-                    thisToSelectedBlk.css("display", "none");
-                }
-
-                if(!isSelectedConnectedToThis) {
-                    selectedToThisBlk.css("display", "block");
-                }
-                else {
-                    selectedToThisBlk.css("display", "none");
-                }
-            }
-            else {
-
-                thisToSelectedBlk.css("display", "none");
-                selectedToThisBlk.css("display", "none");
-            }
-        }
-
-        function setNodeDialogLocation(location){
-
-            nodeDialog.css("left", location.left).css("top", location.top).css("visibility", "visible");
-        }
-
-        function hideNodeDialog(){
-
-            nodeDialog.css("visibility", "hidden");
-        }
-
-        function populateLinkDialog(d){
-
-            linkDialog.find("#source").text(d.source.title);
-            linkDialog.find("#target").text(d.target.title);
-
-            linkDialog.find("#l-btn").attr("href", d.id);
-        }
-
-        function setLinkDialogLocation(location){
-
-            linkDialog.css("left", location.left).css("top", location.top).css("visibility", "visible");
-        }
-
-        function hideLinkDialog(){
-
-            linkDialog.css("visibility", "hidden");
-        }
-
-        function changeSelectedLinkColor(lId, doHighlight){
-
-            var lRow = connectionTableBody.find("#s-" + lId);
-
-            if (lRow.length > 0 ){
-
-                if(doHighlight){
-                    lRow.addClass("bg-info");
-                }
-                else {
-                    lRow.removeClass("bg-info");
-                }
-            }
-        }
-
-        function buildSelectPanel(d, connect){
-
-            var j,
-                sortStartIndex,
-                connection,
-                connectionLinkArray,
-                connectionBtnArray,
-                connectOutArray = [];
-
-            selectTabPane.find("#s-n-title").text(d.title);
-
-            selectTabPane.find("#s-n-id").text(d.id);
-            selectTabPane.find("#s-n-type").text(d.type);
-
-            selectTabPane.find("#s-n-series-id").text(d.seriesId);
-            selectTabPane.find("#s-n-season-number").text(d.seasonNumber);
-            selectTabPane.find("#s-n-show-id").text(d.showId);
-
-            selectTabPane.find("#s-n-url a").attr('href', d.url);
-
-            connectionTableBody.empty();
-
-            //console.log(connect);
-            if(!common.isUndefined(connect)){
-
-                for(j = 0; j < connect.connectionArray.length; j++){
-
-                    connection = connect.connectionArray[j];
-
-                    connectOutArray = [
-                        "<tr id='s-" + connection.l.id + "' data-link-id='" + connection.l.id + "' data-source-id='" + connection.l.source.id + "' data-target-id='" + connection.l.target.id + "' class='s-l'>",
-                        "<td>",
-                        "<i class='fa fa-bars'></i>",
-                        "</td>",
-                        "<td>",
-                        connection.n.title,
-                        "</td>",
-                        "<td>",
-                        connection.n.type,
-                        "</td>",
-                        "<td>",
-                        connection.n.rating,
-                        "</td>",
-                        "<td>",
-                        "<a class='s-l-btn btn btn-lg btn-default' href='" + connection.l.id + "'>",
-                        "<i class='fa fa-link'></i>",
-                        "</a>",
-                        "</td>",
-                        "</tr>"
-                    ];
-
-                    connectionTableBody.append(connectOutArray.join(""));
-                }
-            }
-
-            connectionTableBody.sortable({
-                cursor: "move",
-                opacity: 0.5,
-                start: function( event, ui ) {
-
-                    sortStartIndex = ui.item.index();
-                },
-                update: function( event, ui ) {
-
-                    var sortEndIndex = ui.item.index(),
-                        sNodeId = ui.item.data('source-id'),
-                        tNodeId = ui.item.data('target-id');
-
-                    if(task.isEnabled && task.id === 3 && selectedNodeId === 'n-32392' && tNodeId === 'n-32412' && sortEndIndex === 0){
-
-                        $(location).attr('href', task.href);
-                    }
-
-                    if("nodeLink" === activeChart) {
-                        nodeLinkChart.adjustLinkWeight(sNodeId, sortStartIndex, sortEndIndex);
-                    }
-                    else if("matrix" === activeChart){
-                        adjMatrixChart.adjustLinkWeight(sNodeId, sortStartIndex, sortEndIndex);
-                    }
-
-                }
-            });
-
-            connectionLinkArray = connectionTableBody.find('.s-l');
-            connectionLinkArray.on("mouseover", function() {
-
-                var link = $(this),
-                    lId = link.data('link-id'),
-                    targetId = link.data('target-id');
-
-                changeSelectedLinkColor(lId, true);
-
-                if("nodeLink" === activeChart) {
-                    nodeLinkChart.changeLinkColor(lId, true);
-                }
-                else if("matrix" === activeChart){
-                    adjMatrixChart.changeLinkColor(lId, true);
-                }
-                //else if("list" === activeChart){
-                //    listWidget.updateTargetView(targetId, true);
-                //}
-
-            });
-
-            connectionLinkArray.on("mouseout", function() {
-
-                var link = $(this),
-                    lId = link.data('link-id'),
-                    targetId = link.data('target-id');
-
-                changeSelectedLinkColor(lId, false);
-
-                if("nodeLink" === activeChart) {
-                    nodeLinkChart.changeLinkColor(lId, false);
-                }
-                else if("matrix" === activeChart){
-                    adjMatrixChart.changeLinkColor(lId, false);
-                }
-                //else if("list" === activeChart){
-                //    listWidget.updateTargetView(targetId, false);
-                //}
-            });
-
-            connectionBtnArray = connectionTableBody.find('.s-l-btn');
-            connectionBtnArray.on("mouseover", function() {
-
-                $(this).children('i').removeClass( "fa-link" ).addClass( "fa-chain-broken" );
-            });
-
-            connectionBtnArray.on("mouseout", function() {
-
-                $(this).children('i').removeClass( "fa-chain-broken" ).addClass( "fa-link" );
-            });
-
-            connectionBtnArray.on("click", function(event){
-
-                var id = $(this).attr('href');
-
-                if("nodeLink" === activeChart) {
-                    nodeLinkChart.breakLink(id);
-                }
-                else if("matrix" === activeChart){
-                    adjMatrixChart.breakLink(id);
-                }
-                else if("list" === activeChart){
-                    listWidget.breakLink(id);
-                }
-
-                event.preventDefault();
-            });
-        }
-
-        function makeLink(sId, tId){
-
-            if(task.isEnabled && task.id === 2 && sId === 'n-20804' && tId === 'n-20805'){
-
-                $(location).attr('href', task.href);
-            }
-        }
-
-        function breakLink(lId){
-
-            var connectionRow;
-
-            if(task.isEnabled && task.id === 1 && lId === 'l-n-22813-n-22951'){
-
-                $(location).attr('href', task.href);
-            }
-
-            connectionRow = connectionTableBody.find("#s-" + lId);
-
-            if(connectionRow.length > 0){
-                connectionRow.remove();
-            }
-        }
-
-        function buildColorKey(typeColorArray){
-
-            var i, typeColor, keyColorList, outArray, c;
-
-            if(typeColorArray !== null){
-
-                keyColorList = $("#key-color .list-group");
-                keyColorList.empty();
-
-                for(i = 0; i < typeColorArray.length; i++){
-
-                    typeColor = typeColorArray[i];
-                    //typeColor.color;
-
-                    c = 0;
-                    if(!common.isUndefined(typeColor.count)){
-                        c = typeColor.count;
-                    }
-
-                    outArray = [
-                        "<li class='list-group-item'>",
-                        "<svg height='15' width='15'>",
-                        "<rect width='15' height='15' fill='",
-                        typeColor.color,
-                        "' />",
-                        "</svg> ",
-                        typeColor.name,
-                        " - ",
-                        "<span class='type-highlight-count'>",
-                        c,
-                        " videos",
-                        "</span>",
-                        "</li>"];
-
-                    keyColorList.append(outArray.join(""));
-                }
-            }
-        }
-
-        function focusSearchTab() {
-
-            $('#tabs-dialog a[href="#tab-pane-search"]').tab('show');
-        }
-
-        function focusHighlightTab() {
-
-            $('#nav-tab-hightlight').css("visibility", "visible");
-            $('#tabs-dialog a[href="#tab-pane-highlight"]').tab('show');
-        }
-
-        function focusSelectTab() {
-
-            $('#nav-tab-select').css("visibility", "visible");
-            $('#tabs-dialog a[href="#tab-pane-select"]').tab('show');
-        }
-
-        function hideSelectTab() {
-
-            $('#nav-tab-select').css("visibility", "hidden");
-        }
-
-        function focusVizContent() {
-
-            $('#content-overview').css("display", "none");
-            $('#content-viz').css("display", "block");
-            $('#content-matrix').css("display", "none");
-        }
-
-        function focusMatrixContent() {
-
-            $('#content-overview').css("display", "none");
-            $('#content-viz').css("display", "none");
-            $('#content-matrix').css("display", "block");
-        }
-
-        function showSuccessMsg(msg){
-            flashSuccessMsg.text(msg);
-            flashSuccess.css("display", "block");
-        }
-
-        function showInfoMsg(msg){
-            flashInfoMsg.text(msg);
-            flashInfo.css("display", "block");
-        }
-
-        function showWarningMsg(msg){
-            flashWarningMsg.text(msg);
-            flashWarning.css("display", "block");
-        }
-
-        function showDangerMsg(msg){
-            flashDangerMsg.text(msg);
-            flashDanger.css("display", "block");
-        }
-
-        $(document).on('keyup', 'body', function(e) {
-
-            var keyCode = e.keyCode || e.which;
-
-            if("matrix" === activeChart && e.altKey){
-
-                if(adjMatrixChart.onKeyInput(keyCode)){
-                    adjMatrixChart.highlight(highlights);
-                    adjMatrixChart.selectNode(selectedNodeId);
-                    e.preventDefault();
-                }
+                sNodeId = nodeLinkModel.getNodeId(msg.payload.sId);
+                tNodeId = nodeLinkModel.getNodeId(msg.payload.tId);
+                nodeLink = nodeLinkModel.getNodeLink(sNodeId, tNodeId);
+                selectView.addLink(nodeLink);
             }
         });
 
+        dispatch.subscribe("view_select_mouseover_link", function(msg){
+
+            var link = nodeLinkModel.getLink(msg.payload.lId);
+            adjacencyMatrixView.highlightLink(link, true);
+            chartNodeLinkView.highlightLink(link, true);
+        });
+
+        dispatch.subscribe("view_select_mouseout_link", function(msg){
+
+            var link = nodeLinkModel.getLink(msg.payload.lId);
+            adjacencyMatrixView.highlightLink(link, false);
+            chartNodeLinkView.highlightLink(link, false);
+        });
+
+        dispatch.subscribe("view_chart_mouseover_link", function(msg){
+
+            var matrixInfoViewModel;
+
+            selectView.highlightLink(msg.payload.lId, true);
+
+            if(msg.payload.withKey){
+
+                matrixInfoViewModel = nodeLinkModel.getMatrixInfoViewModel(msg.payload);
+                matrixInfoView.updateView(matrixInfoViewModel);
+                matrixInfoView.show();
+                matrixInfoView.setLocation(msg.payload.location);
+            }
+        });
+
+        dispatch.subscribe("view_chart_mouseout_link", function(msg){
+
+            selectView.highlightLink(msg.payload.lId, false);
+
+            if(!msg.payload.withKey) {
+                matrixInfoView.hide();
+            }
+        });
+
+        dispatch.subscribe("view_remove_link", function(msg){
+
+            var lId = msg.payload.lId;
+
+            nodeLinkModel.breakLink(lId);
+        });
+
+        dispatch.subscribe("model_remove_link_success", function(msg){
+
+            var lId = msg.payload.lId;
+
+            adjacencyMatrixView.updateView(nodeLinkModel.getAdjacencyMatrixViewModel());
+            chartNodeLinkView.updateView(nodeLinkModel.getNodeLinkViewModel());
+            itemListView.updateItems(nodeLinkModel.getListViewModel(), true, true);
+
+            selectView.removeLink(lId);
+        });
+
+        dispatch.subscribe("view_keyboard_left", function(msg){
+
+            nodeLinkModel.move("left");
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            adjMatrixWindowView.draw();
+
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
+        });
+
+        dispatch.subscribe("view_keyboard_up", function(msg){
+
+            nodeLinkModel.move("up");
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            adjMatrixWindowView.draw();
+
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
+        });
+
+        dispatch.subscribe("view_keyboard_right", function(msg){
+
+            nodeLinkModel.move("right");
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            adjMatrixWindowView.draw();
+
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
+        });
+
+        dispatch.subscribe("view_keyboard_down", function(msg){
+
+            nodeLinkModel.move("down");
+
+            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            adjMatrixWindowView.draw();
+
+            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            highlightMatrix();
+        });
+
+        dispatch.subscribe("view_keyboard_zoom", function(msg){
+
+            var adjacencyMatrixViewModel;
+
+            nodeLinkModel.zoom();
+
+            //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            //adjMatrixWindowView.draw();
+            //
+            //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            refreshMatrixCharts();
+
+            highlightMatrix();
+        });
+
+        dispatch.subscribe("view_keyboard_expand", function(msg){
+
+            nodeLinkModel.expand();
+
+            //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            //adjMatrixWindowView.draw();
+            //
+            //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            refreshMatrixCharts();
+
+            highlightMatrix();
+        });
+
+        dispatch.subscribe("view_chart_node_link_click", function(msg){
+
+            nodeDialogView.hide();
+            linkDialogView.hide();
+        });
+
+        dispatch.subscribe("view_chart_node_link_mouseover_node", function(msg){
+
+            var nodeDialogViewModel;
+
+            linkDialogView.hide();
+
+            if(!nodeLinkModel.isSelectedNodeId(msg.payload.nId)) {
+
+                nodeDialogViewModel = nodeLinkModel.getNodeDialogViewModel(msg.payload);
+                nodeDialogView.updateView(nodeDialogViewModel);
+
+                nodeDialogView.setLocation(msg.payload);
+                nodeDialogView.show();
+            }
+        });
+
+        dispatch.subscribe("view_chart_node_link_mouseout_node", function(msg){
+
+        });
+
+        dispatch.subscribe("view_chart_node_link_mouseover_link", function(msg){
+
+            var linkDialogViewModel = nodeLinkModel.getLinkDialogViewModel(msg.payload);
+
+            nodeDialogView.hide();
+
+            linkDialogView.setLocation(msg.payload);
+            linkDialogView.show();
+            linkDialogView.updateView(linkDialogViewModel);
+        });
     }
 );

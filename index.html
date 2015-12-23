@@ -5,9 +5,177 @@
     <title>Video Connection Visualization</title>
 
     <link rel="stylesheet" type="text/css" href="/hci_prototype_1/styles/app.css" />
-
 </head>
 <body>
+
+    <script id="template-item-list" type="x-tmpl-mustache">
+        <table id="table-list-widget" class="table table-striped">
+            <thead>
+            <tr>
+                <th></th><th>Id</th><th>Three Part Key</th><th>Title</th><th>Connections</th><th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#nodeArray}}
+            <tr id="{{nId}}" class="{{class}}" data-title="{{titleFilter}}">
+                <td>
+                    <a class="btn btn-default list-video-btn" href="{{url}}" target='_blank'> <i class='fa fa-play-circle-o'></i></a>
+                </td>
+                <td>{{id}}</td>
+                <td>{{threePartKey}}</td>
+                <td>{{title}}</td>
+                <td class="ll-connections">{{connections}}</td>
+                <td class="ll-btns"></td>
+            </tr>
+            {{/nodeArray}}
+            </tbody>
+        </table>
+    </script>
+
+    <script id="template-list-item-btns" type="x-tmpl-mustache">
+
+        {{#if hasSelectedNode}}
+
+        {{#unless isSelected}}
+
+        {{#unless isConnected}}
+        <a class="btn btn-default btn-primary list-btn-link" data-id="{{id}}" href="#{{nId}}" role="button"><i class="fa fa-chain"></i></a>
+        {{/unless}}
+        <a class="btn btn-default list-btn-select" data-node-id="{{nId}}" href="#{{nId}}" role="button"><i class="fa fa-check"></i></a>
+        {{/unless}}
+
+        {{else}}
+        <a class="btn btn-default btn-primary list-btn-select" data-node-id="{{nId}}" href="#{{nId}}" role='button'><i class="fa fa-check"></i></a>
+        {{/if}}
+
+    </script>
+
+    <script id="template-select" type="x-tmpl-mustache">
+
+        <div>
+            {{#with node}}
+            <div class="row">
+                <div class="col-md-12">
+                    <h3 id="s-n-title">{{title}}</h3>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label>Id</label>
+                    <p id="s-n-id">{{id}}</p>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Type</label>
+                    <p id="s-n-type">{{type}}</p>
+                </div>
+
+                <div class="col-md-4">
+
+                    <h2 id="s-n-url">
+                        <a class="btn btn-default" href="{{url}}" target="_blank">
+                            <i class="fa fa-play-circle-o"></i>
+                        </a>
+                    </h2>
+
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-md-4">
+                    <label>Series Id</label>
+                    <p id="s-n-series-id">{{seriesId}}</p>
+                </div>
+                <div class="col-md-4">
+                    <label>Season #</label>
+                    <p id="s-n-season-number">{{seasonNumber}}</p>
+                </div>
+                <div class="col-md-4">
+                    <label>Show Id</label>
+                    <p id="s-n-show-id">{{showId}}</p>
+                </div>
+
+            </div>
+            {{/with}}
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <h3>Connections</h3>
+
+                    <table id="s-n-c-tbl" class="table">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Title</th>
+                                <th>Type</th>
+                                <th>Rating</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </script>
+
+    <script id="template-select-link" type="x-tmpl-mustache">
+
+        <tr id="s-{{l.lId}}" data-link-id="{{l.lId}}" data-source-id="{{l.source.id}}" data-target-id="{{l.target.id}}" class='s-l'>
+            <td>
+                <i class="fa fa-bars"></i>
+            </td>
+            <td>{{n.title}}</td>
+            <td>{{n.type}}</td>
+            <td>{{n.type}}</td>
+            <td>
+                <a class="s-l-btn btn btn-lg btn-default" data-link-id="{{l.lId}}" href="#{{l.lId}}">
+                <i class="fa fa-chain"></i>
+                </a>
+            </td>
+        </tr>
+
+    </script>
+
+    <script id="template-color-key" type="x-tmpl-mustache">
+
+        <div class="panel-heading">Property Color Key</div>
+
+        <ul class="list-group">
+            {{#each properties}}
+            <li class="list-group-item">
+                <svg height='15' width='15'><rect width='15' height='15' fill="{{color}}" /></svg>
+                {{name}} - <span class="type-highlight-count">{{count}}</span>
+            </li>
+            {{/each}}
+        </ul>
+
+    </script>
+
+    <script id="template-n-action-btns" type="x-tmpl-mustache">
+
+        {{#if hasSelected}}
+
+        {{#unless isConnectedToSelected}}
+        <p>
+            <a id="d-n-this-to-selected-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect This Video to Selected</a>
+        </p>
+        {{/unless}}
+
+        {{#unless isSelectedConnectedToThis}}
+        <p>
+            <a id="d-n-selected-to-this-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect Selected to This Video</a>
+        </p>
+        {{/unless}}
+
+        {{/if}}
+
+    </script>
 
     <div class="container page-header">
 
@@ -17,28 +185,9 @@
 
     <div id="main-container" class="container">
 
-        <div id="flash-success" class="alert alert-success" style="display: none;">
-            <button id="btn-close-success" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <p id="flash-success-msg">Success Message</p>
-        </div>
-
-        <div id="flash-info" class="alert alert-info" style="display: none;">
-            <button id="btn-close-info" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <p id="flash-info-msg">Information Message</p>
-        </div>
-
-        <div id="flash-warning" class="alert alert-warning" style="display: none;">
-            <button id="btn-close-warning" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <p>
-                <i class="fa fa-bell"></i> <span id="flash-warning-msg">Warning Message</span>
-            </p>
-        </div>
-
-        <div id="flash-danger" class="alert alert-danger" style="display: none;">
-            <button id="btn-close-danger" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <p>
-                <i class="fa fa-exclamation"></i> <span id="flash-danger-msg">Danger Message</span>
-            </p>
+        <div id="flash" class="alert alert-success" style="display: none;">
+            <button id="flash-btn-close" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <p id="flash-msg">Success Message</p>
         </div>
 
         <div class="row">
@@ -49,7 +198,7 @@
                     <li id="nav-tab-search" role="presentation" class="active">
                         <a href="#tab-pane-search" data-toggle="tab"><i class="fa fa-search"></i> Search</a>
                     </li>
-                    <li id="nav-tab-hightlight" role="presentation" style="visibility: hidden;" >
+                    <li id="nav-tab-highlight" role="presentation" style="visibility: hidden;" >
                         <a href="#tab-pane-highlight" data-toggle="tab"><i class="fa fa-filter"></i> Highlight</a>
                     </li>
                     <li id="nav-tab-select" role="presentation" style="visibility: hidden;">
@@ -70,156 +219,7 @@
                                     <br/>
 
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="keywords" name="keywords" value="" placeholder="Keywords (common separated)">
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-12">
-
-                                    <h3>Video Filters</h3>
-
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-12">
-
-                                    <div class="form-group">
-                                        <label for="outlet">Outlet</label>
-                                        <select class="form-control" id="outlet" name="outlet">
-                                            <option value="101">SmithChannel.com</option>
-                                            <option value="204">Smith Mobile</option>
-                                            <option value="203">Smithsonian Museum</option>
-                                        </select>
-                                    </div>
-
-                                </div>
-
-                            </div>
-                            <div class="row">
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="seriesId">Series Id</label>
-                                        <input type="text" class="form-control" id="seriesId" name="seriesId" value="">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="seasonNumber">Season #</label>
-                                        <input type="text" class="form-control" id="seasonNumber" name="seasonNumber">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="showId">Show Id</label>
-                                        <input type="text" class="form-control" id="showId" name="showId">
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <label>Video Type</label>
-
-                            <div class="row">
-
-                                <div class="col-md-6">
-
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="type" value="abt"> About
-                                        </label>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-md-6">
-
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="type" value="bsc"> About
-                                        </label>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-6">
-
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="type" value="crd"> Credits
-                                        </label>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-md-6">
-
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="type" value="dmc"> Digital Media Content
-                                        </label>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-6">
-
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="type" value="eps"> Extended Scene
-                                        </label>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-md-6">
-
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="type" value="ext"> Extra
-                                        </label>
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-6">
-
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="type" value="ful"> Full Episode
-                                        </label>
-                                    </div>
-
-                                </div>
-
-                                <div class="col-md-6">
-
-                                    <div class="checkbox">
-                                        <label>
-                                            <input type="checkbox" name="type" value="trl"> Trailer
-                                        </label>
+                                        <input type="text" class="form-control" id="keywords" name="keywords" value="robots" placeholder="Keywords (common separated)">
                                     </div>
 
                                 </div>
@@ -237,9 +237,12 @@
                         </form>
 
                     </div>
+
                     <div id="tab-pane-highlight" role="tabpanel" class="tab-pane">
 
-                        <h3>Search Results - <span id="result-count">0</span></h3>
+                        <div id="view-result">
+                        <h3>Search Results - <span id="result-size">0</span></h3>
+                        </div>
 
                         <form id="form-hightlight">
 
@@ -259,7 +262,7 @@
 
                                     <div class="checkbox">
                                         <label>
-                                            <input type="radio" name="highlight" value="type"> Type
+                                            <input type="radio" name="property" value="type"> Type
                                         </label>
                                     </div>
 
@@ -269,7 +272,7 @@
 
                                     <div class="checkbox">
                                         <label>
-                                            <input type="radio" name="highlight" value="rating"> Rating
+                                            <input type="radio" name="property" value="rating"> Rating
                                         </label>
                                     </div>
 
@@ -282,7 +285,7 @@
 
                                     <div class="checkbox">
                                         <label>
-                                            <input type="radio" name="highlight" value="title-type"> Title Type
+                                            <input type="radio" name="property" value="title-type"> Title Type
                                         </label>
                                     </div>
 
@@ -292,7 +295,7 @@
 
                                     <div class="checkbox">
                                         <label>
-                                            <input type="radio" name="highlight" value="restriction"> Restriction
+                                            <input type="radio" name="property" value="restriction"> Restriction
                                         </label>
                                     </div>
 
@@ -306,7 +309,7 @@
 
                                     <div class="checkbox">
                                         <label>
-                                            <input type="radio" name="highlight" value="status"> Status
+                                            <input type="radio" name="property" value="status"> Status
                                         </label>
                                     </div>
 
@@ -316,7 +319,7 @@
 
                                     <div class="checkbox">
                                         <label>
-                                            <input type="radio" name="highlight" value="match"> Search Match
+                                            <input type="radio" name="property" value="match"> Search Match
                                         </label>
                                     </div>
 
@@ -326,154 +329,25 @@
 
                         </form>
 
-                        <div id="key-color" class="panel panel-default" style="display: none;">
-
-                            <div class="panel-heading">Property Color Key</div>
-
-                            <ul class="list-group">
-                            </ul>
-
+                        <div id="key-color" class="panel panel-default">
                         </div>
-
-                        <div id="info-matrix" class="panel panel-default" style="display: none;">
-                            <div class="panel-heading"><i class="fa fa-info-circle"></i> Information</div>
-                            <div class="panel-body">
-                                <ul>
-                                    <li>A colored square represents a connection between a video in the y-axis to a video in the x-axis. Connections are directional, y-axis <i class="fa fa-arrow-right"></i> x-axis.</li>
-                                    <li>For a large matrix you can use the following key commands to zoom and navigate the matrix:
-                                        <ul>
-                                            <li>Zoom In: <span class="key-cmd">[Alt] + z</span></li>
-                                            <li>Zoom Out: <span class="key-cmd">[Alt] + x</span></li>
-                                            <li>Move Up: <span class="key-cmd">[Alt] + w</span></li>
-                                            <li>Move Down: <span class="key-cmd">[Alt] + s</span></li>
-                                            <li>Move Left: <span class="key-cmd">[Alt] + a</span></li>
-                                            <li>Move Right: <span class="key-cmd">[Alt] + d</span></li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!--
-                        <div class="panel panel-default">
-
-                            <div class="panel-heading">Icon Key</div>
-
-                            <ul class="list-group">
-                                <li class="list-group-item"><i class="fa fa-link"></i> Whole Chain <br/><small>(indicates connection between two videos)</small></li>
-                                <li class="list-group-item"><i class="fa fa-chain-broken"></i> Broken Chain <p><small>(indicates <b>NO</b> connection between two videos)</small></p></li>
-                            </ul>
-
-                        </div>
-                        -->
 
                     </div>
+
                     <div id="tab-pane-select" role="tabpanel" class="tab-pane">
-
-                        <div class="row">
-
-                            <div class="col-md-12">
-
-                                <h3 id="s-n-title">Title</h3>
-
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-md-4">
-                                <label>Id</label>
-                                <p id="s-n-id">123456</p>
-                            </div>
-
-                            <div class="col-md-4">
-                                <label>Type</label>
-                                <p id="s-n-type">Trailer</p>
-                            </div>
-
-                            <div class="col-md-4">
-
-                                <h2 id="s-n-url">
-                                    <a class="btn btn-default" href="http://www.smithsonianchannel.com/videos/an-intense-blackhawk-rescue-mission-in-peril/38259" target="_blank">
-                                        <i class="fa fa-play-circle-o"></i>
-                                    </a>
-                                </h2>
-
-                            </div>
-
-                        </div>
-                        <div class="row">
-
-                            <div class="col-md-4">
-                                <label>Series Id</label>
-                                <p id="s-n-series-id"></p>
-                            </div>
-                            <div class="col-md-4">
-                                <label>Season #</label>
-                                <p id="s-n-season-number"></p>
-                            </div>
-                            <div class="col-md-4">
-                                <label>Show Id</label>
-                                <p id="s-n-show-id"></p>
-                            </div>
-
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-md-12">
-
-                                <h3>Description</h3>
-                                <p id="s-n-description"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus tempus dapibus erat, ut condimentum sem condimentum non. Ut efficitur dui convallis mi convallis, a tempus nibh gravida. Curabitur ipsum diam, consectetur id neque at, blandit commodo augue.</p>
-
-
-                            </div>
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-md-12">
-
-                                <h3>Connections</h3>
-
-                                <table id="s-n-c-tbl" class="table">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th>Title</th>
-                                            <th>Type</th>
-                                            <th>Rating</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <i class="fa fa-bars"></i>
-                                            </td>
-                                            <td>Video #1</td>
-                                            <td>Trailer</td>
-                                            <td>TV-14</td>
-                                            <td>
-                                                <i class="fa fa-chain-broken"></i>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-
-                            </div>
-                        </div>
-
-
                     </div>
+
                 </div>
 
             </div>
 
             <div id="content-main" class="col-md-9">
 
-                <div id="content-overview">
+                <div id="loading" style="display: none;">
+                    <h3><i class="fa fa-spinner fa-spin"></i></h3>
+                </div>
+
+                <div id="content-overview" class="content">
 
                     <div class="jumbotron">
                         <h1>Welcome</h1>
@@ -489,19 +363,19 @@
 
                 </div>
 
-                <div id="content-viz" style="display: none;">
+                <div id="content-viz" class="content" style="display: none;">
 
                     <div id="wait-feedback" style="display: none"><i class="fa fa-spinner fa-pulse"></i></div>
 
                     <ul id="tabs-viz" class="nav nav-tabs nav-justified" role="tablist">
                         <li id="nav-tab-list" role="presentation" class="active">
-                            <a href="#tab-pane-list" data-toggle="tab"><i class="fa fa-list-alt"></i><br/> List</a>
+                            <a href="#tab-pane-list" class="nav-tab" data-toggle="tab"><i class="fa fa-list-alt"></i><br/> List</a>
                         </li>
                         <li id="nav-tab-matrix" role="presentation">
-                            <a href="#tab-pane-matrix" data-toggle="tab"><i class="fa fa-table"></i><br/> Matrix</a>
+                            <a href="#tab-pane-matrix" class="nav-tab" data-toggle="tab"><i class="fa fa-table"></i><br/> Matrix</a>
                         </li>
                         <li id="nav-node-link" role="presentation">
-                            <a href="#tab-pane-node-link" data-toggle="tab"><i class="fa fa-code-fork"></i><br/> Node Link</a>
+                            <a href="#tab-pane-node-link" class="nav-tab" data-toggle="tab"><i class="fa fa-code-fork"></i><br/> Node Link</a>
                         </li>
                     </ul>
 
@@ -511,17 +385,6 @@
 
                             <div id="list-widget">
 
-                                <table id="table-list-widget" class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th></th><th>Id</th><th>Three Part Key</th><th>Title</th><th>Connections</th><th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
-
                             </div>
 
                         </div>
@@ -529,7 +392,17 @@
                         <div id="tab-pane-matrix" role="tabpanel" class="tab-pane">
 
                             <div id="chart-matrix-video" class="chart chart-matrix">
+                                <canvas id="chart-matrix-window" width="256" height="256">
+                                    Your browser does not support canvas.
+                                </canvas>
                                 <svg></svg>
+                                <div id="m-info" class="chart-dialog well">
+                                    <h5 id="source-title"></h5>
+                                    <h4>
+                                        <i id="i-m-info-link" class="fa fa-link"></i> <span id="m-info-rank"></span>
+                                    </h4>
+                                    <h5 id="target-title"></h5>
+                                </div>
                             </div>
 
                             <div id="color-key-connection">
@@ -594,28 +467,26 @@
 
                                     </div>
 
-                                    <p id="d-n-select">
-                                        <a id="d-n-select-btn" class="btn btn-default btn-block btn-primary" href="#" role="button"><i class='fa fa-check'></i> Select</a>
-                                    </p>
-                                    <p id="d-n-this-to-selected">
-                                        <a id="d-n-this-to-selected-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect This Video to Selected</a>
-                                    </p>
-                                    <p id="d-n-selected-to-this">
-                                        <a id="d-n-selected-to-this-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect Selected to This Video</a>
-                                    </p>
+                                    <div id="d-n-action-btns">
+
+                                    </div>
                                 </div>
 
                                 <div id="l-dialog" class="chart-dialog well">
                                     <p>
-                                        <h5 id="source"></h5>
+                                    <h5 id="source"></h5>
                                     </p>
                                     <p>
-                                        <a id="l-btn" href="#" class="btn btn-default btn-lg">
-                                            <i class="fa fa-link"></i>
-                                        </a>
+                                        <h4>
+                                            <a id="l-btn" href="#" class="btn btn-default btn-lg">
+                                                <i class="fa fa-link"></i>
+                                            </a>
+                                            <span id="d-l-info-rank"></span>
+                                        </h4>
+
                                     </p>
                                     <p>
-                                        <h5 id="target"></h5>
+                                    <h5 id="target"></h5>
                                     </p>
                                 </div>
                             </div>
@@ -627,20 +498,19 @@
                 </div>
 
             </div>
+
         </div>
 
         <footer class="page-footer">
             <p>&copy; 2010-2015 SNI/SI Networks L.L.C. All rights reserved. Smithsonian Channel is a trademark of Smithsonian Institution. SNI/SI Networks L.L.C. is an authorized user.</p>
         </footer>
-
     </div>
 
-
     <script src="/hci_prototype_1/bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="/hci_prototype_1/bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script src="/hci_prototype_1/bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
+    <script src="/hci_prototype_1/bower_components/handlebars/handlebars.min.js"></script>
+    <script src="/hci_prototype_1/bower_components/colorbrewer/colorbrewer.js"></script>
     <script data-main="/hci_prototype_1/scripts/app" src="/hci_prototype_1/bower_components/requirejs/require.js"></script>
 
-    <script type="text/javascript" charset="utf-8" src="https://cdn3.userzoom.com/uz.js?cuid=2D9AFEE0F5D9E311BEDA0022196C4538"></script>
 </body>
 </html>

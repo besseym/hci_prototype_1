@@ -1,5 +1,5 @@
 define(
-    ["d3", "common", "dispatch", "chart1/chartUtil"],
+    ["d3", "common", "dispatch", "chart/chartUtil"],
 
     function (d3, common, dispatch, chartUtil) {
 
@@ -15,7 +15,15 @@ define(
                     sStart: 0,
                     sEnd: undefined,
                     tStart: 0,
-                    tEnd: undefined
+                    tEnd: undefined,
+
+                    get sRange() {
+                        return this.sEnd - this.sStart;
+                    },
+
+                    get tRange() {
+                        return this.tEnd - this.tStart;
+                    }
                 },
                 MAX_LINKS = 7,
                 DATA_PATH = "/hci_prototype_1/data/",
@@ -362,7 +370,9 @@ define(
                 //remove from linkMap
                 linkMap[lId] = undefined;
 
-                return link;
+                dispatch.publish("model_remove_link_success", {
+                    lId: lId
+                });
             }
 
             function sortNodeLinkArray(nodeLinkArray){
@@ -733,6 +743,8 @@ define(
 
                     initModel();
 
+                    dispatch.publish("view_loading_show", {});
+
                     d3.json(DATA_PATH + graph, function(error, data) {
 
                         populate(data);
@@ -740,6 +752,8 @@ define(
                         dispatch.publish("model_data_loaded", {
                             resultSize: nodeArray.length
                         });
+
+                        dispatch.publish("view_loading_hide", {});
                     });
                 }
                 else {
@@ -751,42 +765,106 @@ define(
                 }
             }
 
+            function getSourceMoveRate(){
+
+                var moveRate = Math.floor(Math.pow(attributes.sRange, 0.8));
+                if(moveRate <= 0){
+                    moveRate = 1;
+                }
+
+                return moveRate;
+            }
+
+            function getTargetMoveRate(){
+
+                var moveRate = Math.floor(Math.pow(attributes.tRange, 0.8));
+                if(moveRate <= 0){
+                    moveRate = 1;
+                }
+
+                return moveRate;
+            }
+
+            function getSourceZoomRate(){
+
+                var moveRate = Math.floor(attributes.sRange * 0.25);
+                if(moveRate <= 0){
+                    moveRate = 1;
+                }
+
+                return moveRate;
+            }
+
+            function getTargetZoomRate(){
+
+                var moveRate = Math.floor(attributes.tRange * 0.25);
+                if(moveRate <= 0){
+                    moveRate = 1;
+                }
+
+                return moveRate;
+            }
+
             function move(direction){
+
+                var moveRate,
+                    sMoveRate = getSourceMoveRate(),
+                    tMoveRate = getTargetMoveRate();
 
                 switch (direction) {
 
                     case "left":
 
-                        if((attributes.tStart - attributes.mRate) >= 0){
-                            attributes.tStart = attributes.tStart - attributes.mRate;
-                            attributes.tEnd = attributes.tEnd - attributes.mRate;
+                        if((attributes.tStart - tMoveRate) >= 0){
+                            attributes.tStart = attributes.tStart - tMoveRate;
+                            attributes.tEnd = attributes.tEnd - tMoveRate;
+                        }
+                        else {
+                            attributes.tEnd = attributes.tEnd - attributes.tStart;
+                            attributes.tStart = 0;
                         }
 
                         break;
 
                     case "up":
 
-                        if((attributes.sStart - attributes.mRate) >= 0){
-                            attributes.sStart = attributes.sStart - attributes.mRate;
-                            attributes.sEnd = attributes.sEnd - attributes.mRate;
+                        if((attributes.sStart - sMoveRate) >= 0){
+                            attributes.sStart = attributes.sStart - sMoveRate;
+                            attributes.sEnd = attributes.sEnd - sMoveRate;
+                        }
+                        else {
+                            attributes.sEnd = attributes.sEnd - attributes.sStart;
+                            attributes.sStart = 0;
                         }
 
                         break;
 
                     case "right":
 
-                        if((attributes.tEnd + attributes.mRate) <= nodeArray.length){
-                            attributes.tStart = attributes.tStart + attributes.mRate;
-                            attributes.tEnd = attributes.tEnd + attributes.mRate;
+                        if((attributes.tEnd + tMoveRate) <= nodeArray.length){
+                            attributes.tStart = attributes.tStart + tMoveRate;
+                            attributes.tEnd = attributes.tEnd + tMoveRate;
+                        }
+                        else {
+
+                            moveRate = nodeArray.length - attributes.tEnd;
+                            attributes.tStart = attributes.tStart + moveRate;
+                            attributes.tEnd = nodeArray.length;
                         }
 
                         break;
 
                     case "down":
 
-                        if((attributes.sEnd + attributes.mRate) <= nodeArray.length){
-                            attributes.sStart = attributes.sStart + attributes.mRate;
-                            attributes.sEnd = attributes.sEnd + attributes.mRate;
+                        if((attributes.sEnd + sMoveRate) <= nodeArray.length){
+                            attributes.sStart = attributes.sStart + sMoveRate;
+                            attributes.sEnd = attributes.sEnd + sMoveRate;
+                        }
+                        else {
+
+                            moveRate = nodeArray.length - attributes.sEnd;
+                            attributes.sStart = attributes.sStart + moveRate;
+                            attributes.sEnd = nodeArray.length;
                         }
 
                         break;
@@ -795,35 +873,57 @@ define(
 
             function zoom(){
 
-                if((attributes.sStart + attributes.zRate) < (attributes.sEnd - attributes.zRate)){
+                var sMoveRate = getSourceZoomRate(),
+                    tMoveRate = getTargetZoomRate();
 
-                    attributes.sStart = attributes.sStart + attributes.zRate;
-                    attributes.sEnd = attributes.sEnd - attributes.zRate;
+                if((attributes.sStart + sMoveRate) < (attributes.sEnd - sMoveRate)){
+
+                    attributes.sStart = attributes.sStart + sMoveRate;
+                    attributes.sEnd = attributes.sEnd - sMoveRate;
                 }
 
-                if((attributes.tStart + attributes.zRate) < (attributes.tEnd - attributes.zRate)){
+                if((attributes.tStart + tMoveRate) < (attributes.tEnd - tMoveRate)){
 
-                    attributes.tStart = attributes.tStart + attributes.zRate;
-                    attributes.tEnd = attributes.tEnd - attributes.zRate;
+                    attributes.tStart = attributes.tStart + tMoveRate;
+                    attributes.tEnd = attributes.tEnd - tMoveRate;
                 }
             }
 
             function expand(){
 
-                if((attributes.sStart - attributes.xRate) >= 0){
-                    attributes.sStart = attributes.sStart - attributes.xRate;
+                var sMoveRate = getSourceMoveRate(),
+                    tMoveRate = getTargetMoveRate();
+
+                //source start
+                if((attributes.sStart - sMoveRate) >= 0){
+                    attributes.sStart = attributes.sStart - sMoveRate;
+                }
+                else {
+                    attributes.sStart = 0;
                 }
 
-                if((attributes.sEnd + attributes.xRate) <= nodeArray.length){
-                    attributes.sEnd = attributes.sEnd + attributes.xRate;
+                //source end
+                if((attributes.sEnd + sMoveRate) <= nodeArray.length){
+                    attributes.sEnd = attributes.sEnd + sMoveRate;
+                }
+                else {
+                    attributes.sEnd = nodeArray.length;
                 }
 
-                if((attributes.tStart - attributes.xRate) >= 0){
-                    attributes.tStart = attributes.tStart - attributes.xRate;
+                //target start
+                if((attributes.tStart - tMoveRate) >= 0){
+                    attributes.tStart = attributes.tStart - tMoveRate;
+                }
+                else {
+                    attributes.tStart = 0;
                 }
 
-                if((attributes.tEnd + attributes.xRate) <= nodeArray.length){
-                    attributes.tEnd = attributes.tEnd + attributes.xRate;
+                //target end
+                if((attributes.tEnd + tMoveRate) <= nodeArray.length){
+                    attributes.tEnd = attributes.tEnd + tMoveRate;
+                }
+                else {
+                    attributes.tEnd = nodeArray.length;
                 }
             }
 

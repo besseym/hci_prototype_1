@@ -1,5 +1,5 @@
 define(
-    ["common", "dispatch", "chart1/ChartView"],
+    ["common", "dispatch", "chart/ChartView"],
 
     function (common, dispatch, ChartView) {
 
@@ -61,30 +61,55 @@ define(
                 return fontSize;
             }
 
-            function updateScale(data){
+            function updateDimensions(){
 
                 var width = parseInt(svg.style("width"), 10),
                     height = width,
-                    unit = (width / data.tNodeArray.length),
-                    paddingLeft = unit * Math.pow(data.tNodeArray.length, 0.6),
+                    //unit = (width / data.tNodeArray.length),
+                    paddingLeft = width * 0.3,
                     paddingTop = paddingLeft,
-                    paddingRight = unit * Math.pow(data.tNodeArray.length, 0.2),
+                    paddingRight = width * 0.05,
                     paddingBottom = paddingRight;
 
                 svg.attr('height', height);
 
-                parent.set(
-                    {
-                        width: width, height: height,
-                        paddingLeft: paddingLeft, paddingTop: paddingTop, paddingRight: paddingRight, paddingBottom: paddingBottom
-                    }
-                );
+                if((width - paddingRight) > paddingLeft) {
+                    parent.set(
+                        {
+                            width: width,
+                            height: height,
+                            paddingLeft: paddingLeft,
+                            paddingTop: paddingTop,
+                            paddingRight: paddingRight,
+                            paddingBottom: paddingBottom
+                        }
+                    );
+                }
+            }
+
+            function updateScale(data){
+
+                updateDimensions(data);
 
                 xScale = d3.scale.ordinal().domain(data.tNodeArray.map(data.nodeDomainMap)).rangeBands(parent.get('rangeX'), sep);
                 yScale = d3.scale.ordinal().domain(data.sNodeArrayDesc.map(data.nodeDomainMap)).rangeBands(parent.get('rangeY'), sep);
             }
 
             function updateView(data){
+
+                dispatch.publish("view_loading_show", {});
+
+                //delay long enough for the ui to update
+                setTimeout(function(){
+
+                    doUpdateView(data);
+
+                    dispatch.publish("view_loading_hide", {});
+
+                }, 0);
+            }
+
+            function doUpdateView(data){
 
                 var rangeX = parent.get('rangeX'),
                     dWidth = rangeX[1] - rangeX[0],
@@ -485,6 +510,7 @@ define(
                 return rtn;
             };
 
+            this.updateDimensions = updateDimensions;
             this.updateScale = updateScale;
             this.updateView = updateView;
 
