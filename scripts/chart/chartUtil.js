@@ -1,4 +1,8 @@
-define(["d3", "common"],
+define(
+    [
+        "d3",
+        "common"
+    ],
 
     function (d3, common) {
 

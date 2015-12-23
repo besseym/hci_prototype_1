@@ -1,5 +1,10 @@
 define(
-    ["d3", "common", "dispatch", "chart/chartUtil"],
+    [
+        "d3",
+        "common",
+        "dispatch",
+        "chart/chartUtil"
+    ],
 
     function (d3, common, dispatch, chartUtil) {
 
@@ -26,7 +31,7 @@ define(
                     }
                 },
                 MAX_LINKS = 6,
-                DATA_PATH = "/hci_prototype_1/data/",
+                DATA_PATH = "/hci_prototype_1/data_sho/",
                 URL_BASE = "http://www.smithsonianchannel.com/videos/video",
                 nodeArray,
                 nodeDescArray,
@@ -701,6 +706,17 @@ define(
 
                         switch(input.value){
 
+                            case "song":
+                                graph = "graph_song.json";
+                                isMatch = true;
+                                break;
+
+                            case "magic":
+                                graph = "graph_magic.json";
+                                isMatch = true;
+                                break;
+
+                            /*
                             case "test":
                                 graph = "graph_test.json";
                                 isMatch = true;
@@ -735,6 +751,7 @@ define(
                                 graph = "graph_robots.json";
                                 isMatch = true;
                                 break;
+                            */
                         }
                     }
                 });
@@ -745,9 +762,11 @@ define(
 
                     dispatch.publish("view_loading_show", {});
 
-                    d3.json(DATA_PATH + graph, function(error, data) {
+                    d3.json(DATA_PATH + graph, function(error, response) {
 
-                        populate(data);
+                        populate(response.data);
+
+                        //console.log(response.data);
 
                         dispatch.publish("model_data_loaded", {
                             resultSize: nodeArray.length

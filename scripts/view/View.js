@@ -1,5 +1,8 @@
 define(
-    ["common", "domUtil"],
+    [
+        "common",
+        "domUtil"
+    ],
     function (common, domUtil) {
 
         var View = function (config) {

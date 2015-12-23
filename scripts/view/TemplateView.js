@@ -1,4 +1,8 @@
-define(["common", "view/View"],
+define(
+    [
+        "common",
+        "view/View"
+    ],
     function (common, View) {
 
         var TemplateView = function (config, parent) {

@@ -1,5 +1,9 @@
 define(
-    ["common", "dispatch", "domUtil"],
+    [
+        "common",
+        "dispatch",
+        "domUtil"
+    ],
     function (common, dispatch, domUtil) {
 
         var LoadingView = function (config) {

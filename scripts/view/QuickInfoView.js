@@ -1,5 +1,8 @@
 define(
-    ["common", "view/View"],
+    [
+        "common",
+        "view/View"
+    ],
     function (common, View) {
 
         var QuickInfoView = function (config, parent) {

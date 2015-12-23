@@ -1,5 +1,9 @@
 define(
-    ["common", "dispatch", "chart/ChartView"],
+    [
+        "common",
+        "dispatch",
+        "chart/ChartView"
+    ],
 
     function (common, dispatch, ChartView) {
 

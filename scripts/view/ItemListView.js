@@ -1,5 +1,9 @@
 define(
-    ["common", "dispatch", "view/TemplateView"],
+    [
+        "common",
+        "dispatch",
+        "view/TemplateView"
+    ],
 
     function (common, dispatch, TemplateView) {
 

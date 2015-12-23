@@ -1,5 +1,8 @@
 define(
-    ["common", "dispatch"],
+    [
+        "common",
+        "dispatch"
+    ],
 
     function (common, dispatch) {
 

@@ -1,5 +1,10 @@
 define(
-    ["common", "dispatch", "view/View", "view/TemplateView"],
+    [
+        "common",
+        "dispatch",
+        "view/View",
+        "view/TemplateView"
+    ],
     function (common, dispatch, View, TemplateView) {
 
         var NodeDialogBtnView = function (config, parent) {

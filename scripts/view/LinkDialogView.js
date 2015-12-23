@@ -1,5 +1,9 @@
 define(
-    ["common", "dispatch", "view/View"],
+    [
+        "common",
+        "dispatch",
+        "view/View"
+    ],
     function (common, dispatch, View) {
 
         var LinkDialogView = function (config, parent) {

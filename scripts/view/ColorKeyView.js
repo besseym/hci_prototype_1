@@ -1,4 +1,8 @@
-define(["common", "view/TemplateView"],
+define(
+    [
+        "common",
+        "view/TemplateView"
+    ],
 
     function (common, TemplateView) {
 

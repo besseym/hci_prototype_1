@@ -1,4 +1,7 @@
-define(["common"],
+define(
+    [
+        "common"
+    ],
     function (common) {
 
         return {

@@ -1,5 +1,10 @@
 define(
-    ["common", "dispatch", "domUtil", "view/View"],
+    [
+        "common",
+        "dispatch",
+        "domUtil",
+        "view/View"
+    ],
 
     function (common, dispatch, domUtil, View) {
 
