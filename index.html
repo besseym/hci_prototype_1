@@ -39,13 +39,13 @@
         {{#unless isSelected}}
 
         {{#unless isConnected}}
-        <a class="btn btn-default btn-primary list-btn-link" data-id="{{id}}" href="#{{nId}}" role="button"><i class="fa fa-chain"></i></a>
+        <a class="btn btn-default btn-primary list-btn-link" data-id="{{id}}" href="{{nId}}" role="button"><i class="fa fa-chain"></i></a>
         {{/unless}}
-        <a class="btn btn-default list-btn-select" data-node-id="{{nId}}" href="#{{nId}}" role="button"><i class="fa fa-check"></i></a>
+        <a class="btn btn-default list-btn-select" data-node-id="{{nId}}" href="{{nId}}" role="button"><i class="fa fa-check"></i></a>
         {{/unless}}
 
         {{else}}
-        <a class="btn btn-default btn-primary list-btn-select" data-node-id="{{nId}}" href="#{{nId}}" role='button'><i class="fa fa-check"></i></a>
+        <a class="btn btn-default btn-primary list-btn-select" data-node-id="{{nId}}" href="{{nId}}" role='button'><i class="fa fa-check"></i></a>
         {{/if}}
 
     </script>
@@ -134,7 +134,7 @@
             <td>{{n.type}}</td>
             <td>{{n.type}}</td>
             <td>
-                <a class="s-l-btn btn btn-lg btn-default" data-link-id="{{l.lId}}" href="#{{l.lId}}">
+                <a class="s-l-btn btn btn-lg btn-default" data-link-id="{{l.lId}}" href="{{l.lId}}">
                 <i class="fa fa-chain"></i>
                 </a>
             </td>
@@ -163,13 +163,13 @@
 
         {{#unless isConnectedToSelected}}
         <p>
-            <a id="d-n-this-to-selected-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect This Video to Selected</a>
+            <a id="d-n-this-to-selected-btn" class="btn btn-default btn-block" href="" role="button"><i class='fa fa-chain'></i> Connect This Video to Selected</a>
         </p>
         {{/unless}}
 
         {{#unless isSelectedConnectedToThis}}
         <p>
-            <a id="d-n-selected-to-this-btn" class="btn btn-default btn-block" href="#" role="button"><i class='fa fa-chain'></i> Connect Selected to This Video</a>
+            <a id="d-n-selected-to-this-btn" class="btn btn-default btn-block" href="" role="button"><i class='fa fa-chain'></i> Connect Selected to This Video</a>
         </p>
         {{/unless}}
 
@@ -184,7 +184,7 @@
 
     </div>
 
-    <div id="main-container" class="container">
+    <div id="video-graph-viz" class="container">
 
         <div id="flash" class="alert alert-success" style="display: none;">
             <button id="flash-btn-close" type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -197,13 +197,13 @@
 
                 <ul id="tabs-dialog" class="nav nav-tabs nav-justified" role="tablist">
                     <li id="nav-tab-search" role="presentation" class="active">
-                        <a href="#tab-pane-search" data-toggle="tab"><i class="fa fa-search"></i> Search</a>
+                        <a href="#tab-pane-search" class="nav-tab" data-toggle="tab"><i class="fa fa-search"></i> Search</a>
                     </li>
                     <li id="nav-tab-highlight" role="presentation" style="visibility: hidden;" >
-                        <a href="#tab-pane-highlight" data-toggle="tab"><i class="fa fa-filter"></i> Highlight</a>
+                        <a href="#tab-pane-highlight" class="nav-tab" data-toggle="tab"><i class="fa fa-filter"></i> Highlight</a>
                     </li>
                     <li id="nav-tab-select" role="presentation" style="visibility: hidden;">
-                        <a href="#tab-pane-select" data-toggle="tab"><i class="fa fa-check"></i> Select</a>
+                        <a href="#tab-pane-select" class="nav-tab" data-toggle="tab"><i class="fa fa-check"></i> Select</a>
                     </li>
                 </ul>
 
@@ -220,7 +220,7 @@
                                     <br/>
 
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="keywords" name="keywords" value="robots" placeholder="Keywords">
+                                        <input type="text" class="form-control" id="keywords" name="keywords" value="magic" placeholder="Keywords">
                                     </div>
 
                                 </div>
@@ -242,7 +242,7 @@
                     <div id="tab-pane-highlight" role="tabpanel" class="tab-pane">
 
                         <div id="view-result">
-                        <h3>Search Results - <span id="result-size">0</span></h3>
+                            <h3>Search Results - <span id="result-size">0</span></h3>
                         </div>
 
                         <form id="form-hightlight">
@@ -379,26 +379,26 @@
                     <img style="display: block; margin: 0 auto;" src="/hci_prototype_1/images/outlet_videos.png" />
 
                 </div>
-                
+
                 <div id="content-viz" class="content" style="display: none;">
 
                     <div id="wait-feedback" style="display: none"><i class="fa fa-spinner fa-pulse"></i></div>
 
                     <ul id="tabs-viz" class="nav nav-tabs nav-justified" role="tablist">
-                        <li id="nav-tab-list" role="presentation" class="active">
+                        <li id="nav-tab-list" role="presentation">
                             <a href="#tab-pane-list" class="nav-tab" data-toggle="tab"><i class="fa fa-list-alt"></i><br/> List</a>
                         </li>
                         <li id="nav-tab-matrix" role="presentation">
                             <a href="#tab-pane-matrix" class="nav-tab" data-toggle="tab"><i class="fa fa-table"></i><br/> Matrix</a>
                         </li>
-                        <li id="nav-node-link" role="presentation">
+                        <li id="nav-tab-node-link" role="presentation">
                             <a href="#tab-pane-node-link" class="nav-tab" data-toggle="tab"><i class="fa fa-code-fork"></i><br/> Node Link</a>
                         </li>
                     </ul>
 
                     <div id="tab-content-viz" class="tab-content">
 
-                        <div id="tab-pane-list" role="tabpanel" class="tab-pane active">
+                        <div id="tab-pane-list" role="tabpanel" class="tab-pane">
 
                             <div id="list-widget">
 
@@ -493,12 +493,12 @@
                                     <h5 id="source"></h5>
                                     </p>
                                     <p>
-                                        <h4>
-                                            <a id="l-btn" href="#" class="btn btn-default btn-lg">
-                                                <i class="fa fa-link"></i>
-                                            </a>
-                                            <span id="d-l-info-rank"></span>
-                                        </h4>
+                                    <h4>
+                                        <a id="l-btn" href="#" class="btn btn-default btn-lg">
+                                            <i class="fa fa-link"></i>
+                                        </a>
+                                        <span id="d-l-info-rank"></span>
+                                    </h4>
 
                                     </p>
                                     <p>
