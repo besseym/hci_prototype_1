@@ -35,7 +35,7 @@ define(
                 var i, k, size, color, colorScale, property, domain = [];
 
                 if(data !== undefined && "properties" in data){
-
+                    
                     size = data.properties.length;
                     for(i = 0; i < size; i++){
                         property = data.properties[i];

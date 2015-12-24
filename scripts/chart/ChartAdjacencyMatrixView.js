@@ -13,9 +13,11 @@ define(
                 svg = null,
                 xScale, yScale, sep = 0.05,
                 colorDefault = "#f5f5f5",
-                cScale = d3.scale.ordinal().domain([6, 5, 4, 3, 2, 1]).range(colorbrewer.Blues[6]),
-                hScale = d3.scale.ordinal().domain([6, 5, 4, 3, 2, 1]).range(colorbrewer.Purples[6]),
-                mScale = d3.scale.ordinal().domain([6, 5, 4, 3, 2, 1]).range(colorbrewer.Greens[6]),
+                colorSelf = "#d5d5d5",
+                colorDetach = "#de2d26",
+                cScale = d3.scale.ordinal().domain([5, 4, 3, 2, 1, 0]).range(colorbrewer.Blues[6]),
+                hScale = d3.scale.ordinal().domain([5, 4, 3, 2, 1, 0]).range(colorbrewer.Purples[6]),
+                mScale = d3.scale.ordinal().domain([5, 4, 3, 2, 1, 0]).range(colorbrewer.Greens[6]),
                 attributes = {
                     tranistionTime: 1000
                 };
@@ -456,7 +458,10 @@ define(
 
                 var f = colorDefault;
                 if(link.source.id === link.target.id){
-                    f = "#d5d5d5";
+                    f = colorSelf;
+                }
+                else if(link.isDetach){
+                    f = colorDetach;
                 }
                 else if(link.rank > 0){
 

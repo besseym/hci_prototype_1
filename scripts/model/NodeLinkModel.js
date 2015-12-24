@@ -40,6 +40,13 @@ define(
                 linkMap,
                 nodeLinksMap,
 
+                service = {
+                    graph_url: "/shomin/tools/video/graph.rest",
+                    graph_link_url: "/shomin/tools/video/graph/link.rest",
+                    graph_detach_url: "/shomin/tools/video/graph/detach.rest",
+                    graph_remove_detach_url: "/shomin/tools/video/graph/detach/remove.rest"
+                },
+
                 prefix = {
 
                     type: 't-',
@@ -122,7 +129,8 @@ define(
 
                         rank: 0,
                         weight: 0,
-                        isManual: false
+                        isManual: false,
+                        isDetach: false
                     };
 
                 if (data.link !== undefined) {
@@ -135,6 +143,7 @@ define(
                     linkView.rank = data.link.rank;
                     linkView.weight = data.link.weight;
                     linkView.isManual = data.link.isManual;
+                    linkView.isDetach = data.link.isDetach;
                 }
                 else if(data.sNode !== undefined && data.tNode !== undefined){
 
@@ -291,23 +300,22 @@ define(
 
             function createLinkByIndex(l){
 
-                var sNode = nodeArray[l.source],
-                    tNode = nodeArray[l.target];
+                l.source = nodeArray[l.source];
+                l.target = nodeArray[l.target];
 
-                return createLink(sNode, tNode, l.weight);
+                l.lId = getLinkId(l.source.id, l.target.id);
+
+                return l;
             }
 
-            function createLink(sNode, tNode, weight){
+            function createLinkByIds(l){
 
-                return {
+                l.source = nodeMap[getNodeId(l.source)];
+                l.target = nodeMap[getNodeId(l.target)];
 
-                    lId: 'l-' + sNode.id + "-" + tNode.id,
-                    source: sNode,
-                    target: tNode,
-                    rank: weight,
-                    weight: weight,
-                    isManual: false
-                };
+                l.lId = getLinkId(l.source.id, l.source.id);
+
+                return l;
             }
 
             function addLink(link){
@@ -330,7 +338,7 @@ define(
                 nodeLinksMap[link.source.nId] = sortNodeLinkArray(nodeLinks);
             }
 
-            function breakLink(lId){
+            function removeLink(lId){
 
                 var i, l, index, nodeLinks, link = linkMap[lId];
 
@@ -374,10 +382,6 @@ define(
 
                 //remove from linkMap
                 linkMap[lId] = undefined;
-
-                dispatch.publish("model_remove_link_success", {
-                    lId: lId
-                });
             }
 
             function sortNodeLinkArray(nodeLinkArray){
@@ -486,39 +490,87 @@ define(
 
             function updateLink(data){
 
-                var sNode, tNode, weight, nodeLinks,
+                var url,
+                    nodeLinks,
                     sNodeId = getNodeId(data.sId),
                     tNodeId = getNodeId(data.tId),
+                    sNode = nodeMap[sNodeId],
+                    tNode = nodeMap[tNodeId],
                     lId = getLinkId(data.sId, data.tId),
-                    link;
+                    link = linkMap[lId];
 
                 //is connected
-                if(linkMap[lId] !== undefined){
-                    breakLink(lId);
+                if(link !== undefined){
+
+                    if(link.isDetach){
+                        url = service.graph_remove_detach_url;
+                    }
+                    else {
+                        url = service.graph_detach_url;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: {
+                            sourceVideoId: sNode.id,
+                            targetVideoId: tNode.id
+                        },
+                        success: function(response){
+
+                            removeLink(lId);
+
+                            if(!link.isDetach) {
+                                addLink(createLinkByIds(response.data));
+                            }
+
+                            dispatch.publish("model_update_link_success", data);
+                        },
+                        error: function(data){
+
+                            dispatch.publish("view_flash", {
+                                type: "danger",
+                                message: "An error occurred during link detachment."
+                            });
+                        }
+                    });
                 }
                 else {
 
-                    sNode = nodeMap[sNodeId];
                     nodeLinks = nodeLinksMap[sNode.nId];
                     if(nodeLinks === undefined || nodeLinks.length < MAX_LINKS){
 
-                        tNode = nodeMap[tNodeId];
-                        weight = getMaxWeight(sNode.nId) + 1;
+                        $.ajax({
+                            type: "POST",
+                            url: service.graph_link_url,
+                            data: {
+                                sourceVideoId: sNode.id,
+                                targetVideoId: tNode.id
+                            },
+                            success: function(response){
 
-                        link = createLink(sNode, tNode, weight);
-                        link.isManual = true;
-                        addLink(link);
+                                console.log(response);
+                                addLink(createLinkByIds(response.data));
+
+                                dispatch.publish("model_update_link_success", data);
+                            },
+                            error: function(data){
+
+                                dispatch.publish("view_flash", {
+                                    type: "danger",
+                                    message: "An error occurred during link creation."
+                                });
+                            }
+                        });
                     }
                     else {
 
                         dispatch.publish("view_flash", {
                             type: "danger",
-                            message: "You've reached the maxiumn number of links for \"" + sNode.title + "\""
+                            message: "You've reached the maximum number of links for \"" + sNode.title + "\""
                         });
                     }
                 }
-
-                dispatch.publish("model_update_link_success", data);
             }
 
             function getTitleStats(title){
@@ -664,6 +716,46 @@ define(
             }
 
             function loadData(inputArray){
+
+                var url = service.graph_url + "?" + $.param( inputArray, true );
+
+                dispatch.publish("view_loading_show", {});
+
+                d3.json(url, function(error, response) {
+
+                    if(error === null){
+
+                        if(response.data.nodeCount > 200){
+
+                            dispatch.publish("view_flash", {
+                                type: "warning",
+                                message: "The search criteria you provided returned too many search results. Please refine your search."
+                            });
+                        }
+                        else {
+
+                            initModel();
+
+                            populate(response.data);
+
+                            dispatch.publish("model_data_loaded", {
+                                resultSize: nodeArray.length
+                            });
+                        }
+                    }
+                    else {
+
+                        dispatch.publish("view_flash", {
+                            type: "danger",
+                            message: "An error occurred while performing your search."
+                        });
+                    }
+
+                    dispatch.publish("view_loading_hide", {});
+                });
+            }
+
+            function loadDataFromDisk(inputArray){
 
                 var isMatch = false,
                     graph;
@@ -966,7 +1058,15 @@ define(
             this.getNodeId = getNodeId;
             this.getLinkId = getLinkId;
 
-            this.breakLink = breakLink;
+            this.breakLink = function(lId){
+
+                removeLink(lId);
+
+                dispatch.publish("model_remove_link_success", {
+                    lId: lId
+                });
+            };
+
             this.updateLink = updateLink;
             this.isConnected = isConnected;
             this.isSelectedNodeId = isSelectedNodeId;
