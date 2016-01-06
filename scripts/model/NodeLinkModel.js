@@ -1059,6 +1059,10 @@ define(
                 };
             };
 
+            this.getNodeNumber = function(){
+                return nodeArray.length;
+            };
+
             this.getAdjMatrixWindowViewModel = function(){
 
                 return {

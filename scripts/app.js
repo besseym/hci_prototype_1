@@ -9,6 +9,7 @@ require(
         "common",
         "dispatch",
         "model/NodeLinkModel",
+        "model/MatrixWindowModel",
         "view/View",
         "view/KeyboardView",
         "view/FlashView",
@@ -33,6 +34,7 @@ require(
         common,
         dispatch,
         NodeLinkModel,
+        MatrixWindowModel,
         View,
         KeyboardView,
         FlashView,
@@ -55,6 +57,7 @@ require(
     ) {
 
         var nodeLinkModel = new NodeLinkModel(),
+            matrixWindowModel = MatrixWindowModel(),
 
             keyboardView = new KeyboardView(),
 
@@ -110,12 +113,13 @@ require(
 
         function refreshMatrixCharts(){
 
-            var adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            var windowModel = matrixWindowModel.getViewModel(),
+                adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
 
-            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel, windowModel);
             adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
 
-            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            adjMatrixWindowView.set(windowModel);
 
             adjMatrixWindowView.updateScale();
             adjMatrixWindowView.draw();
@@ -157,7 +161,10 @@ require(
 
         dispatch.subscribe("model_data_loaded", function(msg){
 
-            var listViewModel = nodeLinkModel.getListViewModel();
+            var nodeNumber = nodeLinkModel.getNodeNumber(),
+                listViewModel = nodeLinkModel.getListViewModel();
+
+            matrixWindowModel.set({xMax: nodeNumber, yMax: nodeNumber});
 
             formTabbedView.focusTabNav("highlight");
             formTabbedView.focusTabPane("highlight");
@@ -303,65 +310,81 @@ require(
 
         dispatch.subscribe("view_keyboard_left", function(msg){
 
-            nodeLinkModel.move("left");
+            //nodeLinkModel.move("left");
+            //
+            //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            //adjMatrixWindowView.draw();
+            //
+            //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
 
-            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            adjMatrixWindowView.draw();
+            matrixWindowModel.move("left");
 
-            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+            refreshMatrixCharts();
 
             highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_up", function(msg){
 
-            nodeLinkModel.move("up");
+            //nodeLinkModel.move("up");
+            //
+            //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            //adjMatrixWindowView.draw();
+            //
+            //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
 
-            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            adjMatrixWindowView.draw();
+            matrixWindowModel.move("up");
 
-            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+            refreshMatrixCharts();
 
             highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_right", function(msg){
 
-            nodeLinkModel.move("right");
+            //nodeLinkModel.move("right");
+            //
+            //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            //adjMatrixWindowView.draw();
+            //
+            //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
 
-            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            adjMatrixWindowView.draw();
+            matrixWindowModel.move("right");
 
-            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+            refreshMatrixCharts();
 
             highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_down", function(msg){
 
-            nodeLinkModel.move("down");
+            //nodeLinkModel.move("down");
+            //
+            //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
+            //adjMatrixWindowView.draw();
+            //
+            //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
+            //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
+            //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
 
-            adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
-            adjMatrixWindowView.draw();
+            matrixWindowModel.move("down");
 
-            adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
-            adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
-            adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+            refreshMatrixCharts();
 
             highlightMatrix();
         });
 
         dispatch.subscribe("view_keyboard_zoom", function(msg){
 
-            var adjacencyMatrixViewModel;
+            //var adjacencyMatrixViewModel;
 
-            nodeLinkModel.zoom();
+            //nodeLinkModel.zoom();
 
             //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
             //adjMatrixWindowView.draw();
@@ -369,6 +392,8 @@ require(
             //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
             //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            matrixWindowModel.zoom();
 
             refreshMatrixCharts();
 
@@ -377,7 +402,7 @@ require(
 
         dispatch.subscribe("view_keyboard_expand", function(msg){
 
-            nodeLinkModel.expand();
+            //nodeLinkModel.expand();
 
             //adjMatrixWindowView.set(nodeLinkModel.getAdjMatrixWindowViewModel());
             //adjMatrixWindowView.draw();
@@ -385,6 +410,8 @@ require(
             //adjacencyMatrixViewModel = nodeLinkModel.getAdjacencyMatrixViewModel();
             //adjacencyMatrixView.updateScale(adjacencyMatrixViewModel);
             //adjacencyMatrixView.updateView(adjacencyMatrixViewModel);
+
+            matrixWindowModel.expand();
 
             refreshMatrixCharts();
 

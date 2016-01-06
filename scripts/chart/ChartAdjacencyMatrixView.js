@@ -87,12 +87,17 @@ define(
                 }
             }
 
-            function updateScale(data){
+            function updateScale(model, modelWindow){
 
-                updateDimensions(data);
+                var targetArray, sourceArray;
 
-                xScale = d3.scale.ordinal().domain(data.tNodeArray.map(data.nodeDomainMap)).rangeBands(parent.get('rangeX'), sep);
-                yScale = d3.scale.ordinal().domain(data.sNodeArrayDesc.map(data.nodeDomainMap)).rangeBands(parent.get('rangeY'), sep);
+                updateDimensions(model);
+
+                targetArray = model.tNodeArray.slice(modelWindow.xStart, modelWindow.xEnd);
+                sourceArray = model.sNodeArrayDesc.slice(modelWindow.yStart, modelWindow.yEnd);
+
+                xScale = d3.scale.ordinal().domain(targetArray.map(model.nodeDomainMap)).rangeBands(parent.get('rangeX'), sep);
+                yScale = d3.scale.ordinal().domain(sourceArray.map(model.nodeDomainMap)).rangeBands(parent.get('rangeY'), sep);
             }
 
             function updateView(data){
@@ -111,7 +116,9 @@ define(
 
             function doUpdateView(data){
 
-                var rangeX = parent.get('rangeX'),
+                var width = parent.get('width'),
+                    height = parent.get('height'),
+                    rangeX = parent.get('rangeX'),
                     dWidth = rangeX[1] - rangeX[0],
                     hWidth = dWidth * 0.5,
                     midX = rangeX[0] + hWidth,
@@ -119,6 +126,9 @@ define(
                     dHeight = rangeY[0] - rangeY[1],
                     hHeight = dHeight * 0.5,
                     midY = rangeY[1] + hHeight,
+                    sNodeHalfLength = data.sNodeArray.length * 0.5,
+                    tNodeHalfLength = data.tNodeArray.length * 0.5,
+                    lgHalfLength = data.linkGridArray.length * 0.5,
                     sLabelsGroup = svg.select("g.s-labels"),
                     tLabelsGroup = svg.select("g.t-labels"),
                     linksGroup = svg.select("g.links");
@@ -150,6 +160,11 @@ define(
                         "y": function (d, i) {
 
                             var y = yScale(d.id);
+
+                            if(isNaN(y)){
+                                y = (i < sNodeHalfLength) ? 0 : height;
+                            }
+
                             if(y <= midY){
                                 y = rangeY[1] - y;
                             }
@@ -191,10 +206,27 @@ define(
                     .transition().duration(attributes.tranistionTime)
                     .attr({
                         "x": function(d, i) {
-                            return parent.get('paddingLeft');
+
+                            var x = parent.get('paddingLeft'),
+                                y = yScale(d.id);
+
+                            if(isNaN(y)){
+                                x = 0;
+                            }
+
+                            return x;
                         },
                         "y": function (d, i) {
-                            return yScale(d.id) + (yScale.rangeBand() * 0.5);
+
+                            var y = yScale(d.id);
+
+                            if(isNaN(y)){
+                                y = (i < sNodeHalfLength) ? 0 : height;
+                            }
+
+                            y = y + (yScale.rangeBand() * 0.5);
+
+                            return y;
                         },
                         //"textLength":  function (d, i) {
                         //    return parent.get('padding').left;
@@ -226,6 +258,11 @@ define(
                         "transform": function(d, i) {
 
                             var x = xScale(d.id), y = 0;
+
+                            if(isNaN(x)){
+                                x = (i < tNodeHalfLength) ? 0 : width;
+                                y = 0;
+                            }
 
                             if(x <= midX){
                                 x = rangeX[0] - x;
@@ -260,8 +297,15 @@ define(
                         //},
                         "transform": function(d, i) {
 
-                            var x = xScale(d.id) + (xScale.rangeBand() /2),
+                            var x = xScale(d.id),
                                 y = parent.get('paddingTop');
+
+                            if(isNaN(x)){
+                                x = (i < tNodeHalfLength) ? 0 : width;
+                                y = 0;
+                            }
+
+                            x = x + (xScale.rangeBand() /2);
 
                             return "translate(" + x + ", " + y + ") rotate(-35)";
                         },
@@ -298,11 +342,18 @@ define(
                         "x": function (d, i) {
 
                             var x = xScale(d.target.id);
-                            if(x <= midX){
-                                x = rangeX[0] - x;
+
+                            if(isNaN(x)){
+                                x = ((i % data.tNodeArray.length) < tNodeHalfLength) ? 0 - xScale.rangeBand() : width;
                             }
                             else {
-                                x = rangeX[1] + x;
+
+                                if(x <= midX){
+                                    x = rangeX[0] - x;
+                                }
+                                else {
+                                    x = rangeX[1] + x;
+                                }
                             }
 
                             return x;
@@ -310,11 +361,18 @@ define(
                         "y": function (d, i) {
 
                             var y = yScale(d.source.id);
-                            if(y <= midY){
-                                y = rangeY[1] - y;
+
+                            if(isNaN(y)){
+                                y = (i < lgHalfLength) ? 0 - yScale.rangeBand() : height;
                             }
                             else {
-                                y = rangeY[0] + y;
+
+                                if(y <= midY){
+                                    y = rangeY[1] - y;
+                                }
+                                else {
+                                    y = rangeY[0] + y;
+                                }
                             }
 
                             return y;
@@ -329,10 +387,24 @@ define(
                     .transition().duration(attributes.tranistionTime)
                     .attr({
                         "x": function (d, i) {
-                            return xScale(d.target.id);
+
+                            var x = xScale(d.target.id);
+
+                            if(isNaN(x)){
+                                x = ((i % data.tNodeArray.length) < tNodeHalfLength) ? 0 - xScale.rangeBand() : width;
+                            }
+
+                            return x;
                         },
                         "y": function (d, i) {
-                            return yScale(d.source.id);
+
+                            var y = yScale(d.source.id);
+
+                            if(isNaN(y)){
+                                y = (i < lgHalfLength) ? 0 - yScale.rangeBand() : height;
+                            }
+
+                            return y;
                         },
                         "width": xScale.rangeBand(),
                         "height": yScale.rangeBand()
